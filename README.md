@@ -11,5 +11,6 @@ Types of commits:
     - [ADD]     ->  addition
     - [UPT]     ->  update
     - [FIX]     ->  correction
+    - [REFACTO]      ->  refacto
     - [MERGE]   ->  PR merge
     - [RM]      ->  removed content

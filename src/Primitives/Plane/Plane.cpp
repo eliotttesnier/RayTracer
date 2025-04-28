@@ -6,5 +6,5 @@
 #include "Plane.hpp"
 
 Raytracer::primitive::Plane::Plane() {
-    std::cout << "Creating a Plane object" << std::endl;
+    std::cout << "Plane contructor called" << std::endl;
 }

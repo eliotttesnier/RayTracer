@@ -8,6 +8,7 @@
 namespace Raytracer::primitive {
 
 class Sphere {
+public:
     Sphere();
     ~Sphere() = default;
 };

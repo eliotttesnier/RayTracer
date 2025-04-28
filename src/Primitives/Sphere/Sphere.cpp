@@ -6,5 +6,5 @@
 #include "Sphere.hpp"
 
 Raytracer::primitive::Sphere::Sphere() {
-    std::cout << "Creating a Sphere object" << std::endl;
+    std::cout << "Sphere constructor called" << std::endl;
 }
