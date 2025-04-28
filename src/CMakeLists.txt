@@ -1,4 +1,4 @@
-add_subdirectory(core)
+add_subdirectory(Core)
 add_subdirectory(Lights)
 add_subdirectory(Primitives)
 
