@@ -7,4 +7,3 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 add_compile_options("-fno-gnu-unique")
 
 add_subdirectory(src)
-add_subdirectory(plugins)
