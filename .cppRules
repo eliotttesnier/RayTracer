@@ -1,0 +1,2 @@
+linelength=80
+filter=-legal/copyright,-build/include_subdir,-whitespace/indent,-runtime/indentation_namespace
