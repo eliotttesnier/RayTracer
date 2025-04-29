@@ -9,6 +9,8 @@
 #include "Primitives/Plane/Plane.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
 
+#include "Primitives/IPrimitive.hpp"
+
 int main() {
     Raytracer::primitive::Sphere sphere;
     Raytracer::primitive::Plane plane;
