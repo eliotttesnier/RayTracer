@@ -5,3 +5,4 @@ raytracer
 cmake-build-debug
 *.so
 *build*
+coding-style-cpp-reports.log
