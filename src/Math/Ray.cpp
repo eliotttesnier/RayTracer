@@ -8,12 +8,12 @@
 #include "Ray.hpp"
 
 namespace Math {
-    Ray::Ray() : origin(), direction()
-    {
-    }
+Ray::Ray() : origin(), direction()
+{
+}
 
-    Ray::Ray(const Math::Point3D &origin, const Math::Vector3D &direction)
-        : origin(origin), direction(direction)
-    {
-    }
+Ray::Ray(const Math::Point3D &origin, const Math::Vector3D &direction)
+    : origin(origin), direction(direction)
+{
+}
 }
