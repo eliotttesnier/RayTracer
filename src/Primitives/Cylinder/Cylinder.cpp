@@ -1,6 +1,6 @@
 #include <cmath>
+#include <string>
 #include "Cylinder.hpp"
-
 namespace Raytracer::primitive {
 
 Cylinder::Cylinder()
@@ -106,7 +106,8 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
     if (ray.direction._y != 0) {
         double tBottom = (_position._y - ray.origin._y) / ray.direction._y;
         Math::Point3D pBottom = ray.origin + ray.direction * tBottom;
-        double distBottom = sqrt(pow(pBottom._x - _position._x, 2) + pow(pBottom._z - _position._z, 2));
+        double distBottom = sqrt(pow(pBottom._x - _position._x, 2) +
+            pow(pBottom._z - _position._z, 2));
         if (tBottom > 0.001 && distBottom <= _radius && (t < 0 || tBottom < t)) {
             t = tBottom;
             hitData.normal = Math::Vector3D(0, -1, 0);
