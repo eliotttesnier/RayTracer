@@ -30,6 +30,7 @@ target_link_libraries(raytracer PRIVATE
     ${PRIMITIVES}
     Graphic
     math
+    parser
     graphic_renderer
     sfml-graphics
     sfml-window

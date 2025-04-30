@@ -9,22 +9,21 @@
 #include <cmath>
 #include <limits>
 
-#include "../Primitives/IPrimitive.hpp"
-#include "../Primitives/Plane/Plane.hpp"
-#include "../Primitives/Sphere/Sphere.hpp"
-#include "../Primitives/Cylinder/Cylinder.hpp"
-#include "../Primitives/Cone/Cone.hpp"
-#include "../Math/Point3D.hpp"
-#include "../Math/Vector3D.hpp"
-#include "../Math/Ray.hpp"
-#include "../Math/Rectangle3D.hpp"
-#include "../Graphic/Camera.hpp"
-#include "../GraphicRenderer/GraphicRenderer.hpp"
-#include "Renderer.hpp"
+#include "Primitives/IPrimitive.hpp"
+#include "Primitives/Plane/Plane.hpp"
+#include "Primitives/Sphere/Sphere.hpp"
+#include "Math/Point3D.hpp"
+#include "Math/Vector3D.hpp"
+#include "Math/Ray.hpp"
+#include "Math/Rectangle3D.hpp"
+#include "Graphic/Camera.hpp"
+#include "Parser/Parser.hpp"
 
-int main() {
-    const int WIDTH = 3840;
-    const int HEIGHT = 2160;
+//TODO: À retirer
+void displaySphere() {
+    const int WIDTH = 80;
+    const int HEIGHT = 40;
+    const double ASPECT_RATIO = static_cast<double>(WIDTH) / HEIGHT;
 
     RayTracer::Camera camera;
     camera.origin = Math::Point3D(0, 0, 5);
@@ -62,6 +61,19 @@ int main() {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;
     }
+}
 
+int main(int ac, char **av) {
+    if (ac == 2) {
+        try {
+            raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
+        } catch (const std::exception &e) {
+            std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
+            return 1;
+        }
+    } else {
+        std::cerr << "Usage: ./raytracer <config_file.cfg>" << std::endl;
+        return 1;
+    }
     return 0;
 }
