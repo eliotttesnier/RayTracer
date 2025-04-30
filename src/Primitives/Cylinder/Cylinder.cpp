@@ -97,11 +97,30 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
     double y1 = ray.origin._y + t1 * ray.direction._y;
     double y2 = ray.origin._y + t2 * ray.direction._y;
 
-    if ((y1 < _position._y || y1 > _position._y + _height) &&
-        (y2 < _position._y || y2 > _position._y + _height))
-        return hitData;
+    double t = -1;
 
-    double t = (t1 < t2 && y1 >= _position._y && y1 <= _position._y + _height) ? t1 : t2;
+    if ((y1 >= _position._y && y1 <= _position._y + _height) ||
+        (y2 >= _position._y && y2 <= _position._y + _height)) {
+        t = (t1 < t2 && y1 >= _position._y && y1 <= _position._y + _height) ? t1 : t2;
+    }
+    if (ray.direction._y != 0) {
+        double tBottom = (_position._y - ray.origin._y) / ray.direction._y;
+        Math::Point3D pBottom = ray.origin + ray.direction * tBottom;
+        double distBottom = sqrt(pow(pBottom._x - _position._x, 2) + pow(pBottom._z - _position._z, 2));
+        if (tBottom > 0.001 && distBottom <= _radius && (t < 0 || tBottom < t)) {
+            t = tBottom;
+            hitData.normal = Math::Vector3D(0, -1, 0);
+        }
+    }
+    if (ray.direction._y != 0) {
+        double tTop = (_position._y + _height - ray.origin._y) / ray.direction._y;
+        Math::Point3D pTop = ray.origin + ray.direction * tTop;
+        double distTop = sqrt(pow(pTop._x - _position._x, 2) + pow(pTop._z - _position._z, 2));
+        if (tTop > 0.001 && distTop <= _radius && (t < 0 || tTop < t)) {
+            t = tTop;
+            hitData.normal = Math::Vector3D(0, 1, 0);
+        }
+    }
 
     if (t > 0.001) {
         hitData.hit = true;
