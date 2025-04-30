@@ -1,9 +1,17 @@
-add_library(Math SHARED
+set(MATH_SRC
     Point3D.cpp
-    Point3D.hpp
     Vector3D.cpp
+    Ray.cpp
+    Rectangle3D.cpp
+)
+
+set(MATH_INC
+    Point3D.hpp
     Vector3D.hpp
     Ray.hpp
-    Ray.cpp
     HitData.hpp
+    Rectangle3D.hpp
 )
+
+add_library(math STATIC ${MATH_SRC} ${MATH_INC})
+target_include_directories(math PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
