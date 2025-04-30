@@ -1,6 +1,6 @@
 #include <cmath>
+#include <string>
 #include "Cone.hpp"
-
 namespace Raytracer::primitive {
 
 Cone::Cone()
@@ -130,4 +130,4 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
     return hitData;
 }
 
-} // namespace Raytracer::primitive
+}  // namespace Raytracer::primitive
