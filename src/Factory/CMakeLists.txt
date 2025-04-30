@@ -1,14 +1,11 @@
+add_subdirectory(PrimitivesFactory)
+
 set(FACTORY_SRC
-    PrimitiveFactory.cpp
-    SphereFactory.cpp
-    PlaneFactory.cpp
+    Factory.cpp
 )
 
 set(FACTORY_INC
-    PrimitiveFactory.hpp
-    IPrimitiveFactory.hpp
-    SphereFactory.hpp
-    PlaneFactory.hpp
+    Factory.hpp
 )
 
-add_library(Factory SHARED ${FACTORY_SRC} ${FACTORY_INC})
+add_library(Factory STATIC ${FACTORY_SRC} ${FACTORY_INC})

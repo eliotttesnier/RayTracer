@@ -7,7 +7,7 @@
 
 #include <memory>
 #include "IPrimitiveFactory.hpp"
-#include "../Primitives/Sphere/Sphere.hpp"
+#include "../../Primitives/Sphere/Sphere.hpp"
 
 namespace Raytracer::Factory {
 

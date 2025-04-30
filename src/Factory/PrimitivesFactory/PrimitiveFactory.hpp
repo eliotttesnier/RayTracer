@@ -6,12 +6,12 @@
 #define FACTORY_HPP
 #include <vector>
 #include <memory>
-#include "../Parser/ParserConfig/PrimitivesConfig.hpp"
+#include "../../Parser/ParserConfig/PrimitivesConfig.hpp"
 #include "IPrimitiveFactory.hpp"
 #include "PlaneFactory.hpp"
 #include "SphereFactory.hpp"
-#include "../Math/Point3D.hpp"
-#include "../Math/Vector3D.hpp"
+#include "../../Math/Point3D.hpp"
+#include "../../Math/Vector3D.hpp"
 
 namespace raytracer::Factory {
 

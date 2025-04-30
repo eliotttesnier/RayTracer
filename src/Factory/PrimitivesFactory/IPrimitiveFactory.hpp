@@ -6,7 +6,7 @@
 #define IPRIMITIVEFACTORY_HPP
 
 #include <memory>
-#include "../Primitives/IPrimitive.hpp"
+#include "../../Primitives/IPrimitive.hpp"
 
 namespace Raytracer::Factory {
 
