@@ -17,11 +17,17 @@ namespace raytracer {
         const std::tuple<double, double, double> _rotation;
         const double _fov;
     public:
+        std::tuple<int, int> getResolution() const;
+
+        std::tuple<double, double, double> getPosition() const;
+
+        std::tuple<double, double, double> getRotation() const;
+
         CameraConfig() = delete;
         CameraConfig(const std::tuple<int, int> &resolution,
                      const std::tuple<double, double, double> &position,
                      const std::tuple<double, double, double> &rotation,
-                     const double fov) : _resolution(resolution), _position(position), _rotation(rotation), _fov(fov) {};
+                     const double fov);
         ~CameraConfig() = default;
     };
 
@@ -32,11 +38,20 @@ namespace raytracer {
         const double _ambient;
         const double _diffuse;
     public:
+
+        double getAmbient() const;
+
+        double getDiffuse() const;
+
+        std::tuple<double, double, double> getPosition() const;
+
+        std::vector<std::tuple<double, double, double>> getDirectional() const;
+
         LightConfig() = delete;
         LightConfig(const std::vector<std::tuple<double, double, double>> &directional,
                     const std::tuple<double, double, double> &position,
                     const double ambient,
-                    const double diffuse) : _directional(directional), _position(position), _ambient(ambient), _diffuse(diffuse) {};
+                    const double diffuse);
         ~LightConfig() = default;
     };
 
@@ -45,9 +60,13 @@ namespace raytracer {
         std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> _sphere; // Position + raduis, Color
         std::vector<std::tuple<char, double, std::tuple<int, int, int>>> _plane; // axis, position, Color
     public:
+        std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> getSpheres() const;
+
+        std::vector<std::tuple<char, double, std::tuple<int, int, int>>> getPlanes() const;
+
         PrimitiveConfig() = delete;
         PrimitiveConfig(const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
-                        const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane) : _sphere(sphere), _plane(plane) {};
+                        const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane);
         ~PrimitiveConfig() = default;
     };
 
@@ -62,6 +81,9 @@ namespace raytracer {
         void _getLightsData(const libconfig::Setting &root);
     public:
 
+        CameraConfig getCameraConfig() const;
+        LightConfig getLightConfig() const;
+        PrimitiveConfig getPrimitivesConfig() const;
 
         Parser() = delete;
         Parser(char *path);
