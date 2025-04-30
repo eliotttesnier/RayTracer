@@ -44,3 +44,8 @@ add_custom_command(TARGET raytracer POST_BUILD
         "$<TARGET_FILE:raytracer>"
         "${CMAKE_BINARY_DIR}/raytracer")
 
+add_custom_command(TARGET raytracer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "$<TARGET_FILE:raytracer>"
+        "${CMAKE_BINARY_DIR}/../raytracer")
+

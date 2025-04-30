@@ -10,6 +10,6 @@ add_custom_command(TARGET AmbientLight POST_BUILD
 
 
 add_custom_target(copy_AmbientLight ALL
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:AmbientLight>/../../.."
-        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/plugins/libAmbientLight.so" "${CMAKE_BINARY_DIR}/plugins/libAmbientLight.so"
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_BINARY_DIR}/../plugins"
+        COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/plugins/libAmbientLight.so" "${CMAKE_BINARY_DIR}/../plugins/libAmbientLight.so"
         DEPENDS AmbientLight)
