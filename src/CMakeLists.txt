@@ -6,6 +6,41 @@ add_subdirectory(Parser)
 add_subdirectory(GraphicRenderer)
 add_subdirectory(Core)
 
+add_executable(raytracer
+    main.cpp
+)
+
+set(LIGHTS
+        AmbientLight
+        DirectionalLight
+)
+
+set(PRIMITIVES
+        Sphere
+        Plane
+        Cylinder
+        Cone
+)
+
+target_link_libraries(raytracer PRIVATE
+        ${LIGHTS}
+        ${PRIMITIVES}
+        Graphic
+        Core
+        math
+        parser
+        graphic_renderer
+        sfml-graphics
+        sfml-window
+        sfml-system
+)
+
 target_include_directories(raytracer PRIVATE
     ./
 )
+
+add_custom_command(TARGET raytracer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        "$<TARGET_FILE:raytracer>"
+        "${CMAKE_BINARY_DIR}/raytracer")
+
