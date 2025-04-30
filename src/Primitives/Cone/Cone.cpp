@@ -70,9 +70,8 @@ Math::Vector3D Cone::normalAt(const Math::Point3D& point) const
     double dy = point._y - _position._y;
 
     double k = _radius / _height;
-    double y = _height - dy;
 
-    Math::Vector3D normal(dx, k * k * y, dz);
+    Math::Vector3D normal(2 * dx, -2 * (k * k) * dy, 2 * dz);
     normal.normalize();
     return normal;
 }
