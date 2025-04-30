@@ -9,7 +9,7 @@ set(HEADER_DIRECTORIES ${INCROOT})
 include_directories(${HEADER_DIRECTORIES})
 
 if(NOT SFML_FOUND)
-    find_package(SFML 2.5 COMPONENTS graphics window system REQUIRED)
+    find_package(SFML COMPONENTS graphics window system REQUIRED)
 endif()
 
 add_library(graphic_renderer STATIC ${SRC})
