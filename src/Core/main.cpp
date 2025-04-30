@@ -17,6 +17,7 @@
 #include "../Math/Ray.hpp"
 #include "../Math/Rectangle3D.hpp"
 #include "../Graphic/Camera.hpp"
+#include "../GraphicRenderer/GraphicRenderer.hpp"
 
 int main() {
     const int WIDTH = 80;
@@ -67,6 +68,13 @@ int main() {
             }
         }
         std::cout << std::endl;
+    }
+
+    try {
+        GraphicRenderer renderer("output.ppm");
+        renderer.run();
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
 
     return 0;
