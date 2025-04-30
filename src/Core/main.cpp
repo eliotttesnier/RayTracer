@@ -12,6 +12,8 @@
 #include "../Primitives/IPrimitive.hpp"
 #include "../Primitives/Plane/Plane.hpp"
 #include "../Primitives/Sphere/Sphere.hpp"
+#include "../Primitives/Cylinder/Cylinder.hpp"
+#include "../Primitives/Cone/Cone.hpp"
 #include "../Math/Point3D.hpp"
 #include "../Math/Vector3D.hpp"
 #include "../Math/Ray.hpp"
@@ -28,14 +30,16 @@ int main() {
     camera.origin = Math::Point3D(0, 0, 5);
     camera.tilt(-10);
 
-    auto sphere = std::make_shared<Raytracer::primitive::Sphere>();
-    sphere->getPosition() = Math::Point3D(0, -1, 0);
+    auto cylinder = std::make_shared<Raytracer::primitive::Cylinder>();
+    cylinder->getPosition() = Math::Point3D(0, -1, 0);
+    cylinder->setRadius(1.0);
+    cylinder->setHeight(2.0);
 
     auto plane = std::make_shared<Raytracer::primitive::Plane>();
     plane->getPosition() = Math::Point3D(0, -2, 0);
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
-    primitives.push_back(sphere);
+    primitives.push_back(cylinder);
     primitives.push_back(plane);
 
     for (int y = 0; y < HEIGHT; y++) {

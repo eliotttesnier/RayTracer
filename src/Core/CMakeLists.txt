@@ -20,6 +20,8 @@ set(LIGHTS
 set(PRIMITIVES
     Sphere
     Plane
+    Cylinder
+    Cone
 )
 
 target_link_libraries(raytracer PRIVATE
