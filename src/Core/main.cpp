@@ -75,7 +75,7 @@ void displaySphere() {
 int main(int ac, char **av) {
     if (ac == 2) {
         try {
-            raytracer::Parser parser = raytracer::Parser(av[1]);
+            raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;

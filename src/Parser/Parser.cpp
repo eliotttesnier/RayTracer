@@ -9,7 +9,7 @@
 
 //TODO : Mettre la class CameraConfig dans un autre fichier
 
-raytracer::CameraConfig::CameraConfig(
+raytracer::Parser::CameraConfig::CameraConfig(
     const std::tuple<int, int> &resolution,
     const std::tuple<double, double, double> &position,
     const std::tuple<double, double, double> &rotation,
@@ -22,21 +22,21 @@ raytracer::CameraConfig::CameraConfig(
 {
 }
 
-std::tuple<int, int> raytracer::CameraConfig::getResolution() const {
+std::tuple<int, int> raytracer::Parser::CameraConfig::getResolution() const {
     return this->_resolution;
 }
 
-std::tuple<double, double, double> raytracer::CameraConfig::getPosition() const {
+std::tuple<double, double, double> raytracer::Parser::CameraConfig::getPosition() const {
     return this->_position;
 }
 
-std::tuple<double, double, double> raytracer::CameraConfig::getRotation() const {
+std::tuple<double, double, double> raytracer::Parser::CameraConfig::getRotation() const {
     return this->_rotation;
 }
 
 //TODO : Mettre la class LightConfig dans un autre fichier
 
-raytracer::LightConfig::LightConfig(
+raytracer::Parser::LightConfig::LightConfig(
     const std::vector<std::tuple<double, double, double>> &directional,
     const std::tuple<double, double, double> &position,
     const double ambient,
@@ -49,25 +49,25 @@ raytracer::LightConfig::LightConfig(
 {
 }
 
-double raytracer::LightConfig::getAmbient() const {
+double raytracer::Parser::LightConfig::getAmbient() const {
     return this->_ambient;
 }
 
-double raytracer::LightConfig::getDiffuse() const {
+double raytracer::Parser::LightConfig::getDiffuse() const {
     return this->_diffuse;
 }
 
-std::tuple<double, double, double> raytracer::LightConfig::getPosition() const {
+std::tuple<double, double, double> raytracer::Parser::LightConfig::getPosition() const {
     return this->_position;
 }
 
-std::vector<std::tuple<double, double, double>> raytracer::LightConfig::getDirectional() const {
+std::vector<std::tuple<double, double, double>> raytracer::Parser::LightConfig::getDirectional() const {
     return this->_directional;
 }
 
 //TODO : Mettre la class PrimitiveConfig dans un autre fichier
 
-raytracer::PrimitiveConfig::PrimitiveConfig(
+raytracer::Parser::PrimitiveConfig::PrimitiveConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
     const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane
 ):
@@ -76,16 +76,16 @@ raytracer::PrimitiveConfig::PrimitiveConfig(
 {
 }
 
-std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> raytracer::PrimitiveConfig
+std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> raytracer::Parser::PrimitiveConfig
 ::getSpheres() const {
     return this->_sphere;
 }
 
-std::vector<std::tuple<char, double, std::tuple<int, int, int>>> raytracer::PrimitiveConfig::getPlanes() const {
+std::vector<std::tuple<char, double, std::tuple<int, int, int>>> raytracer::Parser::PrimitiveConfig::getPlanes() const {
     return this->_plane;
 }
 
-void raytracer::Parser::_getCameraData(const libconfig::Setting &root) {
+void raytracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     const auto &camera = root["camera"];
     const auto &res = camera["resolution"];
     const auto &pos = camera["position"];
@@ -107,7 +107,7 @@ void raytracer::Parser::_getCameraData(const libconfig::Setting &root) {
     this->_camConfig = std::make_unique<CameraConfig>(std::make_tuple(width, height), std::make_tuple(x, y, z), std::make_tuple(rx, ry, rz), fov);
 }
 
-void raytracer::Parser::_getPrimitivesData(const libconfig::Setting &root) {
+void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root) {
     std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
@@ -143,7 +143,7 @@ void raytracer::Parser::_getPrimitivesData(const libconfig::Setting &root) {
     this->_primitiveConfig = std::make_unique<PrimitiveConfig>(spheresVector, planesVector);
 }
 
-void raytracer::Parser::_getLightsData(const libconfig::Setting &root) {
+void raytracer::Parser::Parser::_getLightsData(const libconfig::Setting &root) {
     const auto &lights = root["lights"];
     double ambient = lights["ambient"];
     double diffuse = lights["diffuse"];
@@ -159,19 +159,19 @@ void raytracer::Parser::_getLightsData(const libconfig::Setting &root) {
     this->_lightConfig = std::make_unique<LightConfig>(std::vector<std::tuple<double, double, double>>(), std::make_tuple(px, py, pz), ambient, diffuse);
 }
 
-raytracer::CameraConfig raytracer::Parser::getCameraConfig() const {
+raytracer::Parser::CameraConfig raytracer::Parser::Parser::getCameraConfig() const {
     return *this->_camConfig;
 }
 
-raytracer::LightConfig raytracer::Parser::getLightConfig() const {
+raytracer::Parser::LightConfig raytracer::Parser::Parser::getLightConfig() const {
     return *this->_lightConfig;
 }
 
-raytracer::PrimitiveConfig raytracer::Parser::getPrimitivesConfig() const {
+raytracer::Parser::PrimitiveConfig raytracer::Parser::Parser::getPrimitivesConfig() const {
     return *this->_primitiveConfig;
 }
 
-raytracer::Parser::Parser(char *path) {
+raytracer::Parser::Parser::Parser(char *path) {
     libconfig::Config cfg;
 
     try {

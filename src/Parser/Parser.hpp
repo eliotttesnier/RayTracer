@@ -9,7 +9,7 @@
 #include <memory>
 #include <vector>
 
-namespace raytracer {
+namespace raytracer::Parser {
     class CameraConfig {
     private:
         const std::tuple<int, int> _resolution;
