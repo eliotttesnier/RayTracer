@@ -9,16 +9,18 @@
 #include <cmath>
 #include <limits>
 
-#include "../Primitives/IPrimitive.hpp"
-#include "../Primitives/Plane/Plane.hpp"
-#include "../Primitives/Sphere/Sphere.hpp"
-#include "../Math/Point3D.hpp"
-#include "../Math/Vector3D.hpp"
-#include "../Math/Ray.hpp"
-#include "../Math/Rectangle3D.hpp"
-#include "../Graphic/Camera.hpp"
+#include "Primitives/IPrimitive.hpp"
+#include "Primitives/Plane/Plane.hpp"
+#include "Primitives/Sphere/Sphere.hpp"
+#include "Math/Point3D.hpp"
+#include "Math/Vector3D.hpp"
+#include "Math/Ray.hpp"
+#include "Math/Rectangle3D.hpp"
+#include "Graphic/Camera.hpp"
+#include "Parser/Parser.hpp"
 
-int main() {
+//TODO: À retirer
+void displaySphere() {
     const int WIDTH = 80;
     const int HEIGHT = 40;
     const double ASPECT_RATIO = static_cast<double>(WIDTH) / HEIGHT;
@@ -68,6 +70,19 @@ int main() {
         }
         std::cout << std::endl;
     }
+}
 
+int main(int ac, char **av) {
+    if (ac == 2) {
+        try {
+            raytracer::Parser parser = raytracer::Parser(av[1]);
+        } catch (const std::exception &e) {
+            std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
+            return 1;
+        }
+    } else {
+        std::cerr << "Usage: ./raytracer <config_file.cfg>" << std::endl;
+        return 1;
+    }
     return 0;
 }
