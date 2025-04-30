@@ -46,7 +46,6 @@ int main() {
 
         std::cout << "Starting rendering..." << std::endl;
         renderer.render();
-
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;

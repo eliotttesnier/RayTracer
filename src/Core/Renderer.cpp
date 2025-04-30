@@ -11,8 +11,12 @@
 #include <limits>
 #include <thread>
 #include <cmath>
+#include <string>
+#include <vector>
+#include <algorithm>
 
-Renderer::Renderer(const RayTracer::Camera& camera, const std::vector<std::shared_ptr<IPrimitive>>& primitives)
+Renderer::Renderer(const RayTracer::Camera& camera,
+    const std::vector<std::shared_ptr<IPrimitive>>& primitives)
     : _camera(camera), _primitives(primitives), _outputFile("output.ppm")
 {
     _width = 1920;
@@ -52,7 +56,8 @@ void Renderer::setOutputFile(const std::string& outputFile)
 
 void Renderer::renderSegment(int startY, int endY)
 {
-    std::vector<std::vector<Graphic::color_t>> localBuffer(endY - startY, std::vector<Graphic::color_t>(_width));
+    std::vector<std::vector<Graphic::color_t>> localBuffer(endY - startY,
+            std::vector<Graphic::color_t>(_width));
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
@@ -67,7 +72,7 @@ void Renderer::renderSegment(int startY, int endY)
 
             double closestDist = std::numeric_limits<double>::max();
             bool hit = false;
-            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0}; // Default color (black)
+            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};  // Default color (black)
 
             for (const auto& primitive : _primitives) {
                 Math::hitdata_t hitData = primitive->intersect(ray);
@@ -75,7 +80,7 @@ void Renderer::renderSegment(int startY, int endY)
                 if (hitData.hit && hitData.distance < closestDist) {
                     closestDist = hitData.distance;
                     hit = true;
-                    pixelColor = {255.0, 255.0, 255.0, 1.0}; // TODO: Set color based on hit data
+                    pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
                 }
             }
 
