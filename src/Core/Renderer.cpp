@@ -80,7 +80,8 @@ void Renderer::renderSegment(int startY, int endY)
                 if (hitData.hit && hitData.distance < closestDist) {
                     closestDist = hitData.distance;
                     hit = true;
-                    pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
+                    pixelColor = hitData.color;
+                    // pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
                 }
             }
 

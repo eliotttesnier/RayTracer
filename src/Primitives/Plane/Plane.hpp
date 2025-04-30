@@ -22,12 +22,19 @@ public:
     Math::Vector3D &getRotation() override;
     Math::hitdata_t intersect(const Math::Ray &ray) override;
 
+    double getWidth() const;
+    void setWidth(double width);
+    double getHeight() const;
+    void setHeight(double height);
+
 private:
     std::string _name;
     std::string _type;
     Math::Point3D _position;
     Math::Vector3D _rotation;
     RayTracer::Rectangle3D _rectangle;
+    double _width;
+    double _height;
 };
 
 } // Raytracer

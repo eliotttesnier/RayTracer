@@ -127,6 +127,7 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
         );
         hitData.normal = normalAt(hitData.point);
     }
+    hitData.color = {0.0, 255.0, 0.0, 1.0}; // Green
     return hitData;
 }
 

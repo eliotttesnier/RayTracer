@@ -133,6 +133,7 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
         );
         hitData.normal = normalAt(hitData.point);
     }
+    hitData.color = {255.0, 0.0, 0.0, 1.0}; // Red
     return hitData;
 }
 

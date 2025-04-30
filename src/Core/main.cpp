@@ -13,6 +13,7 @@
 #include "Primitives/Plane/Plane.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
 #include "Primitives/Cylinder/Cylinder.hpp"
+#include "Primitives/Cone/Cone.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Vector3D.hpp"
 #include "Math/Ray.hpp"
@@ -33,16 +34,29 @@ void displaySphere() {
     camera.tilt(-10);
 
     auto cylinder = std::make_shared<Raytracer::primitive::Cylinder>();
-    cylinder->getPosition() = Math::Point3D(0, -1, 0);
+    cylinder->getPosition() = Math::Point3D(0, -2, -5);
     cylinder->setRadius(1.0);
     cylinder->setHeight(2.0);
 
+    auto sphere = std::make_shared<Raytracer::primitive::Sphere>();
+    sphere->getPosition() = Math::Point3D(-1, -2, -5);
+    sphere->setRadius(1.0);
+
+    auto cone = std::make_shared<Raytracer::primitive::Cone>();
+    cone->getPosition() = Math::Point3D(-3, -2, -5);
+    cone->setRadius(1.0);
+    cone->setHeight(2.0);
+
     auto plane = std::make_shared<Raytracer::primitive::Plane>();
-    plane->getPosition() = Math::Point3D(0, -2, 0);
+    plane->getPosition() = Math::Point3D(-5, -2, -10);
     plane->getRotation() = Math::Vector3D(0, 0, 0);
+    plane->setWidth(10.0);
+    plane->setHeight(10.0);
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     primitives.push_back(cylinder);
+    primitives.push_back(sphere);
+    primitives.push_back(cone);
     primitives.push_back(plane);
 
     try {
