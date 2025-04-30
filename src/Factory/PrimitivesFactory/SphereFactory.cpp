@@ -4,6 +4,8 @@
 
 #include "SphereFactory.hpp"
 
+//TODO: Utiliser Libloader pour charger les primitives
+
 Raytracer::Factory::SphereFactory::SphereFactory(const Math::Point3D &position, double radius
 ):
     _position(position),

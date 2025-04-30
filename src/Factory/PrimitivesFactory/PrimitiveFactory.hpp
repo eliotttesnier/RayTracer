@@ -2,8 +2,8 @@
 // Created by roussierenoa on 5/1/25.
 //
 
-#ifndef FACTORY_HPP
-#define FACTORY_HPP
+#ifndef PRIMITIVEFACTORY_HPP
+#define PRIMITIVEFACTORY_HPP
 #include <vector>
 #include <memory>
 #include "../../Parser/ParserConfig/PrimitivesConfig.hpp"
@@ -18,7 +18,9 @@ namespace raytracer::Factory {
 class PrimitiveFactory {
 public:
     static std::vector<std::unique_ptr<IPrimitive>> createPrimitives(const raytracer::Parser::PrimitivesConfig& config);
+    PrimitiveFactory() = default;
+    ~PrimitiveFactory() = delete;
 };
 } // raytracer
 
-#endif //FACTORY_HPP
+#endif //PRIMITIVEFACTORY_HPP

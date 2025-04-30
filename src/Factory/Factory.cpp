@@ -3,8 +3,14 @@
 //
 
 #include "Factory.hpp"
+#include "PrimitivesFactory/PrimitiveFactory.hpp"
 
-namespace raytracer {
-namespace Factory {
-} // Factory
-} // raytracer
+std::tuple<std::vector<std::unique_ptr<IPrimitive>>> raytracer::Factory::Factory::createElement(Parser::CameraConfig &cam,
+                                                                               Parser::PrimitivesConfig &primitives,
+                                                                               Parser::LightsConfig &light)
+{
+    std::tuple<std::vector<std::unique_ptr<IPrimitive>>/*Add more data here*/ > result;
+    auto data =  raytracer::Factory::PrimitiveFactory::createPrimitives(primitives);
+
+    return result;
+}

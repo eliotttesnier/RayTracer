@@ -4,6 +4,8 @@
 
 #include "PlaneFactory.hpp"
 
+//TODO: Utiliser libloader pour charger les primitives
+
 Raytracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, const Math::Vector3D &rotation
 ):
     _position(position),
