@@ -17,6 +17,7 @@ target_link_libraries(raytracer PRIVATE
     ${PRIMITIVES}
     Graphic
     math
+    parser
 )
 
 add_custom_command(TARGET raytracer POST_BUILD
