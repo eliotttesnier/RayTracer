@@ -7,83 +7,6 @@
 #include <string>
 #include <libconfig.h++>
 
-//TODO : Mettre la class CameraConfig dans un autre fichier
-
-raytracer::Parser::CameraConfig::CameraConfig(
-    const std::tuple<int, int> &resolution,
-    const std::tuple<double, double, double> &position,
-    const std::tuple<double, double, double> &rotation,
-    const double fov
-):
-    _resolution(resolution),
-    _position(position),
-    _rotation(rotation),
-    _fov(fov)
-{
-}
-
-std::tuple<int, int> raytracer::Parser::CameraConfig::getResolution() const {
-    return this->_resolution;
-}
-
-std::tuple<double, double, double> raytracer::Parser::CameraConfig::getPosition() const {
-    return this->_position;
-}
-
-std::tuple<double, double, double> raytracer::Parser::CameraConfig::getRotation() const {
-    return this->_rotation;
-}
-
-//TODO : Mettre la class LightConfig dans un autre fichier
-
-raytracer::Parser::LightConfig::LightConfig(
-    const std::vector<std::tuple<double, double, double>> &directional,
-    const std::tuple<double, double, double> &position,
-    const double ambient,
-    const double diffuse
-):
-    _directional(directional),
-    _position(position),
-    _ambient(ambient),
-    _diffuse(diffuse)
-{
-}
-
-double raytracer::Parser::LightConfig::getAmbient() const {
-    return this->_ambient;
-}
-
-double raytracer::Parser::LightConfig::getDiffuse() const {
-    return this->_diffuse;
-}
-
-std::tuple<double, double, double> raytracer::Parser::LightConfig::getPosition() const {
-    return this->_position;
-}
-
-std::vector<std::tuple<double, double, double>> raytracer::Parser::LightConfig::getDirectional() const {
-    return this->_directional;
-}
-
-//TODO : Mettre la class PrimitiveConfig dans un autre fichier
-
-raytracer::Parser::PrimitiveConfig::PrimitiveConfig(
-    const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
-    const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane
-):
-    _sphere(sphere),
-    _plane(plane)
-{
-}
-
-std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> raytracer::Parser::PrimitiveConfig
-::getSpheres() const {
-    return this->_sphere;
-}
-
-std::vector<std::tuple<char, double, std::tuple<int, int, int>>> raytracer::Parser::PrimitiveConfig::getPlanes() const {
-    return this->_plane;
-}
 
 void raytracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     const auto &camera = root["camera"];
@@ -140,7 +63,7 @@ void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
-    this->_primitiveConfig = std::make_unique<PrimitiveConfig>(spheresVector, planesVector);
+    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector);
 }
 
 void raytracer::Parser::Parser::_getLightsData(const libconfig::Setting &root) {
@@ -156,18 +79,18 @@ void raytracer::Parser::Parser::_getLightsData(const libconfig::Setting &root) {
 #ifdef _DEBUG
     std::cout << "Lights: ambient=" << ambient << ", diffuse=" << diffuse << ", pos(" << px << ", " << py << ", " << pz << ")" << std::endl;
 #endif
-    this->_lightConfig = std::make_unique<LightConfig>(std::vector<std::tuple<double, double, double>>(), std::make_tuple(px, py, pz), ambient, diffuse);
+    this->_lightConfig = std::make_unique<LightsConfig>(std::vector<std::tuple<double, double, double>>(), std::make_tuple(px, py, pz), ambient, diffuse);
 }
 
 raytracer::Parser::CameraConfig raytracer::Parser::Parser::getCameraConfig() const {
     return *this->_camConfig;
 }
 
-raytracer::Parser::LightConfig raytracer::Parser::Parser::getLightConfig() const {
+raytracer::Parser::LightsConfig raytracer::Parser::Parser::getLightConfig() const {
     return *this->_lightConfig;
 }
 
-raytracer::Parser::PrimitiveConfig raytracer::Parser::Parser::getPrimitivesConfig() const {
+raytracer::Parser::PrimitivesConfig raytracer::Parser::Parser::getPrimitivesConfig() const {
     return *this->_primitiveConfig;
 }
 
