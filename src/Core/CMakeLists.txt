@@ -1,5 +1,15 @@
+set(INCROOT ${PROJECT_SOURCE_DIR}/src/Core)
+set(SRCROOT ${PROJECT_SOURCE_DIR}/src/Core)
+
+set(SRC
+    ${SRCROOT}/main.cpp
+)
+
+set(HEADER_DIRECTORIES ${INCROOT})
+include_directories(${HEADER_DIRECTORIES})
+
 add_executable(raytracer
-    main.cpp
+    ${SRC}
 )
 
 set(LIGHTS
@@ -17,15 +27,13 @@ target_link_libraries(raytracer PRIVATE
     ${PRIMITIVES}
     Graphic
     math
+    graphic_renderer
+    sfml-graphics
+    sfml-window
+    sfml-system
 )
 
 add_custom_command(TARGET raytracer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "$<TARGET_FILE_DIR:raytracer>/raytracer"
-        "$<TARGET_FILE_DIR:raytracer>/../../raytracer")
-
-
-add_custom_target(copy_raytracer ALL
-        COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:raytracer>/../../.."
-        COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:raytracer>" "$<TARGET_FILE_DIR:raytracer>/../../../raytracer"
-        DEPENDS raytracer)
+        "$<TARGET_FILE:raytracer>"
+        "${PROJECT_SOURCE_DIR}/raytracer")
