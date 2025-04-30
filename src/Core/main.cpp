@@ -12,17 +12,20 @@
 #include "Primitives/IPrimitive.hpp"
 #include "Primitives/Plane/Plane.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
+#include "Primitives/Cylinder/Cylinder.hpp"
 #include "Math/Point3D.hpp"
 #include "Math/Vector3D.hpp"
 #include "Math/Ray.hpp"
 #include "Math/Rectangle3D.hpp"
 #include "Graphic/Camera.hpp"
 #include "Parser/Parser.hpp"
+#include "Core/Renderer.hpp"
+#include "GraphicRenderer/GraphicRenderer.hpp"
 
 //TODO: À retirer
 void displaySphere() {
-    const int WIDTH = 80;
-    const int HEIGHT = 40;
+    const int WIDTH = 3820;
+    const int HEIGHT = 2160;
     const double ASPECT_RATIO = static_cast<double>(WIDTH) / HEIGHT;
 
     RayTracer::Camera camera;
@@ -51,7 +54,7 @@ void displaySphere() {
         renderer.render();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
+        return;
     }
 
     try {
@@ -59,7 +62,7 @@ void displaySphere() {
         graphicRenderer.run();
     } catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;
-        return 1;
+        return;
     }
 }
 
@@ -67,6 +70,7 @@ int main(int ac, char **av) {
     if (ac == 2) {
         try {
             raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
+            displaySphere();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;
