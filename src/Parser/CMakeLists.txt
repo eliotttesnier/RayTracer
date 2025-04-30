@@ -8,6 +8,9 @@ set(PARSER_HPP
 
 add_library(parser STATIC ${PARSER_SRC} ${PARSER_HPP})
 
-target_link_libraries(parser PRIVATE
-    config++
-)
+find_library(LIBCONFIGPP_LIBRARY NAMES config++)
+if (NOT LIBCONFIGPP_LIBRARY)
+    message(FATAL_ERROR "libconfig++ non trouvée")
+endif()
+
+target_link_libraries(parser PRIVATE ${LIBCONFIGPP_LIBRARY})
