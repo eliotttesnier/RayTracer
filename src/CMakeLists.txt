@@ -5,6 +5,7 @@ add_subdirectory(Primitives)
 add_subdirectory(Parser)
 add_subdirectory(GraphicRenderer)
 add_subdirectory(Core)
+add_subdirectory(Factory)
 
 add_executable(raytracer
     main.cpp
@@ -25,6 +26,7 @@ set(PRIMITIVES
 target_link_libraries(raytracer PRIVATE
         ${LIGHTS}
         ${PRIMITIVES}
+        Factory
         Graphic
         Core
         math

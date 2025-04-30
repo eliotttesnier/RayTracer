@@ -84,7 +84,7 @@ int main(int ac, char **av) {
     if (ac == 2) {
         try {
             raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
-            displaySphere();
+            // displaySphere();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;
