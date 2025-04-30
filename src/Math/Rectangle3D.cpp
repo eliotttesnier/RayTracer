@@ -14,7 +14,8 @@ Rectangle3D::Rectangle3D()
 {
 }
 
-Rectangle3D::Rectangle3D(const Math::Point3D &origin, const Math::Vector3D &bottom_side, const Math::Vector3D &left_side)
+Rectangle3D::Rectangle3D(const Math::Point3D &origin,
+    const Math::Vector3D &bottom_side, const Math::Vector3D &left_side)
     : origin(origin), bottom_side(bottom_side), left_side(left_side)
 {
 }
@@ -30,19 +31,17 @@ Math::Point3D Rectangle3D::pointAt(double u, double v) const
 
 Math::Vector3D Rectangle3D::getNormal() const
 {
-    // The normal is the cross product of the two edges
     Math::Vector3D normal = bottom_side.cross(left_side);
-    
-    // Normalize the vector manually
-    double length = sqrt(normal._x * normal._x + 
-                        normal._y * normal._y + 
+
+    double length = sqrt(normal._x * normal._x +
+                        normal._y * normal._y +
                         normal._z * normal._z);
     if (length > 1e-8) {
         normal._x /= length;
         normal._y /= length;
         normal._z /= length;
     }
-    
+
     return normal;
 }
 
@@ -61,7 +60,8 @@ bool Rectangle3D::hits(const Math::Ray &ray, double &t, double &u, double &v) co
     }
 
     double d = -normal.dot(Math::Vector3D(origin._x, origin._y, origin._z));
-    t = -(normal.dot(Math::Vector3D(ray.origin._x, ray.origin._y, ray.origin._z)) + d) / denominator;
+    t = -(normal.dot(Math::Vector3D(ray.origin._x,
+                        ray.origin._y, ray.origin._z)) + d) / denominator;
 
     if (t < 0.001)
         return false;

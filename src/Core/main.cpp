@@ -61,9 +61,9 @@ int main() {
             }
 
             if (hit) {
-                std::cout << '@';
+                std::cout << "@@";
             } else {
-                std::cout << ' ';
+                std::cout << "  ";
             }
         }
         std::cout << std::endl;

@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <string>
 #include "Plane.hpp"
 
 namespace Raytracer::primitive {
@@ -70,4 +71,4 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
     return hitData;
 }
 
-} // Raytracer::primitive
+}

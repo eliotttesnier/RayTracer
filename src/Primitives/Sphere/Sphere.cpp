@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <string>
 #include "Sphere.hpp"
 
 namespace Raytracer::primitive {
