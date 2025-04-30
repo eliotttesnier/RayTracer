@@ -29,46 +29,37 @@ void displaySphere() {
     camera.origin = Math::Point3D(0, 0, 5);
     camera.tilt(-10);
 
-    auto sphere = std::make_shared<Raytracer::primitive::Sphere>();
-    sphere->getPosition() = Math::Point3D(0, -1, 0);
+    auto cylinder = std::make_shared<Raytracer::primitive::Cylinder>();
+    cylinder->getPosition() = Math::Point3D(0, -1, 0);
+    cylinder->setRadius(1.0);
+    cylinder->setHeight(2.0);
 
     auto plane = std::make_shared<Raytracer::primitive::Plane>();
     plane->getPosition() = Math::Point3D(0, -2, 0);
+    plane->getRotation() = Math::Vector3D(0, 0, 0);
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
-    primitives.push_back(sphere);
+    primitives.push_back(cylinder);
     primitives.push_back(plane);
 
-    for (int y = 0; y < HEIGHT; y++) {
-        for (int x = 0; x < WIDTH; x++) {
-            double u = static_cast<double>(x) / (WIDTH - 1);
-            double v = static_cast<double>(y) / (HEIGHT - 1);
+    try {
+        Renderer renderer(camera, primitives);
+        renderer.setResolution(WIDTH, HEIGHT);
+        renderer.setOutputFile("output.ppm");
 
-            u = u * 2.0 - 1.0;
-            v = 1.0 - v * 2.0;
-            u *= ASPECT_RATIO;
+        std::cout << "Starting rendering..." << std::endl;
+        renderer.render();
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
+    }
 
-            Math::Ray ray = camera.ray(u, v);
-
-            double closestDist = std::numeric_limits<double>::max();
-            bool hit = false;
-
-            for (const auto& primitive : primitives) {
-                Math::hitdata_t hitData = primitive->intersect(ray);
-
-                if (hitData.hit && hitData.distance < closestDist) {
-                    closestDist = hitData.distance;
-                    hit = true;
-                }
-            }
-
-            if (hit) {
-                std::cout << "@@";
-            } else {
-                std::cout << "  ";
-            }
-        }
-        std::cout << std::endl;
+    try {
+        GraphicRenderer graphicRenderer("output.ppm");
+        graphicRenderer.run();
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return 1;
     }
 }
 
