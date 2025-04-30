@@ -30,16 +30,16 @@ int main() {
     camera.origin = Math::Point3D(0, 0, 5);
     camera.tilt(-10);
 
-    auto cone = std::make_shared<Raytracer::primitive::Cone>();
-    cone->getPosition() = Math::Point3D(0, -1, 0);
-    cone->setRadius(1.0);
-    cone->setHeight(2.0);
+    auto cylinder = std::make_shared<Raytracer::primitive::Cylinder>();
+    cylinder->getPosition() = Math::Point3D(0, -1, 0);
+    cylinder->setRadius(1.0);
+    cylinder->setHeight(2.0);
 
     auto plane = std::make_shared<Raytracer::primitive::Plane>();
     plane->getPosition() = Math::Point3D(0, -2, 0);
 
     std::vector<std::shared_ptr<IPrimitive>> primitives;
-    primitives.push_back(cone);
+    primitives.push_back(cylinder);
     primitives.push_back(plane);
 
     for (int y = 0; y < HEIGHT; y++) {
