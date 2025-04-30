@@ -3,6 +3,7 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/Core)
 
 set(SRC
     ${SRCROOT}/main.cpp
+    ${SRCROOT}/Renderer.cpp
 )
 
 set(HEADER_DIRECTORIES ${INCROOT})
@@ -33,6 +34,10 @@ target_link_libraries(raytracer PRIVATE
     sfml-graphics
     sfml-window
     sfml-system
+)
+
+target_include_directories(raytracer PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 add_custom_command(TARGET raytracer POST_BUILD
