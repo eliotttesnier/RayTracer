@@ -1,4 +1,7 @@
 add_library(AmbientLight SHARED
+        ../ALight.hpp
+        ../ALight.cpp
+        ../ILight.hpp
         AmbientLight.cpp
         AmbientLight.hpp
 )
