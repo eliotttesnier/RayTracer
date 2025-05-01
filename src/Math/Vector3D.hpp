@@ -39,6 +39,8 @@ namespace Math
             Vector3D operator/(double scalar) const;
             Vector3D &operator/=(double scalar);
 
+            Vector3D operator-() const;
+
             Vector3D normalized() const;
             void normalize();
     };
