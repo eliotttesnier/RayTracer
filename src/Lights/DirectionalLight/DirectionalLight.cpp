@@ -28,8 +28,14 @@ bool DirectionalLight::intersect(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 ) const
 {
-    (void)ray;
-    (void)hitPoint;
-    (void)primitives;
+    Math::Vector3D lightDir = _direction.normalized();
+    Math::Ray shadowRay(hitPoint, -lightDir);
+
+    for (const auto &primitive : primitives) {
+        Math::hitdata_t hitData = primitive->intersect(shadowRay);
+        if (hitData.hit && hitData.distance > 1e-4) {
+            return false;
+        }
+    }
     return true;
 }
