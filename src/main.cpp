@@ -25,11 +25,8 @@
 
 //TODO: À retirer
 void displaySphere() {
-    const int WIDTH = 3820;
-    const int HEIGHT = 2160;
-    const double ASPECT_RATIO = static_cast<double>(WIDTH) / HEIGHT;
-
     RayTracer::Camera camera;
+    camera.resolution = std::make_tuple(3820, 2160);
     camera.origin = Math::Point3D(0, 0, 5);
     camera.tilt(-10);
 
@@ -61,7 +58,8 @@ void displaySphere() {
 
     try {
         Renderer renderer(camera, primitives);
-        renderer.setResolution(WIDTH, HEIGHT);
+        const auto [width, height] = camera.resolution;
+        renderer.setResolution(width, height);
         renderer.setOutputFile("output.ppm");
 
         std::cout << "Starting rendering..." << std::endl;
@@ -84,7 +82,7 @@ int main(int ac, char **av) {
     if (ac == 2) {
         try {
             raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
-            // displaySphere();
+            displaySphere();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;

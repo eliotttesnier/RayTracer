@@ -13,7 +13,8 @@ namespace raytracer {
 namespace Factory {
 
 class CameraFactory {
-    static std::vector<std::unique_ptr<RayTracer::Camera>> createCamera(const raytracer::Parser::CameraConfig &config);
+public:
+    static std::unique_ptr<RayTracer::Camera> createCamera(const raytracer::Parser::CameraConfig &config);
     CameraFactory() = default;
     ~CameraFactory() = delete;
 };

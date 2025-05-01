@@ -8,6 +8,7 @@
 #ifndef CAMERA_HPP_
 #define CAMERA_HPP_
 
+#include <tuple>
 #include "../Math/Point3D.hpp"
 #include "../Math/Rectangle3D.hpp"
 #include "../Math/Ray.hpp"
@@ -17,6 +18,7 @@ class Camera {
     public:
         Math::Point3D origin;
         RayTracer::Rectangle3D screen;
+        std::tuple<int, int> resolution;
 
         Camera();
         Camera(const Math::Point3D &origin, const RayTracer::Rectangle3D &screen);
@@ -24,7 +26,7 @@ class Camera {
         Camera &operator=(const Camera &other);
         ~Camera() = default;
 
-        void rotateX(double degrees);
+    void rotateX(double degrees);
         void rotateY(double degrees);
         void rotateZ(double degrees);
         void tilt(double degrees);

@@ -10,6 +10,8 @@
 #include "../Parser/ParserConfig/PrimitivesConfig.hpp"
 #include "../Parser/ParserConfig/LightsConfig.hpp"
 #include "../Primitives/IPrimitive.hpp"
+#include "CameraFactory/CameraFactory.hpp"
+
 
 namespace raytracer {
 namespace Factory {
@@ -17,7 +19,7 @@ namespace Factory {
 class Factory {
 private:
 public:
-    std::tuple<std::vector<std::unique_ptr<IPrimitive>>> createElement(Parser::CameraConfig &cam,
+    std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>> createElement(Parser::CameraConfig &camera,
                                                       Parser::PrimitivesConfig &scene,
                                                       Parser::LightsConfig &light);
     Factory() = default;
