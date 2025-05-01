@@ -1,0 +1,159 @@
+/*
+** EPITECH PROJECT, 2025
+** raytracer
+** File description:
+** Renderer
+*/
+
+#include "Renderer.hpp"
+#include <fstream>
+#include <iostream>
+#include <limits>
+#include <thread>
+#include <cmath>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+Renderer::Renderer(const RayTracer::Camera& camera,
+    const std::vector<std::shared_ptr<IPrimitive>>& primitives)
+    : _camera(camera), _primitives(primitives), _outputFile("output.ppm")
+{
+    _width = 1920;
+    _height = 1080;
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+}
+
+Renderer::~Renderer()
+{
+}
+
+void Renderer::setCamera(const RayTracer::Camera& camera)
+{
+    _camera = camera;
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+}
+
+void Renderer::setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives)
+{
+    _primitives = primitives;
+}
+
+void Renderer::setResolution(int width, int height)
+{
+    _width = width;
+    _height = height;
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+}
+
+void Renderer::setOutputFile(const std::string& outputFile)
+{
+    _outputFile = outputFile;
+}
+
+void Renderer::renderSegment(int startY, int endY)
+{
+    std::vector<std::vector<Graphic::color_t>> localBuffer(endY - startY,
+            std::vector<Graphic::color_t>(_width));
+
+    for (int y = startY; y < endY; y++) {
+        for (int x = 0; x < _width; x++) {
+            double u = static_cast<double>(x) / (_width - 1);
+            double v = static_cast<double>(y) / (_height - 1);
+
+            u = u * 2.0 - 1.0;
+            v = 1.0 - v * 2.0;
+            u *= _aspectRatio;
+
+            Math::Ray ray = _camera.ray(u, v);
+
+            double closestDist = std::numeric_limits<double>::max();
+            bool hit = false;
+            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};  // Default color (black)
+
+            for (const auto& primitive : _primitives) {
+                Math::hitdata_t hitData = primitive->intersect(ray);
+
+                if (hitData.hit && hitData.distance < closestDist) {
+                    closestDist = hitData.distance;
+                    hit = true;
+                    pixelColor = hitData.color;
+                    // pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
+                }
+            }
+
+            localBuffer[y - startY][x] = pixelColor;
+        }
+    }
+
+    std::lock_guard<std::mutex> lock(_mutex);
+    for (int y = startY; y < endY; y++) {
+        for (int x = 0; x < _width; x++) {
+            _pixelBuffer[y][x] = localBuffer[y - startY][x];
+        }
+    }
+}
+
+void Renderer::render()
+{
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+    for (int y = 0; y < _height; y++) {
+        _pixelBuffer[y].resize(_width);
+    }
+
+    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    std::vector<std::thread> threads;
+    const int linesPerThread = _height / numThreads;
+
+    try {
+        for (unsigned int i = 0; i < numThreads; i++) {
+            int startY = i * linesPerThread;
+            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
+        }
+
+        for (auto& thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+    } catch (const std::exception& e) {
+        for (auto& thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+        throw;
+    }
+
+    saveToFile();
+}
+
+void Renderer::saveToFile()
+{
+    std::ofstream file(_outputFile);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open output file: " + _outputFile);
+    }
+
+    file << "P3\n" << _width << " " << _height << "\n255\n";
+
+    for (int y = 0; y < _height; y++) {
+        for (int x = 0; x < _width; x++) {
+            const Graphic::color_t& color = _pixelBuffer[y][x];
+            int r = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.r))));
+            int g = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.g))));
+            int b = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.b))));
+
+            file << r << " " << g << " " << b << "\n";
+        }
+        file << "\n";
+    }
+
+    file.close();
+    std::cout << "Rendering complete. Output saved to " << _outputFile << std::endl;
+}
