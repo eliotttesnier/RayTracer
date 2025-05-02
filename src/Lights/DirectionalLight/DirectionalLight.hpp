@@ -5,13 +5,29 @@
 #ifndef DIRECTIONALLIGHT_HPP
 #define DIRECTIONALLIGHT_HPP
 
-namespace Raytracer::light {
+#include "../../Lights/ALight.hpp"
+#include "../../Math/Ray.hpp"
+#include "../../Math/Point3D.hpp"
+#include "../../Math/Vector3D.hpp"
 
-class DirectionalLight {
-public:
-    DirectionalLight();
-    ~DirectionalLight() = default;
-};
+namespace Raytracer::light {
+    class DirectionalLight : public ALight {
+        private:
+            Math::Vector3D _direction;
+
+        public:
+            DirectionalLight(const Math::Vector3D &direction = Math::Vector3D(0, -1, 0));
+            ~DirectionalLight() = default;
+
+            bool intersect(
+                const Math::Ray &ray,
+                Math::Point3D &hitPoint,
+                std::vector<std::shared_ptr<IPrimitive>> primitives
+            ) const override;
+
+            void setDirection(const Math::Vector3D &direction);
+            Math::Vector3D getDirection() const;
+    };
 
 } // Raytracer
 

@@ -1,6 +1,9 @@
 add_library(DirectionalLight SHARED
-    DirectionalLight.cpp
-    DirectionalLight.hpp
+        ../ALight.hpp
+        ../ALight.cpp
+        ../ILight.hpp
+        DirectionalLight.cpp
+        DirectionalLight.hpp
 )
 
 add_custom_command(TARGET DirectionalLight POST_BUILD
