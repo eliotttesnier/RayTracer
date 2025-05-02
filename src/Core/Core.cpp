@@ -45,4 +45,3 @@ RayTracer::Core::Core(char **av
                                  this->_parser.getLightConfig(),
                                  this->_plugins);
 }
-

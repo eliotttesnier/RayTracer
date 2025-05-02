@@ -9,7 +9,7 @@
 #include "../ILight.hpp"
 
 extern "C" {
-    ILight *create(void) {
+    RayTracer::light::DirectionalLight *create(void) {
         return new RayTracer::light::DirectionalLight();
     }
     RayTracer::Loader::ModuleType getType(void) {

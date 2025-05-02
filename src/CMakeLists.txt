@@ -12,11 +12,6 @@ add_executable(raytracer
     main.cpp
 )
 
-set(LIGHTS
-        AmbientLight
-        DirectionalLight
-)
-
 set(PRIMITIVES
         Sphere
         Plane
@@ -26,7 +21,6 @@ set(PRIMITIVES
 
 target_link_libraries(raytracer PRIVATE
         LibLoader
-        ${LIGHTS}       #TODO: À Retirer et remplacer par des .so
         ${PRIMITIVES}   #TODO: À Retirer et remplacer par des .so
         Graphic
         Core

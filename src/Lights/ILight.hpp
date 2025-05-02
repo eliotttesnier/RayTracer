@@ -22,10 +22,12 @@ class ILight {
         virtual void setPosition(float x, float y, float z) = 0;
         virtual void setColor(float r, float g, float b) = 0;
         virtual void setIntensity(float intensity) = 0;
+        virtual void setDirection(const Math::Vector3D &direction) = 0;
 
         virtual void getPosition(float &x, float &y, float &z) const = 0;
         virtual void getColor(float &r, float &g, float &b) const = 0;
         virtual void getIntensity(float &intensity) const = 0;
+
 
         virtual bool intersect(
             const Math::Ray &ray,

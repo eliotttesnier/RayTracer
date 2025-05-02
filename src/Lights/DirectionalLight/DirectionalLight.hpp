@@ -25,7 +25,7 @@ namespace RayTracer::light {
                 std::vector<std::shared_ptr<IPrimitive>> primitives
             ) const override;
 
-            void setDirection(const Math::Vector3D &direction);
+            void setDirection(const Math::Vector3D &direction) override;
             Math::Vector3D getDirection() const;
     };
 
