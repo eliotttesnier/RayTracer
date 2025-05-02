@@ -21,6 +21,10 @@ namespace raytracer::Parser {
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
+
+        std::tuple<double, std::tuple<int, int, int>> _getAmbientData(const libconfig::Setting &root);
+        std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> _getDirectionalData(const libconfig::Setting &root);
+
         void _getLightsData(const libconfig::Setting &root);
     public:
 

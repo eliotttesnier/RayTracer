@@ -52,6 +52,10 @@ add_custom_command(TARGET raytracer POST_BUILD
         "${CMAKE_BINARY_DIR}/../raytracer")
 
 target_include_directories(PrimitivesFactory PUBLIC
-./
+    ./
+)
+
+target_include_directories(LightFactory PUBLIC
+    ./
 )
 

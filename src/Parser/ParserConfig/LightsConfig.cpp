@@ -5,30 +5,19 @@
 #include "LightsConfig.hpp"
 
 raytracer::Parser::LightsConfig::LightsConfig(
-    const std::vector<std::tuple<double, double, double>> &directional,
-    const std::tuple<double, double, double> &position,
-    const double ambient,
-    const double diffuse
+const std::tuple<double, std::tuple<int, int, int>> &ambient,
+const std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &directional /* Intensité, position, direction, couleur */
 ):
     _directional(directional),
-    _position(position),
-    _ambient(ambient),
-    _diffuse(diffuse)
+    _ambient(ambient)
 {
 }
 
-double raytracer::Parser::LightsConfig::getAmbient() const {
+std::tuple<double, std::tuple<int, int, int>> raytracer::Parser::LightsConfig::getAmbient() const {
     return this->_ambient;
 }
 
-double raytracer::Parser::LightsConfig::getDiffuse() const {
-    return this->_diffuse;
-}
-
-std::tuple<double, double, double> raytracer::Parser::LightsConfig::getPosition() const {
-    return this->_position;
-}
-
-std::vector<std::tuple<double, double, double>> raytracer::Parser::LightsConfig::getDirectional() const {
+std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int,
+int, int>>> raytracer::Parser::LightsConfig::getDirectional() const {
     return this->_directional;
 }
