@@ -3,6 +3,7 @@
 //
 
 #include "PlaneFactory.hpp"
+#include "Primitives/Plane/Plane.hpp"
 
 //TODO: Utiliser libloader pour charger les primitives
 

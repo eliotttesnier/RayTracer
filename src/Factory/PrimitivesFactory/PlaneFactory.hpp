@@ -7,7 +7,6 @@
 
 #include <memory>
 #include "IPrimitiveFactory.hpp"
-#include "../../Primitives/Plane/Plane.hpp"
 
 namespace Raytracer::Factory {
 

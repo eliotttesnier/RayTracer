@@ -30,7 +30,8 @@ void raytracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     this->_camConfig = std::make_unique<CameraConfig>(std::make_tuple(width, height), std::make_tuple(x, y, z), std::make_tuple(rx, ry, rz), fov);
 }
 
-void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root) {
+void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root)
+{
     std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
@@ -63,7 +64,44 @@ void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
-    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector);
+
+    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> cylinderVector;
+    const auto &cylinder = root["primitives"]["cylinders"];
+    for (int i = 0; i < cylinder.getLength(); ++i) {
+        const auto &s = cylinder[i];
+        double px = s["x"];
+        double py = s["y"];
+        double pz = s["z"];
+        double radius = s["r"];
+        double height = s["h"];
+        const auto &color = s["color"];
+        int cr = color["r"], cg = color["g"], cb = color["b"];
+        cylinderVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+        std::cout << "Cylinder: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
+                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+    }
+
+    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> coneVector;
+    const auto &cone = root["primitives"]["cones"];
+    for (int i = 0; i < cone.getLength(); ++i) {
+        const auto &s = cone[i];
+        double px = s["x"];
+        double py = s["y"];
+        double pz = s["z"];
+        double radius = s["r"];
+        double height = s["h"];
+        const auto &color = s["color"];
+        int cr = color["r"], cg = color["g"], cb = color["b"];
+        coneVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+        std::cout << "Cone: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
+                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+    }
+
+    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector, cylinderVector, coneVector);
 }
 
 void raytracer::Parser::Parser::_getLightsData(const libconfig::Setting &root) {

@@ -3,6 +3,7 @@
 //
 
 #include "SphereFactory.hpp"
+#include "Primitives/Sphere/Sphere.hpp"
 
 //TODO: Utiliser Libloader pour charger les primitives
 

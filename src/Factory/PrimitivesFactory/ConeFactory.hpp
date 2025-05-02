@@ -2,24 +2,26 @@
 // Created by roussierenoa on 5/1/25.
 //
 
-#ifndef SPHEREFACTORY_HPP
-#define SPHEREFACTORY_HPP
+#ifndef CONEFACTORY_HPP
+#define CONEFACTORY_HPP
 
 #include <memory>
 #include "IPrimitiveFactory.hpp"
+#include "../../Primitives/Sphere/Sphere.hpp"
 
 namespace Raytracer::Factory {
 
-    class SphereFactory : public IPrimitiveFactory {
+    class ConeFactory : public IPrimitiveFactory {
     public:
-        SphereFactory(const Math::Point3D &position, double radius);
+        ConeFactory(const Math::Point3D &position, double radius, double height);
 
         std::unique_ptr<IPrimitive> create() const override;
     private:
         Math::Point3D _position;
         double _radius;
+        double _height;
     };
 
 } // namespace Raytracer::Factory
 
-#endif // SPHEREFACTORY_HPP
+#endif // CONEFACTORY_HPP
