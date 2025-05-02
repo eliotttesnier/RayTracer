@@ -8,8 +8,8 @@
 #include "CylinderFactory.hpp"
 #include "ConeFactory.hpp"
 
-std::vector<std::unique_ptr<IPrimitive>> raytracer::Factory::PrimitiveFactory::createPrimitives(
-    const raytracer::Parser::PrimitivesConfig &config)
+std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
+    const RayTracer::Parser::PrimitivesConfig &config)
 {
     std::vector<std::unique_ptr<IPrimitive>> primitives;
 
@@ -18,7 +18,7 @@ std::vector<std::unique_ptr<IPrimitive>> raytracer::Factory::PrimitiveFactory::c
         auto [x, y, z, radius] = posRad;
         Math::Point3D pos(x, y, z);
 
-        Raytracer::Factory::SphereFactory factory(pos, radius);
+        RayTracer::Factory::SphereFactory factory(pos, radius);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
         primitives.emplace_back(factory.create());
     }
@@ -40,7 +40,7 @@ std::vector<std::unique_ptr<IPrimitive>> raytracer::Factory::PrimitiveFactory::c
             rot = Math::Vector3D(90, 0, 0);
         }
 
-        Raytracer::Factory::PlaneFactory factory(pos, rot);
+        RayTracer::Factory::PlaneFactory factory(pos, rot);
         primitives.emplace_back(factory.create());
     }
 
@@ -50,7 +50,7 @@ std::vector<std::unique_ptr<IPrimitive>> raytracer::Factory::PrimitiveFactory::c
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
 
-        Raytracer::Factory::CylinderFactory factory(pos, radius, height);
+        RayTracer::Factory::CylinderFactory factory(pos, radius, height);
         primitives.emplace_back(factory.create());
     }
 
@@ -60,7 +60,7 @@ std::vector<std::unique_ptr<IPrimitive>> raytracer::Factory::PrimitiveFactory::c
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
 
-        Raytracer::Factory::CylinderFactory factory(pos, radius, height);
+        RayTracer::Factory::ConeFactory factory(pos, radius, height);
         primitives.emplace_back(factory.create());
     }
 

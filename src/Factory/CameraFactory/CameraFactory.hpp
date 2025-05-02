@@ -9,12 +9,12 @@
 #include <vector>
 #include <memory>
 
-namespace raytracer {
+namespace RayTracer {
 namespace Factory {
 
 class CameraFactory {
 public:
-    static std::unique_ptr<RayTracer::Camera> createCamera(const raytracer::Parser::CameraConfig &config);
+    static std::unique_ptr<RayTracer::Camera> createCamera(const RayTracer::Parser::CameraConfig &config);
     CameraFactory() = default;
     ~CameraFactory() = delete;
 };

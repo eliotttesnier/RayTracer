@@ -12,8 +12,8 @@ set(FACTORY_INC
 
 add_library(Factory STATIC ${FACTORY_SRC} ${FACTORY_INC})
 
-target_link_libraries(Factory
-    PUBLIC
-        PrimitivesFactory
-        CameraFactory
+target_link_libraries(Factory PRIVATE
+    PrimitivesFactory
+    CameraFactory
+    LightFactory
 )

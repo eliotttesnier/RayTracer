@@ -9,7 +9,7 @@
 #include "IPrimitiveFactory.hpp"
 #include "../../Primitives/Sphere/Sphere.hpp"
 
-namespace Raytracer::Factory {
+namespace RayTracer::Factory {
 
     class ConeFactory : public IPrimitiveFactory {
     public:

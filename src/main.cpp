@@ -9,6 +9,7 @@
 #include <cmath>
 #include <limits>
 
+#include "Core/Core.hpp"
 #include "Primitives/IPrimitive.hpp"
 #include "Primitives/Plane/Plane.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
@@ -30,21 +31,21 @@ void displaySphere() {
     camera.origin = Math::Point3D(0, 0, 5);
     camera.tilt(-10);
 
-    auto cylinder = std::make_shared<Raytracer::primitive::Cylinder>();
+    auto cylinder = std::make_shared<RayTracer::primitive::Cylinder>();
     cylinder->getPosition() = Math::Point3D(0, -2, -5);
     cylinder->setRadius(1.0);
     cylinder->setHeight(2.0);
 
-    auto sphere = std::make_shared<Raytracer::primitive::Sphere>();
+    auto sphere = std::make_shared<RayTracer::primitive::Sphere>();
     sphere->getPosition() = Math::Point3D(-1, -2, -5);
     sphere->setRadius(1.0);
 
-    auto cone = std::make_shared<Raytracer::primitive::Cone>();
+    auto cone = std::make_shared<RayTracer::primitive::Cone>();
     cone->getPosition() = Math::Point3D(-3, -2, -5);
     cone->setRadius(1.0);
     cone->setHeight(2.0);
 
-    auto plane = std::make_shared<Raytracer::primitive::Plane>();
+    auto plane = std::make_shared<RayTracer::primitive::Plane>();
     plane->getPosition() = Math::Point3D(-5, -2, -10);
     plane->getRotation() = Math::Vector3D(0, 0, 0);
     plane->setWidth(10.0);
@@ -81,7 +82,7 @@ void displaySphere() {
 int main(int ac, char **av) {
     if (ac == 2) {
         try {
-            raytracer::Parser::Parser parser = raytracer::Parser::Parser(av[1]);
+            RayTracer::Core core(av);
             displaySphere();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;

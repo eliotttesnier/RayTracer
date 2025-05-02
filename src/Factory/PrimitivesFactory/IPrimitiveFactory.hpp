@@ -8,7 +8,7 @@
 #include <memory>
 #include "Primitives/IPrimitive.hpp"
 
-namespace Raytracer::Factory {
+namespace RayTracer::Factory {
 
     class IPrimitiveFactory {
     public:

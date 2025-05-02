@@ -8,7 +8,7 @@
 #include <memory>
 #include "IPrimitiveFactory.hpp"
 
-namespace Raytracer::Factory {
+namespace RayTracer::Factory {
 
     class PlaneFactory : public IPrimitiveFactory {
     public:

@@ -7,7 +7,7 @@
 
 //TODO: Utiliser libloader pour charger les primitives
 
-Raytracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, const Math::Vector3D &rotation
+RayTracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, const Math::Vector3D &rotation
 ):
     _position(position),
     _rotation(rotation)
@@ -15,6 +15,6 @@ Raytracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, co
 
 }
 
-std::unique_ptr<IPrimitive> Raytracer::Factory::PlaneFactory::create() const {
-    return std::make_unique<Raytracer::primitive::Plane>(this->_position, this->_rotation);
+std::unique_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create() const {
+    return std::make_unique<RayTracer::primitive::Plane>(this->_position, this->_rotation);
 }

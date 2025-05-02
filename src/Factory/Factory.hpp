@@ -5,28 +5,30 @@
 #ifndef FACTORY_HPP
 #define FACTORY_HPP
 #include <vector>
+#include <map>
 
 #include "../Parser/ParserConfig/CameraConfig.hpp"
 #include "../Parser/ParserConfig/PrimitivesConfig.hpp"
 #include "../Parser/ParserConfig/LightsConfig.hpp"
 #include "../Primitives/IPrimitive.hpp"
+#include "../Lights/ILight.hpp"
 #include "CameraFactory/CameraFactory.hpp"
+#include "LibLoader/LibLoader.hpp"
 
 
-namespace raytracer {
-namespace Factory {
+namespace RayTracer::Factory {
 
 class Factory {
 private:
 public:
-    std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>> createElement(Parser::CameraConfig &camera,
-                                                      Parser::PrimitivesConfig &scene,
-                                                      Parser::LightsConfig &light);
+    static std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::vector<std::unique_ptr<ILight>>, std::unique_ptr<RayTracer::Camera>> createElement(const Parser::CameraConfig &camera,
+                                                      const Parser::PrimitivesConfig &scene,
+                                                      const Parser::LightsConfig &light,
+                                                      std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);
     Factory() = default;
     ~Factory() = default;
 };
 
-} // Factory
-} // raytracer
+} // Raytracer::Factory
 
 #endif //FACTORY_HPP

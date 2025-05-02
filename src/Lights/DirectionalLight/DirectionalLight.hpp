@@ -10,7 +10,7 @@
 #include "../../Math/Point3D.hpp"
 #include "../../Math/Vector3D.hpp"
 
-namespace Raytracer::light {
+namespace RayTracer::light {
     class DirectionalLight : public ALight {
         private:
             Math::Vector3D _direction;

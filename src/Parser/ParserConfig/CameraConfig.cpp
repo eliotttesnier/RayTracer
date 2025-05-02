@@ -4,7 +4,7 @@
 
 #include "CameraConfig.hpp"
 
-raytracer::Parser::CameraConfig::CameraConfig(
+RayTracer::Parser::CameraConfig::CameraConfig(
     const std::tuple<int, int> &resolution,
     const std::tuple<double, double, double> &position,
     const std::tuple<double, double, double> &rotation,
@@ -17,14 +17,14 @@ raytracer::Parser::CameraConfig::CameraConfig(
 {
 }
 
-std::tuple<int, int> raytracer::Parser::CameraConfig::getResolution() const {
+std::tuple<int, int> RayTracer::Parser::CameraConfig::getResolution() const {
     return this->_resolution;
 }
 
-std::tuple<double, double, double> raytracer::Parser::CameraConfig::getPosition() const {
+std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getPosition() const {
     return this->_position;
 }
 
-std::tuple<double, double, double> raytracer::Parser::CameraConfig::getRotation() const {
+std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getRotation() const {
     return this->_rotation;
 }

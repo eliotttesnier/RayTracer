@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 
-namespace raytracer {
+namespace RayTracer {
 namespace Parser {
 
     class PrimitivesConfig {

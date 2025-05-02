@@ -3,14 +3,18 @@
 //
 
 #include "Factory.hpp"
+
+#include "LigthsFactory/LightFactory.hpp"
 #include "PrimitivesFactory/PrimitiveFactory.hpp"
 
-std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>> raytracer::Factory::Factory::createElement(Parser::CameraConfig &camera,
-                                                                               Parser::PrimitivesConfig &primitives,
-                                                                               Parser::LightsConfig &light)
+std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::vector<std::unique_ptr<ILight>>, std::unique_ptr<RayTracer::Camera>> RayTracer::Factory::Factory::createElement(const Parser::CameraConfig &camera,
+                                                                               const Parser::PrimitivesConfig &primitives,
+                                                                               const Parser::LightsConfig &light,
+                                                                               std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
     std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>/*Add more data here*/> result;
-    auto primitivesFacto =  raytracer::Factory::PrimitiveFactory::createPrimitives(primitives);
-    auto cameraFacto = raytracer::Factory::CameraFactory::createCamera(camera);
-    return std::make_tuple(std::move(primitivesFacto), std::move(cameraFacto));
+    auto primitivesFacto =  RayTracer::Factory::PrimitiveFactory::createPrimitives(primitives);
+    auto cameraFacto = RayTracer::Factory::CameraFactory::createCamera(camera);
+    auto lightFacto = RayTracer::Factory::LightFactory::createLights(light, plugins);
+    return std::make_tuple(std::move(primitivesFacto), std::move(lightFacto), std::move(cameraFacto));
 }

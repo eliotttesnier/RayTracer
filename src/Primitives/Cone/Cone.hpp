@@ -3,7 +3,7 @@
 
 #include "../IPrimitive.hpp"
 
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 class Cone : public IPrimitive {
     public:

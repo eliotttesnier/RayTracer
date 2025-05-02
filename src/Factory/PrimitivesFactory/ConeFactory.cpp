@@ -7,7 +7,7 @@
 
 //TODO: Utiliser Libloader pour charger les primitives
 
-Raytracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, double radius, double height):
+RayTracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, double radius, double height):
     _position(position),
     _radius(radius),
     _height(height)
@@ -15,6 +15,6 @@ Raytracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, doub
 
 }
 
-std::unique_ptr<IPrimitive> Raytracer::Factory::ConeFactory::create() const {
-    return std::make_unique<Raytracer::primitive::Cone>(this->_position, this->_radius, this->_height);
+std::unique_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create() const {
+    return std::make_unique<RayTracer::primitive::Cone>(this->_position, this->_radius, this->_height);
 }

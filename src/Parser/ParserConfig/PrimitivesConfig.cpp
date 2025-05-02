@@ -4,7 +4,7 @@
 
 #include "PrimitivesConfig.hpp"
 
-raytracer::Parser::PrimitivesConfig::PrimitivesConfig(
+RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
     const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cylinders,
@@ -17,21 +17,21 @@ raytracer::Parser::PrimitivesConfig::PrimitivesConfig(
 {
 }
 
-std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> raytracer::Parser
+std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser
 ::PrimitivesConfig::getCone() const {
     return this->_cone;
 }
 
-std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> raytracer::Parser
+std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser
 ::PrimitivesConfig::getCylinders() const {
     return this->_cylinders;
 }
 
-std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> raytracer::Parser::PrimitivesConfig
+std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig
 ::getSpheres() const {
     return this->_sphere;
 }
 
-std::vector<std::tuple<char, double, std::tuple<int, int, int>>> raytracer::Parser::PrimitivesConfig::getPlanes() const {
+std::vector<std::tuple<char, double, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getPlanes() const {
     return this->_plane;
 }

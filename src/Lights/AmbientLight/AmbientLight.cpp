@@ -5,7 +5,7 @@
 #include "AmbientLight.hpp"
 #include <iostream>
 
-using namespace Raytracer::light;
+using namespace RayTracer::light;
 
 AmbientLight::AmbientLight()
 {

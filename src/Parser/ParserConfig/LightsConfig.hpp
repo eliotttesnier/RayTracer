@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-namespace raytracer {
+namespace RayTracer {
 namespace Parser {
     class LightsConfig {
     private:

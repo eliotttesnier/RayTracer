@@ -12,7 +12,7 @@
 #include "ParserConfig/CameraConfig.hpp"
 #include "ParserConfig/PrimitivesConfig.hpp"
 
-namespace raytracer::Parser {
+namespace RayTracer::Parser {
     class Parser {
     private:
         std::unique_ptr<CameraConfig> _camConfig;

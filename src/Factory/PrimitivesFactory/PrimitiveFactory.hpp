@@ -11,11 +11,11 @@
 #include "Math/Point3D.hpp"
 #include "Math/Vector3D.hpp"
 
-namespace raytracer::Factory {
+namespace RayTracer::Factory {
 
 class PrimitiveFactory {
 public:
-    static std::vector<std::unique_ptr<IPrimitive>> createPrimitives(const raytracer::Parser::PrimitivesConfig& config);
+    static std::vector<std::unique_ptr<IPrimitive>> createPrimitives(const RayTracer::Parser::PrimitivesConfig& config);
     PrimitiveFactory() = default;
     ~PrimitiveFactory() = delete;
 };

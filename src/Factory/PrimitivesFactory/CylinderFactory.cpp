@@ -8,7 +8,7 @@
 
 //TODO: Utiliser Libloader pour charger les primitives
 
-Raytracer::Factory::CylinderFactory::CylinderFactory(const Math::Point3D &position, double radius, double height):
+RayTracer::Factory::CylinderFactory::CylinderFactory(const Math::Point3D &position, double radius, double height):
     _position(position),
     _radius(radius),
     _height(height)
@@ -16,6 +16,6 @@ Raytracer::Factory::CylinderFactory::CylinderFactory(const Math::Point3D &positi
 
 }
 
-std::unique_ptr<IPrimitive> Raytracer::Factory::CylinderFactory::create() const {
-    return std::make_unique<Raytracer::primitive::Cylinder>(this->_position, this->_radius, this->_height);
+std::unique_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create() const {
+    return std::make_unique<RayTracer::primitive::Cylinder>(this->_position, this->_radius, this->_height);
 }

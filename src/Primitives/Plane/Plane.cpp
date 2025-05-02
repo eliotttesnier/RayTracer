@@ -6,7 +6,7 @@
 #include <string>
 #include "Plane.hpp"
 
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 Plane::Plane()
     : _name("plane"), _type("plane"), _position(0, 0, 0), _rotation(0, 0, 0),

@@ -10,7 +10,7 @@
 #include "../../Math/Point3D.hpp"
 #include "../../Lights/ALight.hpp"
 
-namespace Raytracer::light {
+namespace RayTracer::light {
     class AmbientLight : public ALight {
         public:
             AmbientLight();

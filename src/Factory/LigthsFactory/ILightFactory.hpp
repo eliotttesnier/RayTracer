@@ -8,7 +8,7 @@
 #include <memory>
 #include "Lights/ILight.hpp"
 
-namespace Raytracer::Factory {
+namespace RayTracer::Factory {
 
     class ILightFactory {
     public:

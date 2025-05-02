@@ -5,7 +5,7 @@
 #include "DirectionalLight.hpp"
 #include <iostream>
 
-using namespace Raytracer::light;
+using namespace RayTracer::light;
 
 DirectionalLight::DirectionalLight(const Math::Vector3D &direction)
     : _direction(direction)
