@@ -5,13 +5,11 @@
 #include "AmbientLight.hpp"
 #include <iostream>
 
-using namespace RayTracer::light;
-
-AmbientLight::AmbientLight()
+RayTracer::light::AmbientLight::AmbientLight()
 {
 }
 
-bool AmbientLight::intersect(
+bool RayTracer::light::AmbientLight::intersect(
     const Math::Ray &ray,
     Math::Point3D &hitPoint,
     std::vector<std::shared_ptr<IPrimitive>> primitives

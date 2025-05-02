@@ -14,7 +14,7 @@ namespace RayTracer::Factory {
     public:
         PlaneFactory(const Math::Point3D &position, const Math::Vector3D &rotation);
 
-        std::unique_ptr<IPrimitive> create() const override;
+        std::unique_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         Math::Point3D _position;
         Math::Vector3D _rotation;

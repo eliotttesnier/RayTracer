@@ -12,16 +12,8 @@ add_executable(raytracer
     main.cpp
 )
 
-set(PRIMITIVES
-        Sphere
-        Plane
-        Cylinder
-        Cone
-)
-
 target_link_libraries(raytracer PRIVATE
         LibLoader
-        ${PRIMITIVES}   #TODO: À Retirer et remplacer par des .so
         Graphic
         Core
         math

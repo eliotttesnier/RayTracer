@@ -5,8 +5,6 @@
 #include "SphereFactory.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
 
-//TODO: Utiliser Libloader pour charger les primitives
-
 RayTracer::Factory::SphereFactory::SphereFactory(const Math::Point3D &position, double radius
 ):
     _position(position),
@@ -15,6 +13,9 @@ RayTracer::Factory::SphereFactory::SphereFactory(const Math::Point3D &position, 
 
 }
 
-std::unique_ptr<IPrimitive> RayTracer::Factory::SphereFactory::create() const {
-    return std::make_unique<RayTracer::primitive::Sphere>(_position, _radius);
+std::unique_ptr<IPrimitive> RayTracer::Factory::SphereFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const {
+    if (!plugins.contains("Sphere"))
+        throw std::runtime_error("Sphere plugin not found");
+    auto obj = plugins["Sphere"]->initEntryPointPtr<primitive::Sphere>("create", this->_position, this->_radius);
+    return std::unique_ptr<IPrimitive>(obj);
 }

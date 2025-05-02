@@ -5,8 +5,6 @@
 #include "PlaneFactory.hpp"
 #include "Primitives/Plane/Plane.hpp"
 
-//TODO: Utiliser libloader pour charger les primitives
-
 RayTracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, const Math::Vector3D &rotation
 ):
     _position(position),
@@ -15,6 +13,9 @@ RayTracer::Factory::PlaneFactory::PlaneFactory(const Math::Point3D &position, co
 
 }
 
-std::unique_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create() const {
-    return std::make_unique<RayTracer::primitive::Plane>(this->_position, this->_rotation);
+std::unique_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const {
+    if (!plugins.contains("Plane"))
+        throw std::runtime_error("Plane plugin not found");
+    auto obj = plugins["Plane"]->initEntryPointPtr<primitive::Plane>("create", this->_position, this->_rotation);
+    return std::unique_ptr<IPrimitive>(obj);
 }

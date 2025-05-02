@@ -9,7 +9,7 @@
 #include "ConeFactory.hpp"
 
 std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
-    const RayTracer::Parser::PrimitivesConfig &config)
+    const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
     std::vector<std::unique_ptr<IPrimitive>> primitives;
 
@@ -20,7 +20,7 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
         RayTracer::Factory::SphereFactory factory(pos, radius);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
-        primitives.emplace_back(factory.create());
+        primitives.emplace_back(factory.create(plugins));
     }
 
     // Planes
@@ -41,7 +41,7 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         }
 
         RayTracer::Factory::PlaneFactory factory(pos, rot);
-        primitives.emplace_back(factory.create());
+        primitives.emplace_back(factory.create(plugins));
     }
 
     // Cylinders
@@ -51,7 +51,7 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         Math::Point3D pos(x, y, z);
 
         RayTracer::Factory::CylinderFactory factory(pos, radius, height);
-        primitives.emplace_back(factory.create());
+        primitives.emplace_back(factory.create(plugins));
     }
 
     // Cone
@@ -61,7 +61,7 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         Math::Point3D pos(x, y, z);
 
         RayTracer::Factory::ConeFactory factory(pos, radius, height);
-        primitives.emplace_back(factory.create());
+        primitives.emplace_back(factory.create(plugins));
     }
 
 

@@ -13,7 +13,7 @@ std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::vector<std::unique_ptr
                                                                                std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
     std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>/*Add more data here*/> result;
-    auto primitivesFacto =  RayTracer::Factory::PrimitiveFactory::createPrimitives(primitives);
+    auto primitivesFacto =  RayTracer::Factory::PrimitiveFactory::createPrimitives(primitives, plugins);
     auto cameraFacto = RayTracer::Factory::CameraFactory::createCamera(camera);
     auto lightFacto = RayTracer::Factory::LightFactory::createLights(light, plugins);
     return std::make_tuple(std::move(primitivesFacto), std::move(lightFacto), std::move(cameraFacto));

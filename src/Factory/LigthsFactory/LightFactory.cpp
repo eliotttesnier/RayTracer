@@ -7,6 +7,7 @@
 #include "Lights/AmbientLight/AmbientLight.hpp"
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
+//TODO: Refacto afin d'avoir deux classe AmbiantLightFactory et DirectionalLightFactory
 
 std::vector<std::unique_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
     const RayTracer::Parser::LightsConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)

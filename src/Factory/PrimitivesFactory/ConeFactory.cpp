@@ -5,8 +5,6 @@
 #include "ConeFactory.hpp"
 #include "Primitives/Cone/Cone.hpp"
 
-//TODO: Utiliser Libloader pour charger les primitives
-
 RayTracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, double radius, double height):
     _position(position),
     _radius(radius),
@@ -15,6 +13,10 @@ RayTracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, doub
 
 }
 
-std::unique_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create() const {
-    return std::make_unique<RayTracer::primitive::Cone>(this->_position, this->_radius, this->_height);
+std::unique_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
+{
+    if (!plugins.contains("Cone"))
+        throw std::runtime_error("Cone plugin not found");
+    auto obj = plugins["Cone"]->initEntryPointPtr<primitive::Cone>("create", this->_position, this->_radius, this->_height);
+    return std::unique_ptr<IPrimitive>(obj);
 }
