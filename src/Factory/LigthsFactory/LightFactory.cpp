@@ -13,30 +13,32 @@ std::vector<std::unique_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
 {
     std::vector<std::unique_ptr<ILight>> lights;
 
-    // const auto &ambient = config.getAmbient();
-    // auto [intensity, color] = ambient;
-    // auto [r, g, b] = color;
-    //
-    // //TODO crée la light ici en passsant par le DLLoader
-    // RayTracer::light::AmbientLight light;
-    // light.setColor(r, g, b);
-    // light.setIntensity(intensity);
-    // lights.emplace_back(std::make_unique<RayTracer::light::AmbientLight>(light));
-    //
-    // for (const auto &directional : config.getDirectional()) {
-    //     auto [intensity, position, direction, color] = directional;
-    //     auto [r, g, b] = color;
-    //     auto [px, py, pz] = position;
-    //     auto [dx, dy, dz] = direction;
-    //
-    //     //TODO crée la light ici en passsant par le DLLoader
-    //     RayTracer::light::DirectionalLight light;
-    //     light.setColor(r, g, b);
-    //     light.setIntensity(intensity);
-    //     light.setDirection({dx, dy, dz});
-    //     light.setPosition(px, py, pz);
-    //     lights.emplace_back(std::make_unique<RayTracer::light::DirectionalLight>(light));
-    // }
+    const auto &ambient = config.getAmbient();
+    auto [intensity, color] = ambient;
+    auto [r, g, b] = color;
+
+    if (!plugins.contains("AmbientLight"))
+        throw std::runtime_error("AmbientLight plugin not found");
+    auto obj = plugins["AmbientLight"]->initEntryPointPtr<light::AmbientLight>("create");
+    obj->setColor(r, g, b);
+    obj->setIntensity(intensity);
+    lights.emplace_back(obj);
+
+    for (const auto &directional : config.getDirectional()) {
+        auto [intensity, position, direction, color] = directional;
+        auto [r, g, b] = color;
+        auto [px, py, pz] = position;
+        auto [dx, dy, dz] = direction;
+
+        if (!plugins.contains("DirectionalLight"))
+            throw std::runtime_error("DirectionalLight plugin not found");
+        auto obj = plugins["DirectionalLight"]->initEntryPointPtr<light::DirectionalLight>("create");
+        obj->setColor(r, g, b);
+        obj->setIntensity(intensity);
+        obj->setDirection({dx, dy, dz});
+        obj->setPosition(px, py, pz);
+        lights.emplace_back(obj);
+    }
 
     return lights;
 }
