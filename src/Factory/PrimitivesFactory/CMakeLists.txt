@@ -15,4 +15,4 @@ set(PRIMITIVE_FACTORY_INC
     ConeFactory.hpp
 )
 
-add_library(PrimitivesFactory SHARED ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})
+add_library(PrimitivesFactory STATIC ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})

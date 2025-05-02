@@ -11,4 +11,4 @@ set(LIGHT_FACTORY_INC
     DirectionalFactory.hpp
 )
 
-add_library(LightFactory SHARED ${LIGHT_FACTORY_SRC} ${LIGHT_FACTORY_INC})
+add_library(LightFactory STATIC ${LIGHT_FACTORY_SRC} ${LIGHT_FACTORY_INC})
