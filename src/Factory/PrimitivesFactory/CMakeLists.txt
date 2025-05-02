@@ -16,3 +16,7 @@ set(PRIMITIVE_FACTORY_INC
 )
 
 add_library(PrimitivesFactory STATIC ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})
+
+target_link_libraries(PrimitivesFactory PRIVATE
+        math
+)
