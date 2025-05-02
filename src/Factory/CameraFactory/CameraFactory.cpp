@@ -2,6 +2,7 @@
 // Created by roussierenoa on 5/1/25.
 //
 
+#include <iostream>
 #include "CameraFactory.hpp"
 
 std::unique_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
@@ -17,5 +18,8 @@ std::unique_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
     cam->rotateX(rx);
     cam->rotateY(ry);
     cam->rotateZ(rz);
+#ifdef _DEBUG
+    std::cout << "Creating a camera" << std::endl;
+#endif
     return cam;
 }

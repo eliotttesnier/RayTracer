@@ -2,8 +2,8 @@
 // Created by roussierenoa on 5/1/25.
 //
 
+#include <iostream>
 #include "LightFactory.hpp"
-
 #include "Lights/AmbientLight/AmbientLight.hpp"
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
@@ -23,6 +23,9 @@ std::vector<std::unique_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
     auto obj = plugins["AmbientLight"]->initEntryPointPtr<light::AmbientLight>("create");
     obj->setColor(r, g, b);
     obj->setIntensity(intensity);
+#ifdef _DEBUG
+    std::cout << "Creating a ambient light" << std::endl;
+#endif
     lights.emplace_back(obj);
 
     for (const auto &directional : config.getDirectional()) {
@@ -38,6 +41,9 @@ std::vector<std::unique_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
         obj->setIntensity(intensity);
         obj->setDirection({dx, dy, dz});
         obj->setPosition(px, py, pz);
+#ifdef _DEBUG
+        std::cout << "Creating a directional light" << std::endl;
+#endif
         lights.emplace_back(obj);
     }
 

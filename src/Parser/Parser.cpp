@@ -185,6 +185,9 @@ RayTracer::Parser::Parser::Parser(char *path) {
 
     try {
         const libconfig::Setting &root = cfg.getRoot();
+#ifdef _DEBUG
+    std::cout << "Parsing ["<< path <<"]" << std::endl;
+#endif
         this->_getCameraData(root);
         this->_getLightsData(root);
         this->_getPrimitivesData(root);

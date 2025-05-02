@@ -18,16 +18,17 @@ void RayTracer::Core::_loadPlugins()
             std::cerr << "Plugin directory doesn't exist or is not a directory: ./plugins" << std::endl;
             return;
         }
-        
+#ifdef _DEBUG
+        std::cout << std::endl << "Loading plugins..." << std::endl;
+#endif
+
         for (const auto &entry : std::filesystem::directory_iterator(pluginDir)) {
             std::string path = entry.path().string();
             if (path.substr(path.find_last_of(".") + 1) == "so") {
-                std::cout << path << std::endl;
                 std::string name = path.substr(path.find_last_of("/") + 1);
                 name = name.substr(3, name.length() - 6);
                 this->_plugins[name] = std::make_unique<Loader::LibLoader>();
                 this->_plugins[name]->openLib(path);
-                std::cout << "Library name: " << name << std::endl;
             }
         }
     } catch (const std::exception& e) {

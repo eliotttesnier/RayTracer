@@ -2,6 +2,7 @@
 // Created by roussierenoa on 5/1/25.
 //
 
+#include <iostream>
 #include "PrimitiveFactory.hpp"
 #include "PlaneFactory.hpp"
 #include "SphereFactory.hpp"
@@ -20,6 +21,9 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
         RayTracer::Factory::SphereFactory factory(pos, radius);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a sphere... " << std::endl;
+#endif
         primitives.emplace_back(factory.create(plugins));
     }
 
@@ -41,6 +45,10 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         }
 
         RayTracer::Factory::PlaneFactory factory(pos, rot);
+        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a plane" << std::endl;
+#endif
         primitives.emplace_back(factory.create(plugins));
     }
 
@@ -51,6 +59,10 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         Math::Point3D pos(x, y, z);
 
         RayTracer::Factory::CylinderFactory factory(pos, radius, height);
+        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a cylinder" << std::endl;
+#endif
         primitives.emplace_back(factory.create(plugins));
     }
 
@@ -61,9 +73,11 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         Math::Point3D pos(x, y, z);
 
         RayTracer::Factory::ConeFactory factory(pos, radius, height);
+        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a cone" << std::endl;
+#endif
         primitives.emplace_back(factory.create(plugins));
     }
-
-
     return primitives;
 }
