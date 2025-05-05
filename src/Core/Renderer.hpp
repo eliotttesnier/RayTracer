@@ -44,6 +44,7 @@ class Renderer {
         int _width;
         int _height;
         double _aspectRatio;
+        double _fov;
         std::mutex _mutex;
 };
 
