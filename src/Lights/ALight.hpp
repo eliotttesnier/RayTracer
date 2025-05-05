@@ -21,6 +21,8 @@ class ALight : public ILight {
         void getPosition(float &x, float &y, float &z) const override;
         void getColor(float &r, float &g, float &b) const override;
         void getIntensity(float &intensity) const override;
+
+        virtual std::string getType() = 0;
 };
 
 #endif // ALIGHT_HPP

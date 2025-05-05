@@ -14,10 +14,13 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include "../Lights/AmbientLight/AmbientLight.hpp"
+#include "../Lights/DirectionalLight/DirectionalLight.hpp"
 
 Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
-    const std::vector<std::shared_ptr<IPrimitive>>& primitives)
-    : _camera(camera), _primitives(primitives), _outputFile("output.ppm")
+    const std::vector<std::shared_ptr<IPrimitive>> primitives,
+    const std::vector<std::shared_ptr<ILight>> lights)
+    : _camera(camera), _primitives(primitives), _lights(lights), _outputFile("output.ppm")
 {
     _width = 1920;
     _height = 1080;
@@ -73,16 +76,20 @@ void Renderer::renderSegment(int startY, int endY)
             double closestDist = std::numeric_limits<double>::max();
             bool hit = false;
             Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};  // Default color (black)
+            Math::hitdata_t closestHitData;
 
             for (const auto& primitive : _primitives) {
                 Math::hitdata_t hitData = primitive->intersect(ray);
 
                 if (hitData.hit && hitData.distance < closestDist) {
                     closestDist = hitData.distance;
+                    closestHitData = hitData;
                     hit = true;
-                    pixelColor = hitData.color;
-                    // pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
                 }
+            }
+
+            if (hit) {
+                pixelColor = calculateLighting(closestHitData, ray);
             }
 
             localBuffer[y - startY][x] = pixelColor;
@@ -105,7 +112,7 @@ void Renderer::render()
         _pixelBuffer[y].resize(_width);
     }
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 1u);
     std::vector<std::thread> threads;
     const int linesPerThread = _height / numThreads;
 
@@ -156,4 +163,10 @@ void Renderer::saveToFile()
 
     file.close();
     std::cout << "Rendering complete. Output saved to " << _outputFile << std::endl;
+}
+
+Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray)
+{
+    (void)ray;
+    return hitData.color;
 }

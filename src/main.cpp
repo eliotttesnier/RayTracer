@@ -83,7 +83,7 @@ int main(int ac, char **av) {
     if (ac == 2) {
         try {
             RayTracer::Core core(av);
-            Renderer renderer(core.getCamera(), core.getPrimitives());
+            Renderer renderer(core.getCamera(), core.getPrimitives(), core.getLights());
 
             renderer.render();
 

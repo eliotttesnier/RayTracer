@@ -20,3 +20,8 @@ bool RayTracer::light::AmbientLight::intersect(
     (void)primitives;
     return true;
 }
+
+std::string RayTracer::light::AmbientLight::getType()
+{
+    return "AmbientLight";
+}

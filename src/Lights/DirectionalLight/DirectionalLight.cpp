@@ -39,3 +39,8 @@ namespace RayTracer::light {
         return true;
     }
 }
+
+std::string RayTracer::light::DirectionalLight::getType()
+{
+    return "DirectionalLight";
+}
