@@ -173,77 +173,38 @@ void Renderer::saveToFile()
 
 Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray)
 {
-     if (this->_lights.empty()) {
+    if (_lights.empty()) {
         return hitData.color;
     }
 
-    const float diffuseStrength = 0.1f;
-    const float specularStrength = 0.8f;
-    const int specularShininess = 64;
-
     Graphic::color_t baseColor = hitData.color;
-    Graphic::color_t finalColor = {0.0, 0.0, 0.0, baseColor.a};
-
+    
+    Graphic::color_t finalColor = {
+        baseColor.r * 0.05,
+        baseColor.g * 0.05,
+        baseColor.b * 0.05,
+        baseColor.a
+    };
+    
     Math::Vector3D viewDir = -ray.direction.normalized();
-    Math::Vector3D normal = hitData.normal.normalized();
-    Math::Point3D hitPoint = hitData.point;
-
-    float ambientBase = 0.1f;
-    finalColor.r += baseColor.r * ambientBase;
-    finalColor.g += baseColor.g * ambientBase;
-    finalColor.b += baseColor.b * ambientBase;
-
+    
     for (const auto& light : _lights) {
-
-        float r, g, b, intensity;
-        light->getColor(r, g, b);
-        light->getIntensity(intensity);
-
-        float lightX, lightY, lightZ;
-        light->getPosition(lightX, lightY, lightZ);
-
-        if (light->intersect(ray, hitPoint, _primitives)) {
-            Math::Vector3D lightDir;
-
-            if (light->getLightName() == "DirectionalLight") {
-                lightDir = -light->getDirection().normalized();
-            }
-            if (light->getLightName() == "AmbientLight") {
-                finalColor.r += baseColor.r * intensity * r;
-                finalColor.g += baseColor.g * intensity * g;
-                finalColor.b += baseColor.b * intensity * b;
-                continue;
-            }
-
-            float diffuseFactor = std::max(0.0f, static_cast<float>(normal.dot(lightDir)));
-            diffuseFactor = diffuseStrength * diffuseFactor * intensity;
-
-            Math::Vector3D halfwayDir = (lightDir + viewDir).normalized();
-            float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
-            specularFactor = pow(specularFactor, specularShininess) * specularStrength * intensity;
-
-            finalColor.r += baseColor.r * diffuseFactor * r;
-            finalColor.g += baseColor.g * diffuseFactor * g;
-            finalColor.b += baseColor.b * diffuseFactor * b;
-
-            finalColor.r += 255.0 * specularFactor;
-            finalColor.g += 255.0 * specularFactor;
-            finalColor.b += 255.0 * specularFactor;
-        }
-        else if (light->getLightName() == "AmbientLight") {
-            finalColor.r += baseColor.r * intensity * r;
-            finalColor.g += baseColor.g * intensity * g;
-            finalColor.b += baseColor.b * intensity * b;
+        if (light->intersect(ray, hitData.point, _primitives)) {
+            Graphic::color_t lightContribution = light->calculateLighting(hitData, ray, viewDir);
+            
+            finalColor.r += lightContribution.r;
+            finalColor.g += lightContribution.g;
+            finalColor.b += lightContribution.b;
         }
     }
-
+    
     finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
     finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
     finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
-
+    
     finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
     finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
     finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
-
+    
     return finalColor;
 }

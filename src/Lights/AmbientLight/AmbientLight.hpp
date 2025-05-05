@@ -18,11 +18,18 @@ namespace RayTracer::light {
 
             bool intersect(
                 const Math::Ray &ray,
-                Math::Point3D &hitPoint,
+                const Math::Point3D &hitPoint,
                 std::vector<std::shared_ptr<IPrimitive>> primitives
             ) const override;
             
             std::string getType() override { return "AmbientLight"; }
+            
+            // Implement the ambient light-specific calculation
+            Graphic::color_t calculateLighting(
+                const Math::hitdata_t& hitData,
+                const Math::Ray& ray,
+                const Math::Vector3D& viewDir
+            ) const override;
     };
 }
 
