@@ -12,6 +12,10 @@ void ALight::setIntensity(float intensity) {
     _intensity = intensity;
 }
 
+void ALight::setDirection(const Math::Vector3D &direction) {
+    return;
+}
+
 void ALight::getPosition(float &x, float &y, float &z) const {
     x = _x; y = _y; z = _z;
 }

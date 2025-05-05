@@ -7,7 +7,7 @@
 
 #include "../IPrimitive.hpp"
 
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 class Sphere : public IPrimitive {
 public:

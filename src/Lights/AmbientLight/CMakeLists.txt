@@ -4,6 +4,7 @@ add_library(AmbientLight SHARED
         ../ILight.hpp
         AmbientLight.cpp
         AmbientLight.hpp
+        EntyPoint.cpp
 )
 
 add_custom_command(TARGET AmbientLight POST_BUILD

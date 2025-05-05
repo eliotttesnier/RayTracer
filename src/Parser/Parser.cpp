@@ -8,7 +8,7 @@
 #include <libconfig.h++>
 
 
-void raytracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
+void RayTracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     const auto &camera = root["camera"];
     const auto &res = camera["resolution"];
     const auto &pos = camera["position"];
@@ -30,7 +30,8 @@ void raytracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     this->_camConfig = std::make_unique<CameraConfig>(std::make_tuple(width, height), std::make_tuple(x, y, z), std::make_tuple(rx, ry, rz), fov);
 }
 
-void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root) {
+void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root)
+{
     std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
@@ -63,38 +64,112 @@ void raytracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
-    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector);
-}
 
-void raytracer::Parser::Parser::_getLightsData(const libconfig::Setting &root) {
-    const auto &lights = root["lights"];
-    double ambient = lights["ambient"];
-    double diffuse = lights["diffuse"];
-
-    const auto &point = lights["point"];
-    const auto &pt = point[0];
-    double px = pt.lookup("x");
-    double py = pt.lookup("y");
-    double pz = pt.lookup("z");
+    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> cylinderVector;
+    const auto &cylinder = root["primitives"]["cylinders"];
+    for (int i = 0; i < cylinder.getLength(); ++i) {
+        const auto &s = cylinder[i];
+        double px = s["x"];
+        double py = s["y"];
+        double pz = s["z"];
+        double radius = s["r"];
+        double height = s["h"];
+        const auto &color = s["color"];
+        int cr = color["r"], cg = color["g"], cb = color["b"];
+        cylinderVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
-    std::cout << "Lights: ambient=" << ambient << ", diffuse=" << diffuse << ", pos(" << px << ", " << py << ", " << pz << ")" << std::endl;
+        std::cout << "Cylinder: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
+                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
-    this->_lightConfig = std::make_unique<LightsConfig>(std::vector<std::tuple<double, double, double>>(), std::make_tuple(px, py, pz), ambient, diffuse);
+    }
+
+    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> coneVector;
+    const auto &cone = root["primitives"]["cones"];
+    for (int i = 0; i < cone.getLength(); ++i) {
+        const auto &s = cone[i];
+        double px = s["x"];
+        double py = s["y"];
+        double pz = s["z"];
+        double radius = s["r"];
+        double height = s["h"];
+        const auto &color = s["color"];
+        int cr = color["r"], cg = color["g"], cb = color["b"];
+        coneVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+        std::cout << "Cone: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
+                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+    }
+
+    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector, cylinderVector, coneVector);
 }
 
-raytracer::Parser::CameraConfig raytracer::Parser::Parser::getCameraConfig() const {
+std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::Parser::_getAmbientData(const libconfig::Setting &root)
+{
+    std::tuple<double, std::tuple<int, int, int>> ambientData;
+    const auto &ambient = root["lights"]["ambient"];
+    const auto &s = ambient[0];
+    double intensity = s["intensity"];
+    const auto &color = s["color"];
+    int cr = color["r"];
+    int cg = color["g"];
+    int cb = color["b"];
+    ambientData = std::make_tuple(intensity, std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+    std::cout << "Ambient Light: intensity= "<< intensity
+              << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+#endif
+    return ambientData;
+}
+
+std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::Parser::_getDirectionalData(const libconfig::Setting &root)
+{
+    std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> directionalData;
+    const auto &directional = root["lights"]["directional"];
+    const auto &s = directional[0];
+    double intensity = s["intensity"];
+    const auto &direction = s["direction"];
+    double dx = direction["x"];
+    double dy = direction["y"];
+    double dz = direction["z"];
+    const auto &position = s["position"];
+    double px = position["x"];
+    double py = position["y"];
+    double pz = position["z"];
+    const auto &color = s["color"];
+    int cr = color["r"];
+    int cg = color["g"];
+    int cb = color["b"];
+    directionalData.emplace_back(intensity, std::make_tuple(px, py, pz), std::make_tuple(dx, dy, dz), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+    std::cout << "Directional Light: intensity= "<< intensity
+              << ", direction(" << dx << ", " << dy << ", " << dz << ")"
+              << ", position(" << px << ", " << py << ", " << pz << ")"
+              << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+#endif
+    return directionalData;
+}
+
+void RayTracer::Parser::Parser::_getLightsData(const libconfig::Setting &root)
+{
+    auto ambient = this->_getAmbientData(root);
+    auto directional = this->_getDirectionalData(root);
+    this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional);
+}
+
+RayTracer::Parser::CameraConfig RayTracer::Parser::Parser::getCameraConfig() const {
     return *this->_camConfig;
 }
 
-raytracer::Parser::LightsConfig raytracer::Parser::Parser::getLightConfig() const {
+RayTracer::Parser::LightsConfig RayTracer::Parser::Parser::getLightConfig() const {
     return *this->_lightConfig;
 }
 
-raytracer::Parser::PrimitivesConfig raytracer::Parser::Parser::getPrimitivesConfig() const {
+RayTracer::Parser::PrimitivesConfig RayTracer::Parser::Parser::getPrimitivesConfig() const {
     return *this->_primitiveConfig;
 }
 
-raytracer::Parser::Parser::Parser(char *path) {
+RayTracer::Parser::Parser::Parser(char *path) {
     libconfig::Config cfg;
 
     try {
@@ -110,6 +185,9 @@ raytracer::Parser::Parser::Parser(char *path) {
 
     try {
         const libconfig::Setting &root = cfg.getRoot();
+#ifdef _DEBUG
+    std::cout << "Parsing ["<< path <<"]" << std::endl;
+#endif
         this->_getCameraData(root);
         this->_getLightsData(root);
         this->_getPrimitivesData(root);

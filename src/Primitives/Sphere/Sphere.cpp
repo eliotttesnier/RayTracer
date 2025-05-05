@@ -7,7 +7,7 @@
 #include <string>
 #include "Sphere.hpp"
 
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 Sphere::Sphere() {
     _name = "sphere";

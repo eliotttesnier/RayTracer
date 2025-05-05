@@ -1,7 +1,7 @@
 #include <cmath>
 #include <string>
 #include "Cylinder.hpp"
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 Cylinder::Cylinder()
 {

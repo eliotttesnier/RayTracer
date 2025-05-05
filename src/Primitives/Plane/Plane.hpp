@@ -8,7 +8,7 @@
 #include "../IPrimitive.hpp"
 #include "../../Math/Rectangle3D.hpp"
 
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 class Plane : public IPrimitive {
 public:

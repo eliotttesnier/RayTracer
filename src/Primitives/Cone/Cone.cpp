@@ -1,7 +1,7 @@
 #include <cmath>
 #include <string>
 #include "Cone.hpp"
-namespace Raytracer::primitive {
+namespace RayTracer::primitive {
 
 Cone::Cone()
 {

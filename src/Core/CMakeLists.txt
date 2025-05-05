@@ -1,8 +1,8 @@
-set(SRCROOT ${PROJECT_SOURCE_DIR}/src/Core)
-
 set(SRC
-    ${SRCROOT}/Renderer.cpp
-    ${SRCROOT}/Renderer.hpp
+   Renderer.cpp
+   Renderer.hpp
+   Core.cpp
+   Core.hpp
 )
 
 add_library(Core STATIC

@@ -5,26 +5,15 @@ add_subdirectory(Primitives)
 add_subdirectory(Parser)
 add_subdirectory(GraphicRenderer)
 add_subdirectory(Core)
+add_subdirectory(Factory)
+add_subdirectory(LibLoader)
 
 add_executable(raytracer
     main.cpp
 )
 
-set(LIGHTS
-        AmbientLight
-        DirectionalLight
-)
-
-set(PRIMITIVES
-        Sphere
-        Plane
-        Cylinder
-        Cone
-)
-
 target_link_libraries(raytracer PRIVATE
-        ${LIGHTS}
-        ${PRIMITIVES}
+        LibLoader
         Graphic
         Core
         math
@@ -35,7 +24,11 @@ target_link_libraries(raytracer PRIVATE
         sfml-system
 )
 
-target_include_directories(raytracer PRIVATE
+target_link_libraries(Core PRIVATE
+    Factory
+)
+
+target_include_directories(raytracer PUBLIC
     ./
 )
 
@@ -48,4 +41,16 @@ add_custom_command(TARGET raytracer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
         "$<TARGET_FILE:raytracer>"
         "${CMAKE_BINARY_DIR}/../raytracer")
+
+target_include_directories(Core PUBLIC
+        ./
+)
+
+target_include_directories(PrimitivesFactory PUBLIC
+    ./
+)
+
+target_include_directories(LightFactory PUBLIC
+    ./
+)
 

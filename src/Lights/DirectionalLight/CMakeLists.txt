@@ -4,6 +4,7 @@ add_library(DirectionalLight SHARED
         ../ILight.hpp
         DirectionalLight.cpp
         DirectionalLight.hpp
+        EntyPoint.cpp
 )
 
 add_custom_command(TARGET DirectionalLight POST_BUILD
