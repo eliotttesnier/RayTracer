@@ -49,19 +49,23 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
 #endif
     }
     
-    std::vector<std::tuple<char, double, std::tuple<int, int, int>>> planesVector;
+    std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> planesVector;
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
         std::string axis = p["axis"];
-        double pos = p["position"];
+        double posx = p["x"];
+        double posy = p["y"];
+        double posz = p["z"];
         const auto &color = p["color"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
-        planesVector.emplace_back(axis[0], pos, std::make_tuple(cr, cg, cb));
+        double width = p["width"];
+        double height = p["height"];
+        planesVector.emplace_back(axis[0], std::make_tuple(posx, posy, posz), std::make_tuple(width, height), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
-        std::cout << "Plane: axis=" << axis << ", position=" << pos
+        std::cout << "Plane: axis=" << axis << ", positionx=" << posx << ", positiony=" << posy << ", positionz= << posz"
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }

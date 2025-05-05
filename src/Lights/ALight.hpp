@@ -3,6 +3,7 @@
 
 #include "ILight.hpp"
 #include "../Math/Point3D.hpp"
+#include "../Math/Vector3D.hpp"
 
 class ALight : public ILight {
     protected:
@@ -16,13 +17,13 @@ class ALight : public ILight {
         void setPosition(float x, float y, float z) override;
         void setColor(float r, float g, float b) override;
         void setIntensity(float intensity) override;
-        void setDirection(const Math::Vector3D &direction) override;
+        virtual void setDirection(const Math::Vector3D &direction) override;
 
         void getPosition(float &x, float &y, float &z) const override;
         void getColor(float &r, float &g, float &b) const override;
         void getIntensity(float &intensity) const override;
-
-        virtual std::string getType() = 0;
+        
+        std::string getType() override { return "Light"; }
 };
 
 #endif // ALIGHT_HPP

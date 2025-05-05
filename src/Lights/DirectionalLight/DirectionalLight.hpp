@@ -19,8 +19,6 @@ namespace RayTracer::light {
             DirectionalLight(const Math::Vector3D &direction = Math::Vector3D(0, -1, 0));
             ~DirectionalLight() = default;
 
-            std::string getType() override;
-
             bool intersect(
                 const Math::Ray &ray,
                 Math::Point3D &hitPoint,
@@ -29,8 +27,10 @@ namespace RayTracer::light {
 
             void setDirection(const Math::Vector3D &direction) override;
             Math::Vector3D getDirection() const;
+            
+            std::string getType() override { return "DirectionalLight"; }
     };
 
-} // Raytracer
+} // RayTracer
 
 #endif //DIRECTIONALLIGHT_HPP

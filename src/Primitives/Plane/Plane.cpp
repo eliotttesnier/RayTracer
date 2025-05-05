@@ -15,11 +15,10 @@ Plane::Plane()
 {
 }
 
-Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation)
+Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size)
     : _name("plane"), _type("plane"), _position(position), _rotation(rotation),
-      _width(1.0), _height(1.0),
-      _rectangle(position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height))
-{
+      _width(std::get<0>(size)), _height(std::get<1>(size)),
+      _rectangle(position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height)) {
     _rectangle.rotateXSelf(_rotation._x);
     _rectangle.rotateYSelf(_rotation._y);
     _rectangle.rotateZSelf(_rotation._z);

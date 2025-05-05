@@ -75,7 +75,7 @@ void Renderer::renderSegment(int startY, int endY)
 
             double closestDist = std::numeric_limits<double>::max();
             bool hit = false;
-            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};  // Default color (black)
+            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};
             Math::hitdata_t closestHitData;
 
             for (const auto& primitive : _primitives) {
@@ -167,6 +167,134 @@ void Renderer::saveToFile()
 
 Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray)
 {
-    (void)ray;
-    return hitData.color;
+    if (_lights.empty()) {
+        return hitData.color; // Return base color if no lights are present
+    }
+
+    // Improved lighting parameters for better shading
+    const float ambientStrength = 0.3f;       // Base ambient lighting
+    const float diffuseStrength = 0.7f;       // Diffuse lighting strength
+    const float specularStrength = 0.2f;      // Specular highlight strength
+    const int specularShininess = 32;         // Specular highlight sharpness
+
+    // Get the base color from the hit data
+    Graphic::color_t baseColor = hitData.color;
+    Graphic::color_t finalColor = {0.0, 0.0, 0.0, baseColor.a};
+    
+    // Calculate view direction for specular lighting
+    Math::Vector3D viewDir = -ray.direction.normalized();
+    Math::Vector3D normal = hitData.normal.normalized();
+    Math::Point3D hitPoint = hitData.point;
+    
+    // Start with a small ambient base to ensure nothing is completely black
+    float ambientBase = 0.1f;
+    finalColor.r += baseColor.r * ambientBase;
+    finalColor.g += baseColor.g * ambientBase;
+    finalColor.b += baseColor.b * ambientBase;
+
+    // Track if we have ambient lights
+    bool hasAmbientLight = false;
+
+    // Process each light
+    for (const auto& light : _lights) {
+        std::string lightType = light->getType();
+        
+        // Handle ambient light differently
+        if (lightType == "AmbientLight") {
+            hasAmbientLight = true;
+            float r, g, b, intensity;
+            
+            light->getColor(r, g, b);
+            light->getIntensity(intensity);
+            
+            // Apply ambient light to the entire scene
+            float ambientFactor = ambientStrength * intensity;
+            finalColor.r += baseColor.r * ambientFactor * r;
+            finalColor.g += baseColor.g * ambientFactor * g;
+            finalColor.b += baseColor.b * ambientFactor * b;
+            
+            continue; // Skip the rest of the calculation for ambient lights
+        }
+        
+        // For directional and other lights, check if they illuminate this point
+        if (light->intersect(ray, hitPoint, _primitives)) {
+            float r, g, b, intensity;
+            float lightX, lightY, lightZ;
+            
+            // Get light properties
+            light->getColor(r, g, b);
+            light->getIntensity(intensity);
+            light->getPosition(lightX, lightY, lightZ);
+            
+            Math::Vector3D lightDir;
+            
+            // For directional lights, use a hardcoded direction instead of dynamic_pointer_cast
+            if (lightType == "DirectionalLight") {
+                // Get light direction without using dynamic_cast to avoid linking errors
+                // We'll use the light's position as a directional vector instead
+                light->getPosition(lightX, lightY, lightZ);
+                lightDir = Math::Vector3D(lightX, lightY, lightZ).normalized();
+                // Negate the direction because directional lights shine from direction to point
+                lightDir = Math::Vector3D(-lightDir._x, -lightDir._y, -lightDir._z);
+            } else {
+                // For point lights and other types, calculate direction from light to hit point
+                lightDir = Math::Vector3D(
+                    lightX - hitPoint._x,
+                    lightY - hitPoint._y,
+                    lightZ - hitPoint._z
+                ).normalized();
+            }
+            
+            // Calculate diffuse lighting with smoother falloff
+            float diffuseFactor = std::max(0.0f, static_cast<float>(normal.dot(lightDir)));
+            diffuseFactor = pow(diffuseFactor, 0.9f) * diffuseStrength * intensity;
+            
+            // Calculate specular lighting (Blinn-Phong model)
+            Math::Vector3D halfwayDir = (lightDir + viewDir).normalized();
+            float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
+            specularFactor = pow(specularFactor, specularShininess) * specularStrength * intensity;
+            
+            // Add diffuse component
+            finalColor.r += baseColor.r * diffuseFactor * r;
+            finalColor.g += baseColor.g * diffuseFactor * g;
+            finalColor.b += baseColor.b * diffuseFactor * b;
+            
+            // Add specular component (white highlight)
+            float specularWhite = 255.0 * specularFactor;
+            finalColor.r += specularWhite;
+            finalColor.g += specularWhite;
+            finalColor.b += specularWhite;
+        } else if (lightType != "AmbientLight") {
+            // For shadowed areas with non-ambient lights, add a small amount of light
+            // to soften the shadows
+            float r, g, b, intensity;
+            light->getColor(r, g, b);
+            light->getIntensity(intensity);
+            
+            float shadowAmbientFactor = 0.1f * intensity;
+            finalColor.r += baseColor.r * shadowAmbientFactor * r;
+            finalColor.g += baseColor.g * shadowAmbientFactor * g;
+            finalColor.b += baseColor.b * shadowAmbientFactor * b;
+        }
+    }
+    
+    // If no ambient light was found, ensure minimal lighting
+    if (!hasAmbientLight) {
+        float minAmbient = 0.2f;
+        finalColor.r = std::max(finalColor.r, baseColor.r * minAmbient);
+        finalColor.g = std::max(finalColor.g, baseColor.g * minAmbient);
+        finalColor.b = std::max(finalColor.b, baseColor.b * minAmbient);
+    }
+    
+    // Apply a slight gamma correction for more natural lighting (gamma ≈ 2.2)
+    finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
+
+    // Clamp color values
+    finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
+    finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
+    finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
+
+    return finalColor;
 }

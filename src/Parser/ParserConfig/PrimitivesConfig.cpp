@@ -6,7 +6,7 @@
 
 RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
-    const std::vector<std::tuple<char, double, std::tuple<int, int, int>>> &plane,
+    const std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> &plane,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cylinders,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone
 ):
@@ -32,6 +32,6 @@ std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int
     return this->_sphere;
 }
 
-std::vector<std::tuple<char, double, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getPlanes() const {
+std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getPlanes() const {
     return this->_plane;
 }
