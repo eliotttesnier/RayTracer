@@ -15,6 +15,7 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
 
     cam->origin = pos;
     cam->resolution = config.getResolution();
+    cam->fov = config.getFov();
     cam->rotateX(rx);
     cam->rotateY(ry);
     cam->rotateZ(rz);

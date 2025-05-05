@@ -20,12 +20,12 @@ Camera::Camera()
 }
 
 Camera::Camera(const Math::Point3D &origin, const Rectangle3D &screen)
-    : origin(origin), screen(screen)
+    : origin(origin), screen(screen), resolution(1920, 1080), fov(75)
 {
 }
 
 Camera::Camera(const Camera &other)
-    : origin(other.origin), screen(other.screen)
+    : origin(other.origin), screen(other.screen), resolution(other.resolution), fov(other.fov)
 {
 }
 
@@ -70,7 +70,10 @@ void Camera::roll(double degrees)
 
 Math::Ray Camera::ray(double u, double v) const
 {
-    Math::Point3D point = screen.pointAt(u, v);
+    double tanHalfFov = tan((fov * M_PI / 180.0) / 2.0);
+    double scaledU = u * tanHalfFov;
+    double scaledV = v * tanHalfFov;
+    Math::Point3D point = screen.pointAt(scaledU, scaledV);
 
     Math::Vector3D direction(
         point._x - origin._x,
@@ -78,6 +81,18 @@ Math::Ray Camera::ray(double u, double v) const
         point._z - origin._z
     );
 
+    direction.normalize();
+
     return Math::Ray(origin, direction);
 }
+
+std::tuple<int, int> Camera::getResolution() const
+{
+    return resolution;
 }
+
+double Camera::getFov() const
+{
+    return fov;
+}
+} // namespace RayTracer
