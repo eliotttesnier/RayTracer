@@ -41,6 +41,10 @@ void Renderer::setCamera(const std::shared_ptr<RayTracer::Camera> camera)
     _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
 }
 
+void Renderer::setLight(const std::vector<std::shared_ptr<ILight>>& lights) {
+    _lights = lights;
+}
+
 void Renderer::setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives)
 {
     _primitives = primitives;
@@ -169,6 +173,83 @@ void Renderer::saveToFile()
 
 Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray)
 {
-    (void)ray;
-    return hitData.color;
+     if (this->_lights.empty()) {
+        return hitData.color;
+    }
+
+    const float diffuseStrength = 0.1f;
+    const float specularStrength = 0.8f;
+    const int specularShininess = 64;
+
+    Graphic::color_t baseColor = hitData.color;
+    Graphic::color_t finalColor = {0.0, 0.0, 0.0, baseColor.a};
+
+    Math::Vector3D viewDir = -ray.direction.normalized();
+    Math::Vector3D normal = hitData.normal.normalized();
+    Math::Point3D hitPoint = hitData.point;
+
+    float ambientBase = 0.1f;
+    finalColor.r += baseColor.r * ambientBase;
+    finalColor.g += baseColor.g * ambientBase;
+    finalColor.b += baseColor.b * ambientBase;
+
+    for (const auto& light : _lights) {
+
+        float r, g, b, intensity;
+        light->getColor(r, g, b);
+        light->getIntensity(intensity);
+
+        float lightX, lightY, lightZ;
+        light->getPosition(lightX, lightY, lightZ);
+
+        if (light->intersect(ray, hitPoint, _primitives)) {
+            Math::Vector3D lightDir;
+
+            if (dynamic_cast<RayTracer::light::DirectionalLight*>(light.get())) {
+                auto* dirLight = dynamic_cast<RayTracer::light::DirectionalLight*>(light.get());
+                lightDir = -dirLight->getDirection().normalized();
+            } else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+                finalColor.r += baseColor.r * intensity * r;
+                finalColor.g += baseColor.g * intensity * g;
+                finalColor.b += baseColor.b * intensity * b;
+                continue;
+            } else {
+                lightDir = Math::Vector3D(
+                    lightX - hitPoint._x,
+                    lightY - hitPoint._y,
+                    lightZ - hitPoint._z
+                ).normalized();
+            }
+
+            float diffuseFactor = std::max(0.0f, static_cast<float>(normal.dot(lightDir)));
+            diffuseFactor = diffuseStrength * diffuseFactor * intensity;
+
+            Math::Vector3D halfwayDir = (lightDir + viewDir).normalized();
+            float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
+            specularFactor = pow(specularFactor, specularShininess) * specularStrength * intensity;
+
+            finalColor.r += baseColor.r * diffuseFactor * r;
+            finalColor.g += baseColor.g * diffuseFactor * g;
+            finalColor.b += baseColor.b * diffuseFactor * b;
+
+            finalColor.r += 255.0 * specularFactor;
+            finalColor.g += 255.0 * specularFactor;
+            finalColor.b += 255.0 * specularFactor;
+        }
+        else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+            finalColor.r += baseColor.r * intensity * r;
+            finalColor.g += baseColor.g * intensity * g;
+            finalColor.b += baseColor.b * intensity * b;
+        }
+    }
+
+    finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
+
+    finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
+    finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
+    finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
+
+    return finalColor;
 }

@@ -25,6 +25,7 @@ class Renderer {
         ~Renderer();
 
         void setCamera(const std::shared_ptr<RayTracer::Camera> camera);
+        void setLight(const std::vector<std::shared_ptr<ILight>> &lights);
         void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives);
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
