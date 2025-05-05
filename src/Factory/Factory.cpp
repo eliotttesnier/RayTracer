@@ -7,12 +7,11 @@
 #include "LigthsFactory/LightFactory.hpp"
 #include "PrimitivesFactory/PrimitiveFactory.hpp"
 
-std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::vector<std::unique_ptr<ILight>>, std::unique_ptr<RayTracer::Camera>> RayTracer::Factory::Factory::createElement(const Parser::CameraConfig &camera,
+std::tuple<std::vector<std::shared_ptr<IPrimitive>>, std::vector<std::shared_ptr<ILight>>, std::shared_ptr<RayTracer::Camera>> RayTracer::Factory::Factory::createElement(const Parser::CameraConfig &camera,
                                                                                const Parser::PrimitivesConfig &primitives,
                                                                                const Parser::LightsConfig &light,
                                                                                std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
-    std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::unique_ptr<RayTracer::Camera>/*Add more data here*/> result;
 #ifdef _DEBUG
     std::cout << std::endl << "Factory running..." << std::endl;
 #endif

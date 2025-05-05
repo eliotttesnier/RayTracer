@@ -21,7 +21,7 @@ namespace RayTracer::Factory {
 class Factory {
 private:
 public:
-    static std::tuple<std::vector<std::unique_ptr<IPrimitive>>, std::vector<std::unique_ptr<ILight>>, std::unique_ptr<RayTracer::Camera>> createElement(const Parser::CameraConfig &camera,
+    static std::tuple<std::vector<std::shared_ptr<IPrimitive>>, std::vector<std::shared_ptr<ILight>>, std::shared_ptr<RayTracer::Camera>> createElement(const Parser::CameraConfig &camera,
                                                       const Parser::PrimitivesConfig &scene,
                                                       const Parser::LightsConfig &light,
                                                       std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);

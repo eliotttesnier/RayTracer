@@ -9,10 +9,10 @@
 #include "CylinderFactory.hpp"
 #include "ConeFactory.hpp"
 
-std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
+std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
-    std::vector<std::unique_ptr<IPrimitive>> primitives;
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
 
     for (const auto& sphere : config.getSpheres()) {
         auto [posRad, color] = sphere;

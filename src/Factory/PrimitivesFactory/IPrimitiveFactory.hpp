@@ -14,7 +14,7 @@ namespace RayTracer::Factory {
 
     class IPrimitiveFactory {
     public:
-        virtual std::unique_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const = 0;
+        virtual std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const = 0;
         virtual ~IPrimitiveFactory() = default;
     };
 

@@ -14,7 +14,7 @@ namespace Factory {
 
 class CameraFactory {
 public:
-    static std::unique_ptr<RayTracer::Camera> createCamera(const RayTracer::Parser::CameraConfig &config);
+    static std::shared_ptr<RayTracer::Camera> createCamera(const RayTracer::Parser::CameraConfig &config);
     CameraFactory() = default;
     ~CameraFactory() = delete;
 };

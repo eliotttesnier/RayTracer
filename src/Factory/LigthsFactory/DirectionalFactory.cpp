@@ -14,7 +14,7 @@ RayTracer::Factory::DirectionalFactory::DirectionalFactory(const double intensit
 
 }
 
-std::unique_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
+std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
     if (!plugins.contains("DirectionalLight"))
         throw std::runtime_error("DirectionalLight plugin not found");
@@ -26,5 +26,5 @@ std::unique_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(std::map<
     obj->setIntensity(this->_intensity);
     obj->setDirection({dx, dy, dz});
     obj->setPosition(px, py, pz);
-    return std::unique_ptr<ILight>(obj);
+    return std::shared_ptr<ILight>(obj, [](ILight* ptr) { delete ptr; });
 }

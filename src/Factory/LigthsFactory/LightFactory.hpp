@@ -17,7 +17,7 @@ namespace RayTracer::Factory {
 
 class LightFactory {
 public:
-    static std::vector<std::unique_ptr<ILight>> createLights(const RayTracer::Parser::LightsConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);
+    static std::vector<std::shared_ptr<ILight>> createLights(const RayTracer::Parser::LightsConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);
     LightFactory() = default;
     ~LightFactory() = delete;
 };

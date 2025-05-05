@@ -17,7 +17,7 @@ namespace RayTracer::Factory {
 
 class PrimitiveFactory {
 public:
-    static std::vector<std::unique_ptr<IPrimitive>> createPrimitives(const RayTracer::Parser::PrimitivesConfig& config,
+    static std::vector<std::shared_ptr<IPrimitive>> createPrimitives(const RayTracer::Parser::PrimitivesConfig& config,
                                                                     std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);
     PrimitiveFactory() = default;
     ~PrimitiveFactory() = delete;

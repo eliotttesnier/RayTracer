@@ -12,7 +12,7 @@ RayTracer::Factory::AmbientFactory::AmbientFactory(double intensity, std::tuple<
 
 }
 
-std::unique_ptr<ILight> RayTracer::Factory::AmbientFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
+std::shared_ptr<ILight> RayTracer::Factory::AmbientFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
     if (!plugins.contains("AmbientLight"))
         throw std::runtime_error("AmbientLight plugin not found");
@@ -20,5 +20,5 @@ std::unique_ptr<ILight> RayTracer::Factory::AmbientFactory::create(std::map<std:
     auto [r, g, b] = this->_color;
     obj->setColor(r, g, b);
     obj->setIntensity(this->_intensity);
-    return std::unique_ptr<ILight>(obj);
+    return std::shared_ptr<ILight>(obj, [](ILight* ptr) { delete ptr; });
 }
