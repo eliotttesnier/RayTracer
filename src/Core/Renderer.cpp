@@ -15,7 +15,7 @@
 #include <vector>
 #include <algorithm>
 
-Renderer::Renderer(const RayTracer::Camera& camera,
+Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
     const std::vector<std::shared_ptr<IPrimitive>>& primitives)
     : _camera(camera), _primitives(primitives), _outputFile("output.ppm")
 {
@@ -29,7 +29,7 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::setCamera(const RayTracer::Camera& camera)
+void Renderer::setCamera(const std::shared_ptr<RayTracer::Camera> camera)
 {
     _camera = camera;
     _aspectRatio = static_cast<double>(_width) / _height;
@@ -68,7 +68,7 @@ void Renderer::renderSegment(int startY, int endY)
             v = 1.0 - v * 2.0;
             u *= _aspectRatio;
 
-            Math::Ray ray = _camera.ray(u, v);
+            Math::Ray ray = _camera->ray(u, v);
 
             double closestDist = std::numeric_limits<double>::max();
             bool hit = false;

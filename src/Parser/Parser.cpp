@@ -48,6 +48,7 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
+    
     std::vector<std::tuple<char, double, std::tuple<int, int, int>>> planesVector;
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {

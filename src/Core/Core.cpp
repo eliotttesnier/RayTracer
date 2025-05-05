@@ -46,3 +46,18 @@ RayTracer::Core::Core(char **av
                                  this->_parser.getLightConfig(),
                                  this->_plugins);
 }
+
+std::vector<std::shared_ptr<IPrimitive>> RayTracer::Core::getPrimitives() const
+{
+    return std::get<0>(this->_sceneElements);
+}
+
+std::vector<std::shared_ptr<ILight>> RayTracer::Core::getLights() const
+{
+    return std::get<1>(this->_sceneElements);
+}
+
+std::shared_ptr<RayTracer::Camera> RayTracer::Core::getCamera() const
+{
+    return std::get<2>(this->_sceneElements);
+}

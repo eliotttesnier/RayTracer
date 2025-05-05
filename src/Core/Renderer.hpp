@@ -19,10 +19,10 @@
 
 class Renderer {
     public:
-        Renderer(const RayTracer::Camera& camera, const std::vector<std::shared_ptr<IPrimitive>>& primitives);
+        Renderer(const std::shared_ptr<RayTracer::Camera> camera, const std::vector<std::shared_ptr<IPrimitive>>& primitives);
         ~Renderer();
 
-        void setCamera(const RayTracer::Camera& camera);
+        void setCamera(const std::shared_ptr<RayTracer::Camera> camera);
         void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives);
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
@@ -33,7 +33,7 @@ class Renderer {
         void renderSegment(int startY, int endY);
         void saveToFile();
 
-        RayTracer::Camera _camera;
+        std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
         std::vector<std::vector<Graphic::color_t>> _pixelBuffer;
         std::string _outputFile;

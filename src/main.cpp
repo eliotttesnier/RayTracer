@@ -83,6 +83,12 @@ int main(int ac, char **av) {
     if (ac == 2) {
         try {
             RayTracer::Core core(av);
+            Renderer renderer(core.getCamera(), core.getPrimitives());
+
+            renderer.render();
+
+            GraphicRenderer graphicRenderer("output.ppm");
+            graphicRenderer.run();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;

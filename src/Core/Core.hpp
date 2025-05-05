@@ -18,9 +18,9 @@ private:
     RayTracer::Parser::Parser _parser;
     std::map<std::string, std::unique_ptr<Loader::LibLoader>> _plugins;
     std::tuple<
-        std::vector<std::unique_ptr<IPrimitive>>,
-        std::vector<std::unique_ptr<ILight>>,
-        std::unique_ptr<RayTracer::Camera>
+        std::vector<std::shared_ptr<IPrimitive>>,
+        std::vector<std::shared_ptr<ILight>>,
+        std::shared_ptr<RayTracer::Camera>
     > _sceneElements;
 
     void _loadPlugins();
@@ -28,8 +28,12 @@ public:
 
     explicit Core(char **av);
     ~Core() = default;
-};
 
+    std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
+    std::vector<std::shared_ptr<ILight>> getLights() const;
+    std::shared_ptr<RayTracer::Camera> getCamera() const;
+
+}; // Core
 } // RayTracer
 
 #endif //CORE_HPP
