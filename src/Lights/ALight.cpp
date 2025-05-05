@@ -24,6 +24,14 @@ void ALight::getIntensity(float &intensity) const {
     intensity = _intensity;
 }
 
+Math::Vector3D ALight::getDirection() const {
+    return {};
+}
+
+std::string ALight::getLightName() const {
+    return this->_lightName;
+}
+
 void ALight::setDirection(const Math::Vector3D &direction) {
     // Default implementation does nothing
     (void)direction;

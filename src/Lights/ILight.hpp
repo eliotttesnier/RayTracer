@@ -28,6 +28,10 @@ class ILight {
         virtual void getColor(float &r, float &g, float &b) const = 0;
         virtual void getIntensity(float &intensity) const = 0;
 
+        virtual std::string getLightName() const = 0;
+
+        virtual Math::Vector3D getDirection() const = 0;
+
         virtual std::string getType() = 0;
 
         virtual bool intersect(

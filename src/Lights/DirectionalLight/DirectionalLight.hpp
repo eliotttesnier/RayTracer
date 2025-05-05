@@ -26,7 +26,7 @@ namespace RayTracer::light {
             ) const override;
 
             void setDirection(const Math::Vector3D &direction) override;
-            Math::Vector3D getDirection() const;
+            Math::Vector3D getDirection() const override;
             
             std::string getType() override { return "DirectionalLight"; }
     };

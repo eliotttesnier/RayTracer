@@ -10,6 +10,7 @@ class ALight : public ILight {
         float _x = 0.0f, _y = 0.0f, _z = 0.0f;
         float _r = 1.0f, _g = 1.0f, _b = 1.0f;
         float _intensity = 1.0f;
+        std::string _lightName = "NONE";
 
     public:
         ~ALight() = default;
@@ -22,6 +23,10 @@ class ALight : public ILight {
         void getPosition(float &x, float &y, float &z) const override;
         void getColor(float &r, float &g, float &b) const override;
         void getIntensity(float &intensity) const override;
+
+        Math::Vector3D getDirection() const override;
+
+        std::string getLightName() const override;
         
         std::string getType() override { return "Light"; }
 };

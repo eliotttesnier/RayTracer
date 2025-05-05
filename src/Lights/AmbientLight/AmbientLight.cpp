@@ -9,6 +9,7 @@ using namespace RayTracer::light;
 
 AmbientLight::AmbientLight()
 {
+    this->_lightName = "AmbientLight";
 }
 
 bool AmbientLight::intersect(

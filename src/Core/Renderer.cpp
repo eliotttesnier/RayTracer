@@ -205,20 +205,14 @@ Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, con
         if (light->intersect(ray, hitPoint, _primitives)) {
             Math::Vector3D lightDir;
 
-            if (dynamic_cast<RayTracer::light::DirectionalLight*>(light.get())) {
-                auto* dirLight = dynamic_cast<RayTracer::light::DirectionalLight*>(light.get());
-                lightDir = -dirLight->getDirection().normalized();
-            } else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+            if (light->getLightName() == "DirectionalLight") {
+                lightDir = -light->getDirection().normalized();
+            }
+            if (light->getLightName() == "AmbientLight") {
                 finalColor.r += baseColor.r * intensity * r;
                 finalColor.g += baseColor.g * intensity * g;
                 finalColor.b += baseColor.b * intensity * b;
                 continue;
-            } else {
-                lightDir = Math::Vector3D(
-                    lightX - hitPoint._x,
-                    lightY - hitPoint._y,
-                    lightZ - hitPoint._z
-                ).normalized();
             }
 
             float diffuseFactor = std::max(0.0f, static_cast<float>(normal.dot(lightDir)));
@@ -236,7 +230,7 @@ Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, con
             finalColor.g += 255.0 * specularFactor;
             finalColor.b += 255.0 * specularFactor;
         }
-        else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+        else if (light->getLightName() == "AmbientLight") {
             finalColor.r += baseColor.r * intensity * r;
             finalColor.g += baseColor.g * intensity * g;
             finalColor.b += baseColor.b * intensity * b;

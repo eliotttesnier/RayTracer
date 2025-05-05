@@ -10,6 +10,7 @@ using namespace RayTracer::light;
 DirectionalLight::DirectionalLight(const Math::Vector3D &direction)
     : _direction(direction)
 {
+    this->_lightName = "DirectionalLight";
 }
 
 void DirectionalLight::setDirection(const Math::Vector3D &direction)

@@ -19,7 +19,6 @@ target_link_libraries(raytracer PRIVATE
         math
         parser
         graphic_renderer
-        Lights
         sfml-graphics
         sfml-window
         sfml-system
@@ -27,7 +26,6 @@ target_link_libraries(raytracer PRIVATE
 
 target_link_libraries(Core PRIVATE
     Factory
-    Lights
 )
 
 target_include_directories(raytracer PUBLIC
