@@ -22,6 +22,13 @@ target_link_libraries(raytracer PRIVATE
         sfml-graphics
         sfml-window
         sfml-system
+#        TODO: A retirer
+        Plane
+        Sphere
+        Cylinder
+        AmbientLight
+        DirectionalLight
+        Cone
 )
 
 target_link_libraries(Core PRIVATE

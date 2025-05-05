@@ -15,9 +15,23 @@
 #include <vector>
 #include <algorithm>
 
+#include "Lights/AmbientLight/AmbientLight.hpp"
+#include "Lights/DirectionalLight/DirectionalLight.hpp"
+
 Renderer::Renderer(const RayTracer::Camera& camera,
-    const std::vector<std::shared_ptr<IPrimitive>>& primitives)
+                   const std::vector<std::shared_ptr<IPrimitive>>& primitives)
     : _camera(camera), _primitives(primitives), _outputFile("output.ppm")
+{
+    _width = 1920;
+    _height = 1080;
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+}
+
+Renderer::Renderer(const RayTracer::Camera& camera,
+    const std::vector<std::shared_ptr<IPrimitive>>& primitives,
+    const std::vector<std::shared_ptr<ILight>>& lights)
+    : _camera(camera), _primitives(primitives), _lights(lights), _outputFile("output.ppm")
 {
     _width = 1920;
     _height = 1080;
@@ -41,6 +55,11 @@ void Renderer::setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& pri
     _primitives = primitives;
 }
 
+void Renderer::setLights(const std::vector<std::shared_ptr<ILight>>& lights)
+{
+    _lights = lights;
+}
+
 void Renderer::setResolution(int width, int height)
 {
     _width = width;
@@ -52,6 +71,111 @@ void Renderer::setResolution(int width, int height)
 void Renderer::setOutputFile(const std::string& outputFile)
 {
     _outputFile = outputFile;
+}
+
+Graphic::color_t Renderer::calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray)
+{
+    if (_lights.empty()) {
+        return hitData.color; // Return base color if no lights are present
+    }
+
+    // Lighting parameters
+    const float ambientStrength = 0.3f;       // Base ambient lighting
+    const float diffuseStrength = 0.7f;       // Diffuse lighting strength
+    const float specularStrength = 0.2f;      // Specular highlight strength
+    const int specularShininess = 32;         // Specular highlight sharpness
+
+    // Get the base color from the hit data
+    Graphic::color_t baseColor = hitData.color;
+    Graphic::color_t finalColor = {0.0, 0.0, 0.0, baseColor.a};
+    
+    // Calculate view direction for specular lighting
+    Math::Vector3D viewDir = -ray.direction.normalized();
+    Math::Vector3D normal = hitData.normal.normalized();
+    Math::Point3D hitPoint = hitData.point;
+    
+    // Start with a small ambient base to ensure nothing is completely black
+    float ambientBase = 0.1f;
+    finalColor.r += baseColor.r * ambientBase;
+    finalColor.g += baseColor.g * ambientBase;
+    finalColor.b += baseColor.b * ambientBase;
+
+    // Process each light
+    for (const auto& light : _lights) {
+        // Check if this is an ambient light (always contributes to the scene)
+        float r, g, b, intensity;
+        light->getColor(r, g, b);
+        light->getIntensity(intensity);
+        
+        // Get light direction
+        float lightX, lightY, lightZ;
+        light->getPosition(lightX, lightY, lightZ);
+        
+        // Check if light reaches this point (not in shadow)
+        if (light->intersect(ray, hitPoint, _primitives)) {
+            // Light reaches the point - calculate direct lighting
+            Math::Vector3D lightDir;
+            
+            // Calculate light direction based on light type
+            if (dynamic_cast<RayTracer::light::DirectionalLight*>(light.get())) {
+                // For directional lights, direction is constant regardless of hit point
+                auto* dirLight = dynamic_cast<RayTracer::light::DirectionalLight*>(light.get());
+                lightDir = -dirLight->getDirection().normalized();
+            } else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+                // Ambient light has no direction - just add its contribution
+                float ambientFactor = ambientStrength * intensity;
+                finalColor.r += baseColor.r * ambientFactor * r;
+                finalColor.g += baseColor.g * ambientFactor * g;
+                finalColor.b += baseColor.b * ambientFactor * b;
+                continue;
+            } else {
+                // Point light - direction is from hit point to light
+                lightDir = Math::Vector3D(
+                    lightX - hitPoint._x,
+                    lightY - hitPoint._y,
+                    lightZ - hitPoint._z
+                ).normalized();
+            }
+            
+            // Calculate diffuse lighting
+            float diffuseFactor = std::max(0.0f, static_cast<float>(normal.dot(lightDir)));
+            diffuseFactor = diffuseStrength * diffuseFactor * intensity;
+            
+            // Calculate specular lighting (Blinn-Phong model)
+            Math::Vector3D halfwayDir = (lightDir + viewDir).normalized();
+            float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
+            specularFactor = pow(specularFactor, specularShininess) * specularStrength * intensity;
+            
+            // Add diffuse and specular contributions
+            finalColor.r += baseColor.r * diffuseFactor * r;
+            finalColor.g += baseColor.g * diffuseFactor * g;
+            finalColor.b += baseColor.b * diffuseFactor * b;
+            
+            // Add specular highlight (white)
+            finalColor.r += 255.0 * specularFactor;
+            finalColor.g += 255.0 * specularFactor;
+            finalColor.b += 255.0 * specularFactor;
+        }
+        // If light is ambient, add its contribution even if the point is in shadow
+        else if (dynamic_cast<RayTracer::light::AmbientLight*>(light.get())) {
+            float ambientFactor = ambientStrength * intensity;
+            finalColor.r += baseColor.r * ambientFactor * r;
+            finalColor.g += baseColor.g * ambientFactor * g;
+            finalColor.b += baseColor.b * ambientFactor * b;
+        }
+    }
+    
+    // Apply gamma correction for more natural lighting
+    finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
+
+    // Clamp color values
+    finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
+    finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
+    finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
+
+    return finalColor;
 }
 
 void Renderer::renderSegment(int startY, int endY)
@@ -73,16 +197,21 @@ void Renderer::renderSegment(int startY, int endY)
             double closestDist = std::numeric_limits<double>::max();
             bool hit = false;
             Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};  // Default color (black)
+            Math::hitdata_t closestHitData;
 
             for (const auto& primitive : _primitives) {
                 Math::hitdata_t hitData = primitive->intersect(ray);
 
                 if (hitData.hit && hitData.distance < closestDist) {
                     closestDist = hitData.distance;
+                    closestHitData = hitData;
                     hit = true;
-                    pixelColor = hitData.color;
-                    // pixelColor = {255.0, 255.0, 255.0, 1.0};  // TO DO: color based on hit
                 }
+            }
+
+            if (hit) {
+                // Apply lighting if hit something
+                pixelColor = calculateLighting(closestHitData, ray);
             }
 
             localBuffer[y - startY][x] = pixelColor;
