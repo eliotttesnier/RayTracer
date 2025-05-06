@@ -7,22 +7,22 @@
 
 #include "APrimitive.hpp"
 
-const std::string APrimitive::getName()
+const std::string APrimitive::getName() const
 {
     return _name;
 }
 
-const std::string APrimitive::getType()
+const std::string APrimitive::getType() const
 {
     return _type;
 }
 
-const Math::Point3D APrimitive::getPosition()
+const Math::Point3D APrimitive::getPosition() const
 {
     return _position;
 }
 
-const Math::Vector3D APrimitive::getRotation()
+const Math::Vector3D APrimitive::getRotation() const
 {
     return _rotation;
 }

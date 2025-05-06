@@ -23,10 +23,10 @@ class APrimitive : public IPrimitive {
         virtual ~APrimitive() = default;
 
         // Getters
-        const std::string getName() override;
-        const std::string getType() override;
-        const Math::Point3D getPosition() override;
-        const Math::Vector3D getRotation() override;
+        const std::string getName() const override;
+        const std::string getType() const override;
+        const Math::Point3D getPosition() const override;
+        const Math::Vector3D getRotation() const override;
 
         // Setters
         void setName(const std::string &name) override;

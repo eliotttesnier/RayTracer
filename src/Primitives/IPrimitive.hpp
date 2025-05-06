@@ -25,10 +25,10 @@ class IPrimitive {
         virtual ~IPrimitive() = default;
 
         // Getters
-        virtual const std::string getName() = 0;
-        virtual const std::string getType() = 0;
-        virtual const Math::Point3D getPosition() = 0;
-        virtual const Math::Vector3D getRotation() = 0;
+        virtual const std::string getName() const = 0;
+        virtual const std::string getType() const = 0;
+        virtual const Math::Point3D getPosition() const = 0;
+        virtual const Math::Vector3D getRotation() const = 0;
 
         // Setters
         virtual void setName(const std::string &name) = 0;
