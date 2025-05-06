@@ -30,4 +30,7 @@ target_include_directories(Sphere PRIVATE
         ./
 )
 
+target_include_directories(Torus PRIVATE
+        ./
+)
 
