@@ -5,6 +5,7 @@ set(PRIMITIVE_FACTORY_SRC
     CylinderFactory.cpp
     ConeFactory.cpp
     TorusFactory.cpp
+    TanglecubeFactory.cpp
 )
 
 set(PRIMITIVE_FACTORY_INC
@@ -15,6 +16,7 @@ set(PRIMITIVE_FACTORY_INC
     CylinderFactory.hpp
     ConeFactory.hpp
     TorusFactory.hpp
+    TanglecubeFactory.hpp
 )
 
 add_library(PrimitivesFactory STATIC ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})
