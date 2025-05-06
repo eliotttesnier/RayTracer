@@ -131,27 +131,30 @@ std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<do
 {
     std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> directionalData;
     const auto &directional = root["lights"]["directional"];
-    const auto &s = directional[0];
-    double intensity = s["intensity"];
-    const auto &direction = s["direction"];
-    double dx = direction["x"];
-    double dy = direction["y"];
-    double dz = direction["z"];
-    const auto &position = s["position"];
-    double px = position["x"];
-    double py = position["y"];
-    double pz = position["z"];
-    const auto &color = s["color"];
-    int cr = color["r"];
-    int cg = color["g"];
-    int cb = color["b"];
-    directionalData.emplace_back(intensity, std::make_tuple(px, py, pz), std::make_tuple(dx, dy, dz), std::make_tuple(cr, cg, cb));
+
+    for (int i = 0; i < directional.getLength(); ++i) {
+        const auto &s = directional[i];
+        double intensity = s["intensity"];
+        const auto &direction = s["direction"];
+        double dx = direction["x"];
+        double dy = direction["y"];
+        double dz = direction["z"];
+        const auto &position = s["position"];
+        double px = position["x"];
+        double py = position["y"];
+        double pz = position["z"];
+        const auto &color = s["color"];
+        int cr = color["r"];
+        int cg = color["g"];
+        int cb = color["b"];
+        directionalData.emplace_back(intensity, std::make_tuple(px, py, pz), std::make_tuple(dx, dy, dz), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
-    std::cout << "Directional Light: intensity= "<< intensity
-              << ", direction(" << dx << ", " << dy << ", " << dz << ")"
-              << ", position(" << px << ", " << py << ", " << pz << ")"
-              << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+        std::cout << "Directional Light " << i << ": intensity= "<< intensity
+                  << ", direction(" << dx << ", " << dy << ", " << dz << ")"
+                  << ", position(" << px << ", " << py << ", " << pz << ")"
+                  << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
 #endif
+    }
     return directionalData;
 }
 

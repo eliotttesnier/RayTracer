@@ -56,13 +56,32 @@ namespace RayTracer::light {
         float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
         specularFactor = pow(specularFactor, specularShininess) * specularStrength * _intensity;
 
-        lightContribution.r += baseColor.r * diffuseFactor * _r;
-        lightContribution.g += baseColor.g * diffuseFactor * _g;
-        lightContribution.b += baseColor.b * diffuseFactor * _b;
+        bool isWhiteLight = (_r > 0.9f && _g > 0.9f && _b > 0.9f);
 
-        lightContribution.r += 255.0 * specularFactor;
-        lightContribution.g += 255.0 * specularFactor;
-        lightContribution.b += 255.0 * specularFactor;
+        if (isWhiteLight) {
+            lightContribution.r += baseColor.r * diffuseFactor;
+            lightContribution.g += baseColor.g * diffuseFactor;
+            lightContribution.b += baseColor.b * diffuseFactor;
+
+            float specValue = 255.0f * specularFactor;
+            lightContribution.r += specValue;
+            lightContribution.g += specValue;
+            lightContribution.b += specValue;
+        } else {
+            float scaledIntensity = _intensity * _intensity * 0.1f;
+
+            float objectColorWeight = 1.0f - scaledIntensity;
+            float lightColorWeight = scaledIntensity * 0.2f;
+
+            lightContribution.r += (baseColor.r * objectColorWeight + (_r * 255.0f * lightColorWeight * 0.3f)) * diffuseFactor;
+            lightContribution.g += (baseColor.g * objectColorWeight + (_g * 255.0f * lightColorWeight * 0.3f)) * diffuseFactor;
+            lightContribution.b += (baseColor.b * objectColorWeight + (_b * 255.0f * lightColorWeight * 0.3f)) * diffuseFactor;
+
+            float specScaling = 0.1f;
+            lightContribution.r += _r * 255.0f * specularFactor * specScaling;
+            lightContribution.g += _g * 255.0f * specularFactor * specScaling;
+            lightContribution.b += _b * 255.0f * specularFactor * specScaling;
+        }
 
         return lightContribution;
     }
