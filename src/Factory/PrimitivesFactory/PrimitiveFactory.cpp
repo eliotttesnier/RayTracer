@@ -30,7 +30,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Planes
     for (const auto& plane : config.getPlanes()) {
-        auto [axis, position, size, color] = plane;
+        auto [axis, position, rotation, size, color] = plane;
         Math::Point3D pos = Math::Point3D(std::get<0>(position), std::get<1>(position), std::get<2>(position));;
         Math::Vector3D rot = Math::Vector3D(0, 0, 0);
 
@@ -44,7 +44,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Cylinders
     for (const auto& cylinder : config.getCylinders()) {
-        auto [posRad, color] = cylinder;
+        auto [posRad, rotation, color] = cylinder;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
 
@@ -58,7 +58,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Cone
     for (const auto &cone : config.getCone()) {
-        auto [posRad, color] = cone;
+        auto [posRad, rotation, color] = cone;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
 
@@ -72,7 +72,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     
     // Torus
     for (const auto &torus : config.getTorus()) {
-        auto [posRad, color] = torus;
+        auto [posRad, rotation, color] = torus;
         auto [x, y, z, majorRadius, minorRadius] = posRad;
         Math::Point3D pos(x, y, z);
 

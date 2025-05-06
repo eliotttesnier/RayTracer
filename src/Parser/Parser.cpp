@@ -32,7 +32,7 @@ void RayTracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
 
 void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
-    std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
+    std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
@@ -49,7 +49,7 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
 #endif
     }
 
-    std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> planesVector;
+    std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> planesVector;
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
@@ -57,56 +57,65 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
         double posx = p["x"];
         double posy = p["y"];
         double posz = p["z"];
+        double rx = p["rx"];
+        double ry = p["ry"];
+        double rz = p["rz"];
         const auto &color = p["color"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
         double width = p["width"];
         double height = p["height"];
-        planesVector.emplace_back(axis[0], std::make_tuple(posx, posy, posz), std::make_tuple(width, height), std::make_tuple(cr, cg, cb));
+        planesVector.emplace_back(axis[0], std::make_tuple(posx, posy, posz), std::make_tuple(rx, ry, rz), std::make_tuple(width, height), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
         std::cout << "Plane: axis=" << axis << ", positionx=" << posx << ", positiony=" << posy << ", positionz= << posz"
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
 
-    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> cylinderVector;
+    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> cylinderVector;
     const auto &cylinder = root["primitives"]["cylinders"];
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
         double px = s["x"];
         double py = s["y"];
         double pz = s["z"];
+        double rx = s["rx"];
+        double ry = s["ry"];
+        double rz = s["rz"];
         double radius = s["r"];
         double height = s["h"];
         const auto &color = s["color"];
         int cr = color["r"], cg = color["g"], cb = color["b"];
-        cylinderVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
+        cylinderVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
         std::cout << "Cylinder: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
 
-    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> coneVector;
+    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> coneVector;
     const auto &cone = root["primitives"]["cones"];
     for (int i = 0; i < cone.getLength(); ++i) {
         const auto &s = cone[i];
         double px = s["x"];
         double py = s["y"];
         double pz = s["z"];
+        double rx = s["rx"];
+        double ry = s["ry"];
+        double rz = s["rz"];
         double radius = s["r"];
         double height = s["h"];
         const auto &color = s["color"];
         int cr = color["r"], cg = color["g"], cb = color["b"];
-        coneVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(cr, cg, cb));
+        coneVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
         std::cout << "Cone: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
 
-    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> torusVector;
+    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> torusVector;
     try {
         const auto &torus = root["primitives"]["toruses"];
         for (int i = 0; i < torus.getLength(); ++i) {
@@ -114,11 +123,14 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
             double px = s["x"];
             double py = s["y"];
             double pz = s["z"];
+            double rx = s["rx"];
+            double ry = s["ry"];
+            double rz = s["rz"];
             double majorRadius = s["R"];
             double minorRadius = s["r"];
             const auto &color = s["color"];
             int cr = color["r"], cg = color["g"], cb = color["b"];
-            torusVector.emplace_back(std::make_tuple(px, py, pz, majorRadius, minorRadius), std::make_tuple(cr, cg, cb));
+            torusVector.emplace_back(std::make_tuple(px, py, pz, majorRadius, minorRadius), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
 #ifdef _DEBUG
             std::cout << "Torus: pos(" << px << ", " << py << ", " << pz 
                       << "), R=" << majorRadius << ", r=" << minorRadius
