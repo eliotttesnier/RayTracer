@@ -32,17 +32,17 @@ namespace RayTracer::light {
         Math::Vector3D lightDir = -_direction.normalized();
         return !isInShadow(hitPoint, lightDir, primitives);
     }
-    
+
     Graphic::color_t DirectionalLight::calculateLighting(
         const Math::hitdata_t& hitData,
         const Math::Ray& ray,
         const Math::Vector3D& viewDir
-    ) const 
+    ) const
     {
         const float diffuseStrength = 0.7f;
         const float specularStrength = 0.3f;
         const int specularShininess = 32;
-        
+
         Graphic::color_t baseColor = hitData.color;
         Graphic::color_t lightContribution = {0.0, 0.0, 0.0, baseColor.a};
 
@@ -56,16 +56,14 @@ namespace RayTracer::light {
         float specularFactor = std::max(0.0f, static_cast<float>(normal.dot(halfwayDir)));
         specularFactor = pow(specularFactor, specularShininess) * specularStrength * _intensity;
 
-        // Add diffuse contribution
         lightContribution.r += baseColor.r * diffuseFactor * _r;
         lightContribution.g += baseColor.g * diffuseFactor * _g;
         lightContribution.b += baseColor.b * diffuseFactor * _b;
 
-        // Add specular contribution (white highlights)
         lightContribution.r += 255.0 * specularFactor;
         lightContribution.g += 255.0 * specularFactor;
         lightContribution.b += 255.0 * specularFactor;
-        
+
         return lightContribution;
     }
 }
