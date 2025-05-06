@@ -159,8 +159,45 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
         std::cerr << "[WARNING] Tanglecube setting type error: " << e.what() << std::endl;
     }
 
+    std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> triangleVector;
+    try {
+        const auto &triangles = root["primitives"]["triangles"];
+        for (int i = 0; i < triangles.getLength(); ++i) {
+            const auto &t = triangles[i];
+            const auto &p1 = t["p1"];
+            const auto &p2 = t["p2"];
+            const auto &p3 = t["p3"];
+            double p1x = p1["x"], p1y = p1["y"], p1z = p1["z"];
+            double p2x = p2["x"], p2y = p2["y"], p2z = p2["z"];
+            double p3x = p3["x"], p3y = p3["y"], p3z = p3["z"];
+            const auto &color = t["color"];
+            int cr = color["r"], cg = color["g"], cb = color["b"];
+            triangleVector.emplace_back(
+                std::make_tuple(
+                    std::make_tuple(p1x, p1y, p1z),
+                    std::make_tuple(p2x, p2y, p2z),
+                    std::make_tuple(p3x, p3y, p3z)
+                ),
+                std::make_tuple(cr, cg, cb)
+            );
+#ifdef _DEBUG
+            std::cout << "Triangle: p1(" << p1x << "," << p1y << "," << p1z << "), "
+                      << "p2(" << p2x << "," << p2y << "," << p2z << "), "
+                      << "p3(" << p3x << "," << p3y << "," << p3z << "), "
+                      << "color(" << cr << "," << cg << "," << cb << ")\n";
+#endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+#ifdef _DEBUG
+        std::cout << "No triangles found in config" << std::endl;
+#endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Triangle setting type error: " << e.what() << std::endl;
+    }
+
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
-        spheresVector, planesVector, cylinderVector, coneVector, torusVector, tanglecubeVector);
+        spheresVector, planesVector, cylinderVector, coneVector, 
+        torusVector, tanglecubeVector, triangleVector);
 }
 
 std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::Parser::_getAmbientData(const libconfig::Setting &root)
