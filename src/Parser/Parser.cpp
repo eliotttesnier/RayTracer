@@ -48,7 +48,7 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                   << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
 #endif
     }
-    
+
     std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> planesVector;
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
@@ -106,7 +106,61 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
 #endif
     }
 
-    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(spheresVector, planesVector, cylinderVector, coneVector);
+    std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> torusVector;
+    try {
+        const auto &torus = root["primitives"]["toruses"];
+        for (int i = 0; i < torus.getLength(); ++i) {
+            const auto &s = torus[i];
+            double px = s["x"];
+            double py = s["y"];
+            double pz = s["z"];
+            double majorRadius = s["R"];
+            double minorRadius = s["r"];
+            const auto &color = s["color"];
+            int cr = color["r"], cg = color["g"], cb = color["b"];
+            torusVector.emplace_back(std::make_tuple(px, py, pz, majorRadius, minorRadius), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+            std::cout << "Torus: pos(" << px << ", " << py << ", " << pz 
+                      << "), R=" << majorRadius << ", r=" << minorRadius
+                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+#ifdef _DEBUG
+        std::cout << "No toruses found in config" << std::endl;
+#endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Torus setting type error: " << e.what() << std::endl;
+    }
+
+    std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> tanglecubeVector;
+    try {
+        const auto &tanglecube = root["primitives"]["tanglecubes"];
+        for (int i = 0; i < tanglecube.getLength(); ++i) {
+            const auto &s = tanglecube[i];
+            double px = s["x"];
+            double py = s["y"];
+            double pz = s["z"];
+            double size = s["size"];
+            const auto &color = s["color"];
+            int cr = color["r"], cg = color["g"], cb = color["b"];
+            tanglecubeVector.emplace_back(std::make_tuple(px, py, pz, size), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+            std::cout << "Tanglecube: pos(" << px << ", " << py << ", " << pz 
+                      << "), size=" << size
+                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+#ifdef _DEBUG
+        std::cout << "No tanglecubes found in config" << std::endl;
+#endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Tanglecube setting type error: " << e.what() << std::endl;
+    }
+
+    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
+        spheresVector, planesVector, cylinderVector, coneVector, torusVector, tanglecubeVector);
 }
 
 std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::Parser::_getAmbientData(const libconfig::Setting &root)
