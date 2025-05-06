@@ -30,4 +30,6 @@ target_include_directories(Sphere PRIVATE
         ./
 )
 
-
+target_include_directories(Triangles PRIVATE
+        ./
+)
