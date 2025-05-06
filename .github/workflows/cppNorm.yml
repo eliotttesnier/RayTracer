@@ -14,11 +14,15 @@ on:
 jobs:
   check_coding_style:
     name: "Check coding style"
+
     runs-on: ubuntu-latest
+
     container: ghcr.io/epitech/coding-style-checker:latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
+
       - name: Run coding style checker
         run: |
           check.sh "$(pwd)" "$(pwd)"
@@ -39,23 +43,33 @@ jobs:
             exit 1
           fi
           rm "$tmpfile"
+
   cpplint:
     runs-on: ubuntu-latest
 
+    container:
+      image: ghcr.io/epitech/coding-style-checker:latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4.1.1
+      - name: checkout@v4
+        uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.x
-
-      - name: Install cpplint
+      - name: Dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install cpplint
+          apt update && apt install -y python3-pip
+          pip install --break-system-packages cpplint
+          chmod +x styleChecker.sh
 
-      - name: Run cpplint
+      - name: Check Coding Style
         run: |
           ./shell/styleChecker.sh
+
+      - name: Verify Coding Style
+        run: |
+          if [ -s coding-style-cpp-reports.log ]; then
+            echo "Coding style errors found. See coding-style-cpp-reports.log for details."
+            cat coding-style-cpp-reports.log
+            exit 1
+          else
+            echo "No coding style errors found."
+          fi
