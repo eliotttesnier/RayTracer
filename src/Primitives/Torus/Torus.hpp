@@ -8,20 +8,16 @@
 #ifndef RAYTRACER_TORUS_HPP
 #define RAYTRACER_TORUS_HPP
 
-#include "../IPrimitive.hpp"
+#include "../APrimitive.hpp"
 
 namespace RayTracer::primitive {
 
-class Torus : public IPrimitive {
+class Torus : public APrimitive {
     public:
         Torus();
         Torus(const Math::Point3D &position, double majorRadius = 1.0, double minorRadius = 0.25);
         ~Torus() = default;
 
-        std::string &getName() override;
-        std::string &getType() override;
-        Math::Point3D &getPosition() override;
-        Math::Vector3D &getRotation() override;
         double getMajorRadius() const;
         double getMinorRadius() const;
 
@@ -34,10 +30,6 @@ class Torus : public IPrimitive {
 
     private:
         //attributes
-        std::string _name;
-        std::string _type;
-        Math::Point3D _position;
-        Math::Vector3D _rotation;
         double _majorRadius;
         double _minorRadius;
 };

@@ -33,26 +33,6 @@ Torus::Torus(const Math::Point3D &position, double majorRadius, double minorRadi
     _minorRadius = minorRadius;
 }
 
-std::string &Torus::getName()
-{
-    return _name;
-}
-
-std::string &Torus::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Torus::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Torus::getRotation()
-{
-    return _rotation;
-}
-
 double Torus::getMajorRadius() const
 {
     return _majorRadius;
