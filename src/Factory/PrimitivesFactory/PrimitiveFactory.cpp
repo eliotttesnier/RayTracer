@@ -8,6 +8,8 @@
 #include "SphereFactory.hpp"
 #include "CylinderFactory.hpp"
 #include "ConeFactory.hpp"
+#include "TorusFactory.hpp"
+#include "TanglecubeFactory.hpp"
 
 std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
@@ -68,5 +70,34 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 #endif
         primitives.emplace_back(factory.create(plugins));
     }
+
+    // Torus
+    for (const auto &torus : config.getTorus()) {
+        auto [posRad, color] = torus;
+        auto [x, y, z, majorRadius, minorRadius] = posRad;
+        Math::Point3D pos(x, y, z);
+
+        RayTracer::Factory::TorusFactory factory(pos, majorRadius, minorRadius);
+        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a torus" << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+
+    // Tanglecube
+    for (const auto &tanglecube : config.getTanglecube()) {
+        auto [posSize, color] = tanglecube;
+        auto [x, y, z, size] = posSize;
+        Math::Point3D pos(x, y, z);
+
+        RayTracer::Factory::TanglecubeFactory factory(pos, size);
+        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+#ifdef _DEBUG
+        std::cout << "Creating a tanglecube" << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+
     return primitives;
 }

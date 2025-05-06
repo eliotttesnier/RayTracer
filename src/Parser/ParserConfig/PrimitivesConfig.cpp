@@ -8,12 +8,16 @@ RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
     const std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> &plane,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cylinders,
-    const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone
+    const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone,
+    const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &torus,
+    const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &tanglecube
 ):
     _sphere(sphere),
     _cylinders(cylinders),
     _cone(cone),
-    _plane(plane)
+    _plane(plane),
+    _torus(torus),
+    _tanglecube(tanglecube)
 {
 }
 
@@ -34,4 +38,12 @@ std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int
 
 std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getPlanes() const {
     return this->_plane;
+}
+
+std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getTorus() const {
+    return this->_torus;
+}
+
+std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getTanglecube() const {
+    return this->_tanglecube;
 }
