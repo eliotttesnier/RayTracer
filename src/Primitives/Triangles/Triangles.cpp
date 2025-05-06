@@ -47,26 +47,6 @@ void Triangles::setPoints(const Math::Point3D &p1, const Math::Point3D &p2, cons
     _normal.normalize();
 }
 
-std::string &Triangles::getName()
-{
-    return _name;
-}
-
-std::string &Triangles::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Triangles::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Triangles::getRotation()
-{
-    return _rotation;
-}
-
 Math::Vector3D Triangles::getNormal() const
 {
     return _normal;
