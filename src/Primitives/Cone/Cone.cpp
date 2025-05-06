@@ -119,10 +119,11 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
         }
     }
 
-    // Base circle intersection
+    // Base circle intersection (now at top)
     double base_t = std::numeric_limits<double>::infinity();
     if (std::abs(ray.direction._y) > 0.001) {
-        double t = (_position._y - ray.origin._y) / ray.direction._y;
+        // Changed to check intersection at top (position + height)
+        double t = (_position._y + _height - ray.origin._y) / ray.direction._y;
         if (t > 0.001) {
             double x = ray.origin._x + t * ray.direction._x - _position._x;
             double z = ray.origin._z + t * ray.direction._z - _position._z;
@@ -144,7 +145,7 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
         );
         
         if (t == base_t) {
-            hitData.normal = Math::Vector3D(0, -1, 0);
+            hitData.normal = Math::Vector3D(0, 1, 0);  // Changed normal to point upward
         } else {
             hitData.normal = normalAt(hitData.point);
         }
