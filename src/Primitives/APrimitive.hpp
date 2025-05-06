@@ -23,10 +23,16 @@ class APrimitive : public IPrimitive {
         virtual ~APrimitive() = default;
 
         // Getters
-        std::string &getName() override;
-        std::string &getType() override;
-        Math::Point3D &getPosition() override;
-        Math::Vector3D &getRotation() override;
+        const std::string getName() override;
+        const std::string getType() override;
+        const Math::Point3D getPosition() override;
+        const Math::Vector3D getRotation() override;
+
+        // Setters
+        void setName(const std::string &name) override;
+        void setType(const std::string &type) override;
+        void setPosition(const Math::Point3D &position) override;
+        void setRotation(const Math::Vector3D &rotation) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;

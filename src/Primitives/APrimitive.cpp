@@ -7,24 +7,44 @@
 
 #include "APrimitive.hpp"
 
-std::string &APrimitive::getName()
+const std::string APrimitive::getName()
 {
     return _name;
 }
 
-std::string &APrimitive::getType()
+const std::string APrimitive::getType()
 {
     return _type;
 }
 
-Math::Point3D &APrimitive::getPosition()
+const Math::Point3D APrimitive::getPosition()
 {
     return _position;
 }
 
-Math::Vector3D &APrimitive::getRotation()
+const Math::Vector3D APrimitive::getRotation()
 {
     return _rotation;
+}
+
+void APrimitive::setName(const std::string &name)
+{
+    _name = name;
+}
+
+void APrimitive::setType(const std::string &type)
+{
+    _type = type;
+}
+
+void APrimitive::setPosition(const Math::Point3D &position)
+{
+    _position = position;
+}
+
+void APrimitive::setRotation(const Math::Vector3D &rotation)
+{
+    _rotation = rotation;
 }
 
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
