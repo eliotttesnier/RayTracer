@@ -8,11 +8,11 @@
 #ifndef RAYTRACER_TRIANGLES_HPP
 #define RAYTRACER_TRIANGLES_HPP
 
-#include "../IPrimitive.hpp"
+#include "../APrimitive.hpp"
 
 namespace RayTracer::primitive {
 
-class Triangles : public IPrimitive {
+class Triangles : public APrimitive {
     public:
         // Constructors & Destructors
         Triangles();
@@ -20,10 +20,6 @@ class Triangles : public IPrimitive {
         ~Triangles() = default;
 
         // Getters
-        std::string &getName() override;
-        std::string &getType() override;
-        Math::Point3D &getPosition() override;
-        Math::Vector3D &getRotation() override;
         Math::Vector3D getNormal() const;
 
         // Setters
