@@ -16,6 +16,7 @@ namespace Parser {
         std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> _cone; // Position + radius + height, Color
         std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> _plane; // axis, position, Color
         std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> _torus; // Position + major radius + minor radius, Color
+        std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> _tanglecube; // Position + size, Color
     public:
         std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> getSpheres() const;
 
@@ -27,12 +28,15 @@ namespace Parser {
 
         std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> getTorus() const;
 
+        std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> getTanglecube() const;
+
         PrimitivesConfig() = delete;
         PrimitivesConfig(const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &sphere,
                          const std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> &plane,
                          const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cylinders,
                          const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone,
-                         const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &torus);
+                         const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &torus,
+                         const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &tanglecube);
         ~PrimitivesConfig() = default;
     };
 
