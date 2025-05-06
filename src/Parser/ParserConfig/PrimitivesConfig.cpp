@@ -10,14 +10,16 @@ RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cylinders,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &torus,
-    const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &tanglecube
+    const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &tanglecube,
+    const std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> &triangles
 ):
     _sphere(sphere),
     _cylinders(cylinders),
     _cone(cone),
     _plane(plane),
     _torus(torus),
-    _tanglecube(tanglecube)
+    _tanglecube(tanglecube),
+    _triangles(triangles)
 {
 }
 
@@ -46,4 +48,9 @@ std::vector<std::pair<std::tuple<double, double, double, double, double>, std::t
 
 std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getTanglecube() const {
     return this->_tanglecube;
+}
+
+std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> 
+RayTracer::Parser::PrimitivesConfig::getTriangles() const {
+    return this->_triangles;
 }

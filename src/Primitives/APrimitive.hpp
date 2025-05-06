@@ -18,7 +18,7 @@ class APrimitive : public IPrimitive {
         std::string _type;
         Math::Point3D _position;
         Math::Vector3D _rotation;
-    
+
     public:
         virtual ~APrimitive() = default;
 

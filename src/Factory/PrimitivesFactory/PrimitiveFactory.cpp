@@ -10,6 +10,7 @@
 #include "ConeFactory.hpp"
 #include "TorusFactory.hpp"
 #include "TanglecubeFactory.hpp"
+#include "TrianglesFactory.hpp"
 
 std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
@@ -99,5 +100,19 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         primitives.emplace_back(factory.create(plugins));
     }
 
+    // Triangles
+    for (const auto &triangle : config.getTriangles()) {
+        auto [points, color] = triangle;
+        auto [p1, p2, p3] = points;
+        Math::Point3D point1(std::get<0>(p1), std::get<1>(p1), std::get<2>(p1));
+        Math::Point3D point2(std::get<0>(p2), std::get<1>(p2), std::get<2>(p2));
+        Math::Point3D point3(std::get<0>(p3), std::get<1>(p3), std::get<2>(p3));
+
+        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3);
+#ifdef _DEBUG
+        std::cout << "Creating a triangle" << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
     return primitives;
 }

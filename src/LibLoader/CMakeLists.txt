@@ -33,7 +33,9 @@ target_include_directories(Sphere PRIVATE
 target_include_directories(Torus PRIVATE
         ./
 )
-
+target_include_directories(Triangles PRIVATE
+        ./
+)
 target_include_directories(Tanglecube PRIVATE
         ./
 )
