@@ -2,6 +2,7 @@ add_library(Triangles SHARED
     Triangles.cpp
     Triangles.hpp
     EntryPoint.cpp
+    ../APrimitive.cpp
 )
 
 target_include_directories(Triangles PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
