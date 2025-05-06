@@ -81,6 +81,7 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
     Math::hitdata_t hitData;
     hitData.hit = false;
 
+    // Cone surface intersection
     double k = _radius / _height;
     k = k * k;
 
@@ -101,23 +102,39 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
                oc._z * oc._z;
 
     double discriminant = b * b - 4 * a * c;
+    double cone_t = std::numeric_limits<double>::infinity();
 
-    if (discriminant < 0)
-        return hitData;
+    if (discriminant >= 0) {
+        double sqrtd = sqrt(discriminant);
+        double t1 = (-b - sqrtd) / (2.0 * a);
+        double t2 = (-b + sqrtd) / (2.0 * a);
 
-    double sqrtd = sqrt(discriminant);
-    double t1 = (-b - sqrtd) / (2.0 * a);
-    double t2 = (-b + sqrtd) / (2.0 * a);
+        double y1 = ray.origin._y + t1 * ray.direction._y - _position._y;
+        double y2 = ray.origin._y + t2 * ray.direction._y - _position._y;
 
-    double y1 = ray.origin._y + t1 * ray.direction._y - _position._y;
-    double y2 = ray.origin._y + t2 * ray.direction._y - _position._y;
+        if (y1 >= 0 && y1 <= _height && t1 > 0.001) {
+            cone_t = t1;
+        } else if (y2 >= 0 && y2 <= _height && t2 > 0.001) {
+            cone_t = t2;
+        }
+    }
 
-    if ((y1 < 0 || y1 > _height) && (y2 < 0 || y2 > _height))
-        return hitData;
+    // Base circle intersection
+    double base_t = std::numeric_limits<double>::infinity();
+    if (std::abs(ray.direction._y) > 0.001) {
+        double t = (_position._y - ray.origin._y) / ray.direction._y;
+        if (t > 0.001) {
+            double x = ray.origin._x + t * ray.direction._x - _position._x;
+            double z = ray.origin._z + t * ray.direction._z - _position._z;
+            if (x * x + z * z <= _radius * _radius) {
+                base_t = t;
+            }
+        }
+    }
 
-    double t = (t1 < t2 && y1 >= 0 && y1 <= _height) ? t1 : t2;
-
-    if (t > 0.001) {
+    // Use the closest intersection
+    double t = std::min(cone_t, base_t);
+    if (std::isfinite(t)) {
         hitData.hit = true;
         hitData.distance = t;
         hitData.point = Math::Point3D(
@@ -125,9 +142,15 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
             ray.origin._y + t * ray.direction._y,
             ray.origin._z + t * ray.direction._z
         );
-        hitData.normal = normalAt(hitData.point);
+        
+        if (t == base_t) {
+            hitData.normal = Math::Vector3D(0, -1, 0);
+        } else {
+            hitData.normal = normalAt(hitData.point);
+        }
     }
-    hitData.color = {0.0, 255.0, 0.0, 1.0}; // Green
+
+    hitData.color = {0.0, 255.0, 0.0, 1.0};
     return hitData;
 }
 
