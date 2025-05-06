@@ -32,26 +32,6 @@ Tanglecube::Tanglecube(const Math::Point3D &position, double size)
     _size = size;
 }
 
-std::string &Tanglecube::getName()
-{
-    return _name;
-}
-
-std::string &Tanglecube::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Tanglecube::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Tanglecube::getRotation()
-{
-    return _rotation;
-}
-
 double Tanglecube::getSize() const
 {
     return _size;

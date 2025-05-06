@@ -2,6 +2,7 @@ add_library(Tanglecube SHARED
     Tanglecube.cpp
     Tanglecube.hpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 add_custom_command(TARGET Tanglecube POST_BUILD

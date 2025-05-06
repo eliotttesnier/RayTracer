@@ -23,26 +23,6 @@ Cone::Cone(const Math::Point3D &position, double radius, double height)
     _height = height;
 }
 
-std::string &Cone::getName()
-{
-    return _name;
-}
-
-std::string &Cone::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Cone::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Cone::getRotation()
-{
-    return _rotation;
-}
-
 double Cone::getRadius() const
 {
     return _radius;

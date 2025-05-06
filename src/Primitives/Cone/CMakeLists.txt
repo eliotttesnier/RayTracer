@@ -2,6 +2,7 @@ add_library(Cone SHARED
     Cone.cpp
     Cone.hpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 target_include_directories(Cone PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

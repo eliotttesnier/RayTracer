@@ -25,22 +25,6 @@ Sphere::Sphere(const Math::Point3D &position, double radius) {
     _radius = radius;
 }
 
-std::string &Sphere::getName() {
-    return _name;
-}
-
-std::string &Sphere::getType() {
-    return _type;
-}
-
-Math::Point3D &Sphere::getPosition() {
-    return _position;
-}
-
-Math::Vector3D &Sphere::getRotation() {
-    return _rotation;
-}
-
 double Sphere::getRadius() const {
     return _radius;
 }
