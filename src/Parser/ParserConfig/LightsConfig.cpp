@@ -3,6 +3,7 @@
 //
 
 #include "LightsConfig.hpp"
+#include <iostream>
 
 RayTracer::Parser::LightsConfig::LightsConfig(
 const std::tuple<double, std::tuple<int, int, int>> &ambient,

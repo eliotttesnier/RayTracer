@@ -21,14 +21,23 @@ namespace RayTracer::light {
 
             bool intersect(
                 const Math::Ray &ray,
-                Math::Point3D &hitPoint,
+                const Math::Point3D &hitPoint,
                 std::vector<std::shared_ptr<IPrimitive>> primitives
             ) const override;
 
             void setDirection(const Math::Vector3D &direction) override;
-            Math::Vector3D getDirection() const;
+            Math::Vector3D getDirection() const override;
+            
+            std::string getType() override { return "DirectionalLight"; }
+            
+            // Implement the light-specific calculation
+            Graphic::color_t calculateLighting(
+                const Math::hitdata_t& hitData,
+                const Math::Ray& ray,
+                const Math::Vector3D& viewDir
+            ) const override;
     };
 
-} // Raytracer
+} // RayTracer
 
 #endif //DIRECTIONALLIGHT_HPP

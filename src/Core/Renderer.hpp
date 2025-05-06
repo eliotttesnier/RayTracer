@@ -14,15 +14,18 @@
 #include <thread>
 #include <mutex>
 #include "../Primitives/IPrimitive.hpp"
+#include "../Lights/ILight.hpp"
 #include "../Graphic/Camera.hpp"
 #include "../Graphic/Color.hpp"
 
 class Renderer {
     public:
-        Renderer(const RayTracer::Camera& camera, const std::vector<std::shared_ptr<IPrimitive>>& primitives);
+        Renderer(const std::shared_ptr<RayTracer::Camera> camera, const std::vector<std::shared_ptr<IPrimitive>> primitives,
+                const std::vector<std::shared_ptr<ILight>> lights);
         ~Renderer();
 
-        void setCamera(const RayTracer::Camera& camera);
+        void setCamera(const std::shared_ptr<RayTracer::Camera> camera);
+        void setLight(const std::vector<std::shared_ptr<ILight>> &lights);
         void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives);
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
@@ -32,14 +35,17 @@ class Renderer {
     private:
         void renderSegment(int startY, int endY);
         void saveToFile();
+        Graphic::color_t calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray);
 
-        RayTracer::Camera _camera;
+        std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
+        std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::vector<Graphic::color_t>> _pixelBuffer;
         std::string _outputFile;
         int _width;
         int _height;
         double _aspectRatio;
+        double _fov;
         std::mutex _mutex;
 };
 

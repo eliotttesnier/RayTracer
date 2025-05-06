@@ -5,16 +5,17 @@
 #include <iostream>
 #include "CameraFactory.hpp"
 
-std::unique_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
+std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
     const RayTracer::Parser::CameraConfig &config)
 {
     auto [x, y, z] = config.getPosition();
     auto [rx, ry, rz] = config.getRotation();
     Math::Point3D pos(x, y, z);
-    auto cam = std::make_unique<RayTracer::Camera>();
+    auto cam = std::make_shared<RayTracer::Camera>();
 
     cam->origin = pos;
     cam->resolution = config.getResolution();
+    cam->fov = config.getFov();
     cam->rotateX(rx);
     cam->rotateY(ry);
     cam->rotateZ(rz);

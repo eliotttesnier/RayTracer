@@ -19,6 +19,7 @@ class Camera {
         Math::Point3D origin;
         RayTracer::Rectangle3D screen;
         std::tuple<int, int> resolution;
+        double fov;
 
         Camera();
         Camera(const Math::Point3D &origin, const RayTracer::Rectangle3D &screen);
@@ -26,12 +27,14 @@ class Camera {
         Camera &operator=(const Camera &other);
         ~Camera() = default;
 
-    void rotateX(double degrees);
+        void rotateX(double degrees);
         void rotateY(double degrees);
         void rotateZ(double degrees);
         void tilt(double degrees);
         void pan(double degrees);
         void roll(double degrees);
+        std::tuple<int, int> getResolution() const;
+        double getFov() const;
 
         Math::Ray ray(double u, double v) const;
 };

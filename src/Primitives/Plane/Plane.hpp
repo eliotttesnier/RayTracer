@@ -13,7 +13,7 @@ namespace RayTracer::primitive {
 class Plane : public IPrimitive {
 public:
     Plane();
-    Plane(const Math::Point3D &position, const Math::Vector3D &rotation);
+    Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size);
     ~Plane() = default;
 
     std::string &getName() override;
@@ -32,9 +32,9 @@ private:
     std::string _type;
     Math::Point3D _position;
     Math::Vector3D _rotation;
-    RayTracer::Rectangle3D _rectangle;
     double _width;
     double _height;
+    RayTracer::Rectangle3D _rectangle;
 };
 
 } // Raytracer

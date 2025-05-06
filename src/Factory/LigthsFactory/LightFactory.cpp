@@ -10,10 +10,10 @@
 #include "Lights/AmbientLight/AmbientLight.hpp"
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
-std::vector<std::unique_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
+std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
     const RayTracer::Parser::LightsConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
-    std::vector<std::unique_ptr<ILight>> lights;
+    std::vector<std::shared_ptr<ILight>> lights;
 
     const auto &ambient = config.getAmbient();
     auto [intensity, color] = ambient;

@@ -9,10 +9,10 @@
 #include "CylinderFactory.hpp"
 #include "ConeFactory.hpp"
 
-std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
+std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
-    std::vector<std::unique_ptr<IPrimitive>> primitives;
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
 
     for (const auto& sphere : config.getSpheres()) {
         auto [posRad, color] = sphere;
@@ -29,22 +29,11 @@ std::vector<std::unique_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Planes
     for (const auto& plane : config.getPlanes()) {
-        auto [axis, position, color] = plane;
-        Math::Point3D pos;
-        Math::Vector3D rot;
+        auto [axis, position, size, color] = plane;
+        Math::Point3D pos = Math::Point3D(std::get<0>(position), std::get<1>(position), std::get<2>(position));;
+        Math::Vector3D rot = Math::Vector3D(0, 0, 0);
 
-        if (axis == 'x') {
-            pos = Math::Point3D(position, 0, 0);
-            rot = Math::Vector3D(0, 0, 90);
-        } else if (axis == 'y') {
-            pos = Math::Point3D(0, position, 0);
-            rot = Math::Vector3D(0, 0, 0);
-        } else if (axis == 'z') {
-            pos = Math::Point3D(0, 0, position);
-            rot = Math::Vector3D(90, 0, 0);
-        }
-
-        RayTracer::Factory::PlaneFactory factory(pos, rot);
+        RayTracer::Factory::PlaneFactory factory(pos, rot, size);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a plane" << std::endl;

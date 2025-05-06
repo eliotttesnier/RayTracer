@@ -28,3 +28,7 @@ std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getPosition(
 std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getRotation() const {
     return this->_rotation;
 }
+
+double RayTracer::Parser::CameraConfig::getFov() const {
+    return this->_fov;
+}

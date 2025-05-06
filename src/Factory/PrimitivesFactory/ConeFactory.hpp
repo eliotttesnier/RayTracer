@@ -17,7 +17,7 @@ namespace RayTracer::Factory {
     public:
         ConeFactory(const Math::Point3D &position, double radius, double height);
 
-        std::unique_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
+        std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         Math::Point3D _position;
         double _radius;

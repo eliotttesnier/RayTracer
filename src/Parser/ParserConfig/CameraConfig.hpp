@@ -17,6 +17,8 @@ namespace Parser {
         const std::tuple<double, double, double> _rotation;
         const double _fov;
     public:
+        double getFov() const;
+
         std::tuple<int, int> getResolution() const;
 
         std::tuple<double, double, double> getPosition() const;
