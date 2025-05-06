@@ -8,20 +8,16 @@
 #ifndef RAYTRACER_TANGLECUBE_HPP
 #define RAYTRACER_TANGLECUBE_HPP
 
-#include "../IPrimitive.hpp"
+#include "../APrimitive.hpp"
 
 namespace RayTracer::primitive {
 
-class Tanglecube : public IPrimitive {
+class Tanglecube : public APrimitive {
     public:
         Tanglecube();
         Tanglecube(const Math::Point3D &position, double size = 1.0);
         ~Tanglecube() = default;
 
-        std::string &getName() override;
-        std::string &getType() override;
-        Math::Point3D &getPosition() override;
-        Math::Vector3D &getRotation() override;
         double getSize() const;
 
         void setSize(double size);
@@ -32,10 +28,6 @@ class Tanglecube : public IPrimitive {
 
     private:
         //attributes
-        std::string _name;
-        std::string _type;
-        Math::Point3D _position;
-        Math::Vector3D _rotation;
         double _size;
 };
 

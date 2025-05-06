@@ -1,39 +1,31 @@
 #ifndef RAYTRACER_CYLINDER_HPP
 #define RAYTRACER_CYLINDER_HPP
 
-#include "../IPrimitive.hpp"
+#include "../APrimitive.hpp"
 
 namespace RayTracer::primitive {
 
-class Cylinder : public IPrimitive {
+class Cylinder : public APrimitive {
     public:
-        //constructors & destructors
+        // constructors & destructors
         Cylinder();
         Cylinder(const Math::Point3D &position, double radius = 1.0, double height = 1.0);
         ~Cylinder() = default;
 
-        //getters
-        std::string &getName() override;
-        std::string &getType() override;
-        Math::Point3D &getPosition() override;
-        Math::Vector3D &getRotation() override;
+        // getters
         double getRadius() const;
         double getHeight() const;
 
-        //setters
+        // setters
         void setRadius(double radius);
         void setHeight(double height);
 
-        //methods
+        // methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
 
     private:
-        //attributes
-        std::string _name;
-        std::string _type;
-        Math::Point3D _position;
-        Math::Vector3D _rotation;
+        // attributes
         double _radius;
         double _height;
 };

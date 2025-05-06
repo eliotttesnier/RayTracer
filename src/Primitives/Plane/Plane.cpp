@@ -9,39 +9,28 @@
 namespace RayTracer::primitive {
 
 Plane::Plane()
-    : _name("plane"), _type("plane"), _position(0, 0, 0), _rotation(0, 0, 0),
-      _width(1.0), _height(1.0),
-      _rectangle(Math::Point3D(0, 0, 0), Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height))
 {
+    _name = "plane";
+    _type = "plane";
+    _position = Math::Point3D(0, 0, 0);
+    _rotation = Math::Vector3D(0, 0, 0);
+    _width = 1.0;
+    _height = 1.0;
+    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
 }
 
 Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size)
-    : _name("plane"), _type("plane"), _position(position), _rotation(rotation),
-      _width(std::get<0>(size)), _height(std::get<1>(size)),
-      _rectangle(position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height)) {
+{
+    _name = "plane";
+    _type = "plane";
+    _position = position;
+    _rotation = rotation;
+    _width = std::get<0>(size);
+    _height = std::get<1>(size);
+    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
     _rectangle.rotateXSelf(_rotation._x);
     _rectangle.rotateYSelf(_rotation._y);
     _rectangle.rotateZSelf(_rotation._z);
-}
-
-std::string &Plane::getName()
-{
-    return _name;
-}
-
-std::string &Plane::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Plane::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Plane::getRotation()
-{
-    return _rotation;
 }
 
 double Plane::getWidth() const

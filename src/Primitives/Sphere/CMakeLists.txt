@@ -2,6 +2,7 @@ add_library(Sphere SHARED
     Sphere.cpp
     Sphere.hpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 add_custom_command(TARGET Sphere POST_BUILD

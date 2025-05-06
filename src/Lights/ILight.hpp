@@ -11,10 +11,13 @@
 #include <vector>
 #include <memory>
 
+#include "../Math/HitData.hpp"
 #include "../Math/Ray.hpp"
 #include "../Math/Point3D.hpp"
 #include "../Graphic/Color.hpp"
 #include "../Primitives/IPrimitive.hpp"
+
+class IPrimitive;
 
 class ILight {
     public:

@@ -35,7 +35,6 @@ class Renderer {
     private:
         void renderSegment(int startY, int endY);
         void saveToFile();
-        Graphic::color_t calculateLighting(const Math::hitdata_t& hitData, const Math::Ray& ray);
 
         std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
