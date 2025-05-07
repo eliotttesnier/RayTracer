@@ -30,22 +30,8 @@ class Cone : public APrimitive {
     private:
         double _radius;
         double _height;
-        Math::Vector3D _anchorPoint;
 
-        Math::Ray transformRayToLocal(const Math::Ray &ray) const;
-        Math::Point3D transformPointToLocal(const Math::Point3D &point) const;
-        Math::Point3D transformPointToWorld(const Math::Point3D &localPoint) const;
-        Math::Vector3D transformNormalToWorld(const Math::Vector3D &localNormal) const;
         Math::hitdata_t calculateConeIntersection(const Math::Ray &localRay) const;
-
-        void rotatePointToLocal(Math::Point3D &point, double cosX, double sinX,
-                               double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotateVectorToLocal(Math::Vector3D &vector, double cosX, double sinX,
-                                double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotatePointToWorld(Math::Point3D &point, double cosX, double sinX,
-                               double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
-                                double cosY, double sinY, double cosZ, double sinZ) const;
 };
 
 } // namespace RayTracer::primitive
