@@ -18,6 +18,7 @@ class APrimitive : public IPrimitive {
         std::string _type;
         Math::Point3D _position;
         Math::Vector3D _rotation;
+        Math::Vector3D _scale;
 
     public:
         virtual ~APrimitive() = default;
@@ -33,6 +34,7 @@ class APrimitive : public IPrimitive {
         void setType(const std::string &type) override;
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
+        void setScale(const Math::Vector3D &scale) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;

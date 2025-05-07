@@ -29,7 +29,9 @@ Triangles::Triangles(const Math::Point3D &p1, const Math::Point3D &p2, const Mat
     setPoints(p1, p2, p3);
 }
 
-void Triangles::setPoints(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3)
+void Triangles::setPoints(const Math::Point3D &p1,
+                          const Math::Point3D &p2,
+                          const Math::Point3D &p3)
 {
     _p1 = p1;
     _p2 = p2;
@@ -92,10 +94,10 @@ Math::hitdata_t Triangles::intersect(const Math::Ray &ray)
         if (hitData.normal.dot(ray.direction) > 0) {
             hitData.normal = Math::Vector3D(-_normal._x, -_normal._y, -_normal._z);
         }
-        hitData.color = {128.0, 0.0, 128.0, 1.0};
+        hitData.color = {128.0, 0.0, 128.0, 1.0};  // Purple
     }
 
     return hitData;
 }
 
-} // namespace Raytracer::primitive
+}  // namespace Raytracer::primitive

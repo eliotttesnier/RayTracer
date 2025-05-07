@@ -12,12 +12,13 @@ namespace RayTracer::Factory {
 
     class SphereFactory : public IPrimitiveFactory {
     public:
-        SphereFactory(const Math::Point3D &position, double radius);
+        SphereFactory(const Math::Point3D &position, const Math::Vector3D &scale, double radius);
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
-        Math::Point3D _position;
         double _radius;
+        Math::Point3D _position;
+        Math::Vector3D _scale;
     };
 
 } // namespace Raytracer::Factory

@@ -6,6 +6,9 @@
 */
 
 #include "APrimitive.hpp"
+#include <string>
+#include <vector>
+#include <algorithm>
 
 const std::string APrimitive::getName() const
 {
@@ -47,6 +50,10 @@ void APrimitive::setRotation(const Math::Vector3D &rotation)
     _rotation = rotation;
 }
 
+void APrimitive::setScale(const Math::Vector3D &scale) {
+    _scale = scale;
+}
+
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;
@@ -82,7 +89,8 @@ Graphic::color_t APrimitive::getColor(
 
     for (const auto& light : lights) {
         if (light->intersect(ray, hitData.point, primitives)) {
-            Graphic::color_t lightContribution = light->calculateLighting(hitData, ray, viewDir);
+            Graphic::color_t lightContribution =
+                light->calculateLighting(hitData, ray, viewDir);
 
             finalColor.r += lightContribution.r;
             finalColor.g += lightContribution.g;

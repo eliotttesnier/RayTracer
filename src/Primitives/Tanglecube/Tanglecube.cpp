@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <limits>
 #include <iostream>
+#include <utility>
 #include "Tanglecube.hpp"
 
 namespace RayTracer::primitive {
@@ -112,7 +113,8 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
         double t0 = (-b - sqrt(discriminant)) / (2.0 * a);
         double t1 = (-b + sqrt(discriminant)) / (2.0 * a);
 
-        if (t0 > t1) std::swap(t0, t1);
+        if (t0 > t1)
+            std::swap(t0, t1);
 
         double tStart = std::max(0.01, t0);
         double tEnd = std::min(MAX_DIST, t1);
@@ -189,4 +191,4 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
     return hitData;
 }
 
-} // namespace Raytracer::primitive
+}  // namespace Raytracer::primitive
