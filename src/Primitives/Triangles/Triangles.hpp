@@ -21,6 +21,7 @@ class Triangles : public APrimitive {
         Math::Vector3D getNormal() const;
 
         void setPoints(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3);
+        void setAnchorPoint(const Math::Vector3D &anchorPoint);
 
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Math::Vector3D normalAt(const Math::Point3D& point) const;

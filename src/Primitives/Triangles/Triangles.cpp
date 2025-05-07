@@ -49,6 +49,11 @@ void Triangles::setPoints(const Math::Point3D &p1,
     _normal.normalize();
 }
 
+void Triangles::setAnchorPoint(const Math::Vector3D &anchorPoint)
+{
+    _anchorPoint = anchorPoint - Math::Vector3D(_position._x, _position._y, _position._z);
+}
+
 Math::Vector3D Triangles::getNormal() const
 {
     return _normal;
