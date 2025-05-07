@@ -11,6 +11,7 @@
 #include "TorusFactory.hpp"
 #include "TanglecubeFactory.hpp"
 #include "TrianglesFactory.hpp"
+#include "OBJFactory.hpp"
 
 std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
@@ -114,5 +115,19 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 #endif
         primitives.emplace_back(factory.create(plugins));
     }
+
+    // OBJ files
+    for (const auto &obj : config.getOBJ()) {
+        auto [posPath, color] = obj;
+        auto [x, y, z, filepath] = posPath;
+        Math::Point3D pos(x, y, z);
+
+        RayTracer::Factory::OBJFactory factory(pos, filepath);
+#ifdef _DEBUG
+        std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+
     return primitives;
 }
