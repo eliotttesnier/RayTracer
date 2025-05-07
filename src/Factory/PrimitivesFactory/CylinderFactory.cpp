@@ -24,6 +24,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(std::map
         throw std::runtime_error("Cylinder plugin not found");
     auto obj = plugins["Cylinder"]->initEntryPointPtr<primitive::Cylinder>("create", this->_position, this->_radius, this->_height);
     obj->setRotation(this->_rotation);
-    obj->setScale(this-_scale);
+    obj->setScale(this->_scale);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
