@@ -37,3 +37,7 @@ target_include_directories(Torus PRIVATE
 target_include_directories(Tanglecube PRIVATE
         ./
 )
+
+target_include_directories(DefaultMaterial PRIVATE
+        ./
+)
