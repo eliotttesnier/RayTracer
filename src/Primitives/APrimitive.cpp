@@ -47,6 +47,10 @@ void APrimitive::setRotation(const Math::Vector3D &rotation)
     _rotation = rotation;
 }
 
+void APrimitive::setScale(const Math::Vector3D &scale) {
+    _scale = scale;
+}
+
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;
