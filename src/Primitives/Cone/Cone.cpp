@@ -8,6 +8,8 @@
 #include <cmath>
 #include <string>
 #include <iostream>
+#include <limits>
+#include <algorithm>
 
 #include "Cone.hpp"
 
