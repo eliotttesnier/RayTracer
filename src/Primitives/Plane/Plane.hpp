@@ -5,36 +5,28 @@
 #ifndef PLANE_HPP
 #define PLANE_HPP
 
-#include "../IPrimitive.hpp"
+#include "../APrimitive.hpp"
 #include "../../Math/Rectangle3D.hpp"
 
 namespace RayTracer::primitive {
 
-class Plane : public IPrimitive {
-public:
-    Plane();
-    Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size);
-    ~Plane() = default;
+class Plane : public APrimitive {
+    public:
+        Plane();
+        Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size);
+        ~Plane() = default;
 
-    std::string &getName() override;
-    std::string &getType() override;
-    Math::Point3D &getPosition() override;
-    Math::Vector3D &getRotation() override;
-    Math::hitdata_t intersect(const Math::Ray &ray) override;
+        Math::hitdata_t intersect(const Math::Ray &ray) override;
 
-    double getWidth() const;
-    void setWidth(double width);
-    double getHeight() const;
-    void setHeight(double height);
+        double getWidth() const;
+        void setWidth(double width);
+        double getHeight() const;
+        void setHeight(double height);
 
-private:
-    std::string _name;
-    std::string _type;
-    Math::Point3D _position;
-    Math::Vector3D _rotation;
-    double _width;
-    double _height;
-    RayTracer::Rectangle3D _rectangle;
+    private:
+        double _width;
+        double _height;
+        RayTracer::Rectangle3D _rectangle;
 };
 
 } // Raytracer

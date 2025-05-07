@@ -2,6 +2,7 @@ add_library(Torus SHARED
     Torus.cpp
     Torus.hpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 add_custom_command(TARGET Torus POST_BUILD

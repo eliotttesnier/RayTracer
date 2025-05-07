@@ -23,26 +23,6 @@ Cylinder::Cylinder(const Math::Point3D &position, double radius, double height)
     _height = height;
 }
 
-std::string &Cylinder::getName()
-{
-    return _name;
-}
-
-std::string &Cylinder::getType()
-{
-    return _type;
-}
-
-Math::Point3D &Cylinder::getPosition()
-{
-    return _position;
-}
-
-Math::Vector3D &Cylinder::getRotation()
-{
-    return _rotation;
-}
-
 double Cylinder::getRadius() const
 {
     return _radius;

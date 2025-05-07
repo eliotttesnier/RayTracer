@@ -1,6 +1,7 @@
 set(PLANE_SRC
     Plane.cpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 set(PLANE_INC

@@ -2,6 +2,7 @@ add_library(Cylinder SHARED
     Cylinder.cpp
     Cylinder.hpp
     EntyPoint.cpp
+    ../APrimitive.cpp
 )
 
 target_include_directories(Cylinder PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
