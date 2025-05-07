@@ -19,7 +19,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     std::vector<std::shared_ptr<IPrimitive>> primitives;
 
     for (const auto& sphere : config.getSpheres()) {
-        auto [posRad, color] = sphere;
+        auto [posRad, scale, color] = sphere;
         auto [x, y, z, radius] = posRad;
         Math::Point3D pos(x, y, z);
 
@@ -33,7 +33,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Planes
     for (const auto& plane : config.getPlanes()) {
-        auto [axis, position, rotation, size, color] = plane;
+        auto [axis, position, rotation, scale, size, color] = plane;
         Math::Point3D pos;
         Math::Vector3D rota;
         pos = position;
@@ -49,7 +49,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Cylinders
     for (const auto& cylinder : config.getCylinders()) {
-        auto [posRad, rotation, color] = cylinder;
+        auto [posRad, rotation, scale, color] = cylinder;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
@@ -65,7 +65,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Cone
     for (const auto &cone : config.getCone()) {
-        auto [posRad, rotation, color] = cone;
+        auto [posRad, rotation, scale, color] = cone;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
@@ -81,7 +81,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Torus
     for (const auto &torus : config.getTorus()) {
-        auto [posRad, rotation, color] = torus;
+        auto [posRad, rotation, scale, color] = torus;
         auto [x, y, z, majorRadius, minorRadius] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
@@ -97,7 +97,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Tanglecube
     for (const auto &tanglecube : config.getTanglecube()) {
-        auto [posSize, rotation, color] = tanglecube;
+        auto [posSize, rotation, scale, color] = tanglecube;
         auto [x, y, z, size] = posSize;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
@@ -113,7 +113,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // Triangles
     for (const auto &triangle : config.getTriangles()) {
-        auto [points, rotation, color] = triangle;
+        auto [points, rotation, scale, color] = triangle;
         auto [p1, p2, p3] = points;
         Math::Point3D point1;
         Math::Point3D point2;
@@ -133,7 +133,7 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
 
     // OBJ files
     for (const auto &obj : config.getOBJ()) {
-        auto [posPath, rotation, color] = obj;
+        auto [posPath, rotation, scale, color] = obj;
         auto [x, y, z, filepath] = posPath;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
