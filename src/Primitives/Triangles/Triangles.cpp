@@ -77,7 +77,8 @@ Math::hitdata_t Triangles::calculateTriangleIntersection(const Math::Ray &localR
         return hitData;
 
     double f = 1.0 / a;
-    Math::Vector3D s(localRay.origin._x - v1._x, localRay.origin._y - v1._y, localRay.origin._z - v1._z);
+    Math::Vector3D s(localRay.origin._x - v1._x,
+        localRay.origin._y - v1._y, localRay.origin._z - v1._z);
     double u = f * s.dot(h);
 
     if (u < 0.0 || u > 1.0)
