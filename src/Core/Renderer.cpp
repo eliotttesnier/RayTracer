@@ -9,6 +9,7 @@
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <memory>
 #include <thread>
 #include <cmath>
 #include <string>
@@ -66,7 +67,7 @@ void Renderer::setOutputFile(const std::string& outputFile)
 void Renderer::renderSegment(int startY, int endY)
 {
     std::vector<std::vector<Graphic::color_t>> localBuffer(endY - startY,
-            std::vector<Graphic::color_t>(_width));
+        std::vector<Graphic::color_t>(_width));
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
@@ -97,7 +98,10 @@ void Renderer::renderSegment(int startY, int endY)
             }
 
             if (hit) {
-                pixelColor = closestPrimitive->getColor(closestHitData, ray, _lights, _primitives);
+                pixelColor = closestPrimitive->getColor(closestHitData,
+                                                        ray,
+                                                        _lights,
+                                                        _primitives);
             }
 
             localBuffer[y - startY][x] = pixelColor;

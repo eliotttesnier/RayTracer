@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** B-OOP-400-NAN-4-1-raytracer-eliott.tesnier
+** File description:
+** Cylinder
+*/
+
 #include <cmath>
 #include <string>
 #include "Cylinder.hpp"
@@ -113,7 +120,7 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
         );
         hitData.normal = normalAt(hitData.point);
     }
-    hitData.color = {255.0, 0.0, 0.0, 1.0}; // Red
+    hitData.color = {255.0, 0.0, 0.0, 1.0};  // Red
     return hitData;
 }
 

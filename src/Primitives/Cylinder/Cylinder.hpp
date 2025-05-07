@@ -1,3 +1,10 @@
+/*
+** EPITECH PROJECT, 2025
+** B-OOP-400-NAN-4-1-raytracer-eliott.tesnier
+** File description:
+** Cylinder
+*/
+
 #ifndef RAYTRACER_CYLINDER_HPP
 #define RAYTRACER_CYLINDER_HPP
 

@@ -2,14 +2,17 @@
 // Created by roussierenoa on 5/2/25.
 //
 
-#include <iostream>
 #include <unistd.h>
+
+#include <iostream>
+
 #include "LoaderType.hpp"
 #include "Sphere.hpp"
 #include "../IPrimitive.hpp"
 
 extern "C" {
-    RayTracer::primitive::Sphere *create(const Math::Point3D &position, const double &radius) {
+    RayTracer::primitive::Sphere *create(const Math::Point3D &position, const double &radius)
+    {
         return new RayTracer::primitive::Sphere(position, radius);
     }
     RayTracer::Loader::ModuleType getType(void) {

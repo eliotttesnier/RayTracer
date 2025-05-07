@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <tuple>
 #include "Plane.hpp"
 
 namespace RayTracer::primitive {
@@ -16,10 +17,14 @@ Plane::Plane()
     _rotation = Math::Vector3D(0, 0, 0);
     _width = 1.0;
     _height = 1.0;
-    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
+    _rectangle = RayTracer::Rectangle3D(_position,
+                                        Math::Vector3D(_width, 0, 0),
+                                        Math::Vector3D(0, 0, _height));
 }
 
-Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size)
+Plane::Plane(const Math::Point3D &position,
+             const Math::Vector3D &rotation,
+             std::tuple<double, double> size)
 {
     _name = "plane";
     _type = "plane";
@@ -27,7 +32,9 @@ Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std:
     _rotation = rotation;
     _width = std::get<0>(size);
     _height = std::get<1>(size);
-    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
+    _rectangle = RayTracer::Rectangle3D(_position,
+                                        Math::Vector3D(_width, 0, 0),
+                                        Math::Vector3D(0, 0, _height));
     _rectangle.rotateXSelf(_rotation._x);
     _rectangle.rotateYSelf(_rotation._y);
     _rectangle.rotateZSelf(_rotation._z);
@@ -41,7 +48,9 @@ double Plane::getWidth() const
 void Plane::setWidth(double width)
 {
     _width = width;
-    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
+    _rectangle = RayTracer::Rectangle3D(_position,
+                                        Math::Vector3D(_width, 0, 0),
+                                        Math::Vector3D(0, 0, _height));
     _rectangle.rotateXSelf(_rotation._x);
     _rectangle.rotateYSelf(_rotation._y);
     _rectangle.rotateZSelf(_rotation._z);
@@ -55,7 +64,9 @@ double Plane::getHeight() const
 void Plane::setHeight(double height)
 {
     _height = height;
-    _rectangle = RayTracer::Rectangle3D(_position, Math::Vector3D(_width, 0, 0), Math::Vector3D(0, 0, _height));
+    _rectangle = RayTracer::Rectangle3D(_position,
+                                        Math::Vector3D(_width, 0, 0),
+                                        Math::Vector3D(0, 0, _height));
     _rectangle.rotateXSelf(_rotation._x);
     _rectangle.rotateYSelf(_rotation._y);
     _rectangle.rotateZSelf(_rotation._z);
@@ -86,7 +97,7 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
         }
     }
 
-    hitData.color = {128.0, 128.0, 128.0, 1.0}; // Gray
+    hitData.color = {128.0, 128.0, 128.0, 1.0};  // Gray
     return hitData;
 }
 

@@ -7,6 +7,7 @@
 
 #include "Camera.hpp"
 #include <cmath>
+#include <tuple>
 
 namespace RayTracer {
 Camera::Camera()
@@ -95,4 +96,4 @@ double Camera::getFov() const
 {
     return fov;
 }
-} // namespace RayTracer
+}  // namespace RayTracer
