@@ -1,30 +1,30 @@
 //
-// Created by roussierenoa on 5/1/25.
+// Created by tesniereliott on 5/6/25.
 //
 
-#ifndef CONEFACTORY_HPP
-#define CONEFACTORY_HPP
+#ifndef OBJFACTORY_HPP
+#define OBJFACTORY_HPP
 
 #include <memory>
 #include <map>
+#include <string>
 #include "IPrimitiveFactory.hpp"
-#include "../../Primitives/Sphere/Sphere.hpp"
+#include "../../Primitives/OBJ/OBJ.hpp"
 #include "LibLoader/LibLoader.hpp"
 
 namespace RayTracer::Factory {
 
-    class ConeFactory : public IPrimitiveFactory {
+    class OBJFactory : public IPrimitiveFactory {
     public:
-        ConeFactory(const Math::Point3D &position, const Math::Vector3D &rotation, double radius, double height);
+        OBJFactory(const Math::Point3D &position, const Math::Vector3D &rotation, const std::string &filepath);
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         Math::Point3D _position;
         Math::Vector3D _rotation;
-        double _radius;
-        double _height;
+        std::string _filepath;
     };
 
 } // namespace Raytracer::Factory
 
-#endif // CONEFACTORY_HPP
+#endif // OBJFACTORY_HPP
