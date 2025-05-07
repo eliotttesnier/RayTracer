@@ -3,8 +3,11 @@
 //
 
 #include "Parser.hpp"
+
 #include <iostream>
 #include <string>
+#include <vector>
+#include <memory>
 #include <libconfig.h++>
 
 namespace RayTracer::Parser {
@@ -111,8 +114,13 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
-            std::cout << "Plane: axis=" << axis << ", positionx=" << x << ", positiony=" << y << ", positionz= << z"
-                    << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+            std::cout << "Plane: "
+                "axis=" << axis << ", "
+                "positionx=" << x << ", "
+                "positiony=" << y << ", "
+                "positionz=" << z << ", "
+                "color(" << cr << ", " << cg << ", " << cb << ")"
+                << std::endl;
         #endif
     }
 
@@ -152,8 +160,12 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
-            std::cout << "Cylinder: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
-                    << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+            std::cout << "Cylinder: "
+                "pos(" << px << ", " << py << ", " << pz << "), "
+                "r=" << radius << ", "
+                "h=" << height << ", "
+                "color(" << cr << ", " << cg << ", " << cb << ")"
+                << std::endl;
         #endif
     }
 
@@ -194,8 +206,12 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
-                std::cout << "Cone: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
-                        << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+                std::cout << "Cone: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "r=" << radius << ", "
+                    "h=" << height << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -211,7 +227,6 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
 
 std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
 {
-
     std::vector<torus_t> torusVector;
 
     try {
@@ -242,9 +257,12 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
-                std::cout << "Torus: pos(" << px << ", " << py << ", " << pz 
-                        << "), R=" << majorRadius << ", r=" << minorRadius
-                        << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+                std::cout << "Torus: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "R=" << majorRadius << ", "
+                    "r=" << minorRadius << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -290,9 +308,11 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
-                std::cout << "Tanglecube: pos(" << px << ", " << py << ", " << pz 
-                        << "), size=" << size
-                        << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+                std::cout << "Tanglecube: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "size=" << size << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -350,10 +370,12 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
-                std::cout << "Triangle: p1(" << p1x << "," << p1y << "," << p1z << "), "
-                        << "p2(" << p2x << "," << p2y << "," << p2z << "), "
-                        << "p3(" << p3x << "," << p3y << "," << p3z << "), "
-                        << "color(" << cr << "," << cg << "," << cb << ")\n";
+                std::cout << "Triangle: "
+                    "p1(" << p1x << "," << p1y << "," << p1z << "), "
+                    "p2(" << p2x << "," << p2y << "," << p2z << "), "
+                    "p3(" << p3x << "," << p3y << "," << p3z << "), "
+                    "color(" << cr << "," << cg << "," << cb << ")"
+                    << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -400,9 +422,11 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
-                std::cout << "OBJ: pos(" << px << ", " << py << ", " << pz 
-                        << "), filepath=" << filepath
-                        << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+                std::cout << "OBJ: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "filepath=" << filepath << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -451,7 +475,6 @@ ambient_t Parser::_getAmbientData(const libconfig::Setting &root)
     ambient_t ambientData;
 
     try {
-
         const auto &ambient = root["lights"]["ambient"];
         const auto &s = ambient[0];
         const auto &color = s["color"];
