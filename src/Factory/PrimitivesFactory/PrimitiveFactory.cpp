@@ -3,6 +3,10 @@
 //
 
 #include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 #include "PrimitiveFactory.hpp"
 #include "PlaneFactory.hpp"
 #include "SphereFactory.hpp"
@@ -13,8 +17,10 @@
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
 
-std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::createPrimitives(
-    const RayTracer::Parser::PrimitivesConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
+std::vector<std::shared_ptr<IPrimitive>>
+        RayTracer::Factory::PrimitiveFactory::createPrimitives(
+                const RayTracer::Parser::PrimitivesConfig &config,
+                std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
 
@@ -26,7 +32,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::SphereFactory factory(pos, scale, radius);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a sphere... " << std::endl;
 #endif
@@ -44,7 +51,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::PlaneFactory factory(pos, rota, scale, size);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a plane" << std::endl;
 #endif
@@ -62,7 +70,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::CylinderFactory factory(pos, rota, scale, radius, height);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a cylinder" << std::endl;
 #endif
@@ -80,7 +89,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::ConeFactory factory(pos, rota, scale, radius, height);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a cone" << std::endl;
 #endif
@@ -98,7 +108,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::TorusFactory factory(pos, rota, scale, majorRadius, minorRadius);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a torus" << std::endl;
 #endif
@@ -116,7 +127,8 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         scale = sc;
 
         RayTracer::Factory::TanglecubeFactory factory(pos, rota, scale, size);
-        // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
+        // TODO(roussierenoa):
+        // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a tanglecube" << std::endl;
 #endif
