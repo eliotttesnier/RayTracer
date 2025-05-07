@@ -9,7 +9,7 @@ namespace RayTracer::Parser {
 
 LightsConfig::LightsConfig(
     const ambient_t &ambient,
-    const directional_t &directional
+    const std::vector<directional_t> &directional
 ):
     _directional(directional),
     _ambient(ambient)
@@ -20,7 +20,7 @@ ambient_t LightsConfig::getAmbient() const {
     return this->_ambient;
 }
 
-directional_t LightsConfig::getDirectional() const {
+std::vector<directional_t> LightsConfig::getDirectional() const {
     return this->_directional;
 }
 
