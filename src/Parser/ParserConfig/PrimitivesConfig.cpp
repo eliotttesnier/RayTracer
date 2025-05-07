@@ -2,11 +2,13 @@
 // Created by roussierenoa on 4/30/25.
 //
 
+#include <vector>
+
 #include "PrimitivesConfig.hpp"
 
 namespace RayTracer::Parser {
 
-RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
+PrimitivesConfig::PrimitivesConfig(
     const std::vector<sphere_t> &spheres,
     const std::vector<plane_t> &planes,
     const std::vector<cylinder_t> &cylinders,
@@ -15,15 +17,15 @@ RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<tanglecube_t> &tanglecubes,
     const std::vector<triangle_t> &triangles,
     const std::vector<obj_t> &objs
-):
-    _spheres(spheres),
-    _cylinders(cylinders),
-    _cones(cones),
-    _planes(planes),
-    _toruses(toruses),
-    _tanglecubes(tanglecubes),
-    _triangles(triangles),
-    _objs(objs)
+) :
+_spheres(spheres),
+_cylinders(cylinders),
+_cones(cones),
+_planes(planes),
+_toruses(toruses),
+_tanglecubes(tanglecubes),
+_triangles(triangles),
+_objs(objs)
 {
 }
 

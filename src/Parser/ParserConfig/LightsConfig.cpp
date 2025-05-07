@@ -2,15 +2,17 @@
 // Created by roussierenoa on 4/30/25.
 //
 
-#include "LightsConfig.hpp"
 #include <iostream>
+#include <vector>
+
+#include "LightsConfig.hpp"
 
 namespace RayTracer::Parser {
 
 LightsConfig::LightsConfig(
     const ambient_t &ambient,
     const std::vector<directional_t> &directional
-):
+) :
     _directional(directional),
     _ambient(ambient)
 {
