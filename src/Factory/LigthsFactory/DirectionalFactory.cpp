@@ -3,22 +3,35 @@
 //
 
 #include "DirectionalFactory.hpp"
+
+#include <map>
+#include <memory>
+#include <string>
+#include <tuple>
+
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
-RayTracer::Factory::DirectionalFactory::DirectionalFactory(const double intensity, const std::tuple<double, double, double> &position, const std::tuple<double, double, double> &direction, std::tuple<int, int, int> color):
+RayTracer::Factory::DirectionalFactory::DirectionalFactory(
+            const double intensity,
+            const std::tuple<double, double, double> &position,
+            const std::tuple<double, double, double> &direction,
+            std::tuple<int, int, int> color
+):
     _intensity(intensity),
     _color(color),
     _position(position),
     _direction(direction)
 {
-
 }
 
-std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
+std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(
+            std::map<std::string,
+            std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
     if (!plugins.contains("DirectionalLight"))
         throw std::runtime_error("DirectionalLight plugin not found");
-    auto obj = plugins["DirectionalLight"]->initEntryPointPtr<light::DirectionalLight>("create");
+    auto obj = plugins["DirectionalLight"]
+        ->initEntryPointPtr<light::DirectionalLight>("create");
     auto [r, g, b] = this->_color;
     auto [px, py, pz] = this->_position;
     auto [dx, dy, dz] = this->_direction;
