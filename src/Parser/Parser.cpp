@@ -37,9 +37,10 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
         const auto &color = s["color"];
-        double px = s["x"];
-        double py = s["y"];
-        double pz = s["z"];
+        const auto &position = s["position"];
+        double px = position["x"];
+        double py = position["y"];
+        double pz = position["z"];
         double radius = s["r"];
         int cr = color["r"];
         int cg = color["g"];
