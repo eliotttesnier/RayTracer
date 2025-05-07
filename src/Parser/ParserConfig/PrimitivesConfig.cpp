@@ -11,7 +11,8 @@ RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &cone,
     const std::vector<std::pair<std::tuple<double, double, double, double, double>, std::tuple<int, int, int>>> &torus,
     const std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> &tanglecube,
-    const std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> &triangles
+    const std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> &triangles,
+    const std::vector<std::pair<std::tuple<double, double, double, std::string>, std::tuple<int, int, int>>> &obj
 ):
     _sphere(sphere),
     _cylinders(cylinders),
@@ -19,7 +20,8 @@ RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
     _plane(plane),
     _torus(torus),
     _tanglecube(tanglecube),
-    _triangles(triangles)
+    _triangles(triangles),
+    _obj(obj)
 {
 }
 
@@ -53,4 +55,9 @@ std::vector<std::pair<std::tuple<double, double, double, double>, std::tuple<int
 std::vector<std::pair<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<int, int, int>>> 
 RayTracer::Parser::PrimitivesConfig::getTriangles() const {
     return this->_triangles;
+}
+
+std::vector<std::pair<std::tuple<double, double, double, std::string>, std::tuple<int, int, int>>>
+RayTracer::Parser::PrimitivesConfig::getOBJ() const {
+    return this->_obj;
 }

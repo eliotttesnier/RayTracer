@@ -195,9 +195,36 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
         std::cerr << "[WARNING] Triangle setting type error: " << e.what() << std::endl;
     }
 
+    // OBJ files
+    std::vector<std::pair<std::tuple<double, double, double, std::string>, std::tuple<int, int, int>>> objVector;
+    try {
+        const auto &objs = root["primitives"]["objs"];
+        for (int i = 0; i < objs.getLength(); ++i) {
+            const auto &o = objs[i];
+            double px = o["x"];
+            double py = o["y"];
+            double pz = o["z"];
+            std::string filepath = o["filepath"].c_str();
+            const auto &color = o["color"];
+            int cr = color["r"], cg = color["g"], cb = color["b"];
+            objVector.emplace_back(std::make_tuple(px, py, pz, filepath), std::make_tuple(cr, cg, cb));
+#ifdef _DEBUG
+            std::cout << "OBJ: pos(" << px << ", " << py << ", " << pz 
+                      << "), filepath=" << filepath
+                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+#endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+#ifdef _DEBUG
+        std::cout << "No OBJ files found in config" << std::endl;
+#endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] OBJ setting type error: " << e.what() << std::endl;
+    }
+
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector, planesVector, cylinderVector, coneVector, 
-        torusVector, tanglecubeVector, triangleVector);
+        torusVector, tanglecubeVector, triangleVector, objVector);
 }
 
 std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::Parser::_getAmbientData(const libconfig::Setting &root)
