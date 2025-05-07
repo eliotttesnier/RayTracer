@@ -2,23 +2,28 @@
 // Created by roussierenoa on 4/30/25.
 //
 
-#include "LightsConfig.hpp"
 #include <iostream>
+#include <vector>
 
-RayTracer::Parser::LightsConfig::LightsConfig(
-const std::tuple<double, std::tuple<int, int, int>> &ambient,
-const std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &directional /* Intensité, position, direction, couleur */
-):
+#include "LightsConfig.hpp"
+
+namespace RayTracer::Parser {
+
+LightsConfig::LightsConfig(
+    const ambient_t &ambient,
+    const std::vector<directional_t> &directional
+) :
     _directional(directional),
     _ambient(ambient)
 {
 }
 
-std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::LightsConfig::getAmbient() const {
+ambient_t LightsConfig::getAmbient() const {
     return this->_ambient;
 }
 
-std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int,
-int, int>>> RayTracer::Parser::LightsConfig::getDirectional() const {
+std::vector<directional_t> LightsConfig::getDirectional() const {
     return this->_directional;
+}
+
 }

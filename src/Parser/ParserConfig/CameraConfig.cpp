@@ -4,10 +4,12 @@
 
 #include "CameraConfig.hpp"
 
-RayTracer::Parser::CameraConfig::CameraConfig(
-    const std::tuple<int, int> &resolution,
-    const std::tuple<double, double, double> &position,
-    const std::tuple<double, double, double> &rotation,
+namespace RayTracer::Parser {
+
+CameraConfig::CameraConfig(
+    const resolution_t &resolution,
+    const truple_t &position,
+    const truple_t &rotation,
     const double fov
 ):
     _resolution(resolution),
@@ -17,18 +19,20 @@ RayTracer::Parser::CameraConfig::CameraConfig(
 {
 }
 
-std::tuple<int, int> RayTracer::Parser::CameraConfig::getResolution() const {
+resolution_t CameraConfig::getResolution() const {
     return this->_resolution;
 }
 
-std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getPosition() const {
+truple_t CameraConfig::getPosition() const {
     return this->_position;
 }
 
-std::tuple<double, double, double> RayTracer::Parser::CameraConfig::getRotation() const {
+truple_t CameraConfig::getRotation() const {
     return this->_rotation;
 }
 
 double RayTracer::Parser::CameraConfig::getFov() const {
     return this->_fov;
+}
+
 }

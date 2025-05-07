@@ -79,7 +79,7 @@ std::vector<std::shared_ptr<IPrimitive>>
     }
 
     // Cone
-    for (const auto &cone : config.getCone()) {
+    for (const auto &cone : config.getCones()) {
         auto [posRad, rotation, sc, color] = cone;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
@@ -98,7 +98,7 @@ std::vector<std::shared_ptr<IPrimitive>>
     }
 
     // Torus
-    for (const auto &torus : config.getTorus()) {
+    for (const auto &torus : config.getToruses()) {
         auto [posRad, rotation, sc, color] = torus;
         auto [x, y, z, majorRadius, minorRadius] = posRad;
         Math::Point3D pos(x, y, z);
@@ -117,7 +117,7 @@ std::vector<std::shared_ptr<IPrimitive>>
     }
 
     // Tanglecube
-    for (const auto &tanglecube : config.getTanglecube()) {
+    for (const auto &tanglecube : config.getTanglecubes()) {
         auto [posSize, rotation, sc, color] = tanglecube;
         auto [x, y, z, size] = posSize;
         Math::Point3D pos(x, y, z);
@@ -158,7 +158,7 @@ std::vector<std::shared_ptr<IPrimitive>>
     }
 
     // OBJ files
-    for (const auto &obj : config.getOBJ()) {
+    for (const auto &obj : config.getOBJs()) {
         auto [posPath, rotation, sc, color] = obj;
         auto [x, y, z, filepath] = posPath;
         Math::Point3D pos(x, y, z);
