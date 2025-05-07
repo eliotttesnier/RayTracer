@@ -18,7 +18,7 @@ namespace RayTracer::Factory {
 
     class TrianglesFactory : public IPrimitiveFactory {
     public:
-        TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3, const Math::Vector3D &rotation);
+        TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3, const Math::Vector3D &rotation, const Math::Vector3D &scale);
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
@@ -26,6 +26,7 @@ namespace RayTracer::Factory {
         Math::Point3D _p2;
         Math::Point3D _p3;
         Math::Vector3D _rotation;
+        Math::Vector3D _scale;
     };
 
 } // namespace Raytracer::Factory

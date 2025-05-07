@@ -15,14 +15,15 @@ namespace RayTracer::Factory {
 
     class ConeFactory : public IPrimitiveFactory {
     public:
-        ConeFactory(const Math::Point3D &position, const Math::Vector3D &rotation, double radius, double height);
+        ConeFactory(const Math::Point3D &position, const Math::Vector3D &rotation, const Math::Vector3D &scale, double radius, double height);
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
-        Math::Point3D _position;
-        Math::Vector3D _rotation;
         double _radius;
         double _height;
+        Math::Point3D _position;
+        Math::Vector3D _rotation;
+        Math::Vector3D _scale;
     };
 
 } // namespace Raytracer::Factory

@@ -35,6 +35,7 @@ class IPrimitive {
         virtual void setType(const std::string &type) = 0;
         virtual void setPosition(const Math::Point3D &position) = 0;
         virtual void setRotation(const Math::Vector3D &rotation) = 0;
+        virtual void setScale(const Math::Vector3D &scale) = 0;
 
         // Methods
         virtual Math::hitdata_t intersect(const Math::Ray &ray) = 0;
