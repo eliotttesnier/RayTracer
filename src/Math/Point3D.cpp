@@ -6,6 +6,7 @@
 */
 
 #include <cmath>
+#include <tuple>
 
 #include "Point3D.hpp"
 #include "Vector3D.hpp"
@@ -69,6 +70,13 @@ Point3D &Point3D::operator-=(const Vector3D &vector)
     _x -= vector._x;
     _y -= vector._y;
     _z -= vector._z;
+    return *this;
+}
+
+Point3D & Point3D::operator=(const std::tuple<double, double, double> &tuple) {
+    _x = std::get<0>(tuple);
+    _y = std::get<1>(tuple);
+    _z = std::get<2>(tuple);
     return *this;
 }
 
