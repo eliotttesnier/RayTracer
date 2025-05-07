@@ -3,6 +3,7 @@
 //
 
 #include "CameraConfig.hpp"
+#include <tuple>
 
 RayTracer::Parser::CameraConfig::CameraConfig(
     const std::tuple<int, int> &resolution,

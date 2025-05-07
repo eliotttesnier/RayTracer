@@ -9,7 +9,6 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
     const RayTracer::Parser::CameraConfig &config)
 {
     auto camera = std::make_shared<RayTracer::Camera>();
-    
     auto [width, height] = config.getResolution();
     auto [posX, posY, posZ] = config.getPosition();
     auto [rotX, rotY, rotZ] = config.getRotation();
@@ -17,11 +16,8 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
 
     camera->resolution = std::make_tuple(width, height);
     camera->fov = fov;
-
     camera->setPosition(posX, posY, posZ);
-
     camera->setRotation(rotX, rotY, rotZ);
-
 #ifdef _DEBUG
     std::cout << "Camera created with position (" << posX << ", " << posY << ", " << posZ 
               << "), rotation (" << rotX << ", " << rotY << ", " << rotZ 
