@@ -20,13 +20,10 @@ class Matrix4x4 {
 public:
     std::array<std::array<double, 4>, 4> data;
 
-    // Constructeur par défaut - initialise à la matrice identité
     Matrix4x4() : data({{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}}) {}
 
-    // Constructeur à partir d'un tableau 2D
     Matrix4x4(const std::array<std::array<double, 4>, 4>& matrix) : data(matrix) {}
 
-    // Multiplie la matrice par un point
     Point3D multiplyPoint(const Point3D& point) const {
         double w = data[3][0] * point._x + data[3][1] * point._y + data[3][2] * point._z + data[3][3];
         if (std::abs(w) < 0.00001) w = 1.0;
@@ -37,7 +34,6 @@ public:
         );
     }
 
-    // Multiplie la matrice par un vecteur (ignore la composante de translation)
     Vector3D multiplyVector(const Vector3D& vector) const {
         return Vector3D(
             data[0][0] * vector._x + data[0][1] * vector._y + data[0][2] * vector._z,
@@ -46,7 +42,6 @@ public:
         );
     }
 
-    // Multiplie deux matrices
     Matrix4x4 multiply(const Matrix4x4& other) const {
         Matrix4x4 result;
         for (int i = 0; i < 4; i++) {
@@ -60,12 +55,10 @@ public:
         return result;
     }
 
-    // Surcharge de l'opérateur de multiplication
     Matrix4x4 operator*(const Matrix4x4& other) const {
         return multiply(other);
     }
 
-    // Crée une matrice de translation
     static Matrix4x4 createTranslation(double x, double y, double z) {
         Matrix4x4 result;
         result.data[0][3] = x;
@@ -74,7 +67,6 @@ public:
         return result;
     }
 
-    // Crée une matrice de rotation autour de l'axe X
     static Matrix4x4 createRotationX(double degrees) {
         double rad = degrees * M_PI / 180.0;
         double cos_val = cos(rad);
@@ -87,7 +79,6 @@ public:
         return result;
     }
 
-    // Crée une matrice de rotation autour de l'axe Y
     static Matrix4x4 createRotationY(double degrees) {
         double rad = degrees * M_PI / 180.0;
         double cos_val = cos(rad);
@@ -100,7 +91,6 @@ public:
         return result;
     }
 
-    // Crée une matrice de rotation autour de l'axe Z
     static Matrix4x4 createRotationZ(double degrees) {
         double rad = degrees * M_PI / 180.0;
         double cos_val = cos(rad);
@@ -113,13 +103,10 @@ public:
         return result;
     }
 
-    // Crée une matrice de rotation à partir d'angles d'Euler (en degrés)
     static Matrix4x4 createRotationFromEuler(double x, double y, double z) {
-        // Appliquer les rotations dans l'ordre Z, Y, X
         return createRotationX(x) * createRotationY(y) * createRotationZ(z);
     }
 
-    // Crée une matrice de mise à l'échelle
     static Matrix4x4 createScale(double x, double y, double z) {
         Matrix4x4 result;
         result.data[0][0] = x;
@@ -128,7 +115,6 @@ public:
         return result;
     }
 
-    // Crée une matrice de perspective
     static Matrix4x4 createPerspective(double fov, double aspectRatio, double nearPlane, double farPlane) {
         double tanHalfFov = tan((fov * M_PI / 180.0) / 2.0);
         
@@ -140,7 +126,6 @@ public:
         return result;
     }
 
-    // Crée une matrice de caméra "lookAt"
     static Matrix4x4 createLookAt(const Point3D& eye, const Point3D& target, const Vector3D& up) {
         Vector3D f = Vector3D(target._x - eye._x, target._y - eye._y, target._z - eye._z).normalized();
         Vector3D s = f.cross(up).normalized();
@@ -154,20 +139,15 @@ public:
         return result;
     }
 
-    // Obtient la matrice inverse pour les transformations de rayons
     Matrix4x4 inverse() const {
-        // Implémentation simplifiée pour l'inversion de matrice de transformation
-        // Cette implémentation est suffisante pour les matrices de translation/rotation
         Matrix4x4 result;
         
-        // Copie de la partie rotation (3x3 supérieure gauche) - c'est sa transposée
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 result.data[i][j] = data[j][i];
             }
         }
         
-        // Calcul de la nouvelle translation
         for (int i = 0; i < 3; i++) {
             result.data[i][3] = 0;
             for (int j = 0; j < 3; j++) {
@@ -178,7 +158,6 @@ public:
         return result;
     }
 
-    // Affiche la matrice (pour le débogage)
     void print() const {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {

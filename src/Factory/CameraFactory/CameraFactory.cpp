@@ -20,7 +20,7 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
 
     double aspectRatio = static_cast<double>(width) / static_cast<double>(height);
 
-    Math::Point3D screenOrigin(0, 0, 1);  // Z positif au lieu de négatif
+    Math::Point3D screenOrigin(0, 0, 1);
 
     Math::Vector3D bottom(aspectRatio, 0, 0);
     Math::Vector3D left(0, 1, 0);
