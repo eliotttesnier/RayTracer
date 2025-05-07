@@ -18,23 +18,27 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
     camera->fov = fov;
 
     double aspectRatio = static_cast<double>(width) / static_cast<double>(height);
-    Math::Point3D screenOrigin(0, 0, -1);
-    Math::Vector3D bottom(aspectRatio, 0, 0);  // Bottom vector prend en compte le ratio d'aspect
+
+    Math::Point3D screenOrigin(0, 0, 1);  // Z positif au lieu de négatif
+
+    Math::Vector3D bottom(aspectRatio, 0, 0);
     Math::Vector3D left(0, 1, 0);
     camera->screen = RayTracer::Rectangle3D(screenOrigin, bottom, left);
 
     camera->transformMatrix = Math::Matrix4x4();
 
     camera->rotateZ(rotZ);
-    camera->rotateY(rotY);
+
+    camera->rotateY(-rotY);
     camera->rotateX(rotX);
 
-    camera->setPosition(posX, posY, posZ);
+    camera->setPosition(posX, posY, -posZ);
+
 #ifdef _DEBUG
-    std::cout << "Camera created with position (" << posX << ", " << posY << ", " << posZ 
-              << "), rotation (" << rotX << ", " << rotY << ", " << rotZ 
+    std::cout << "Camera created with position (" << posX << ", " << posY << ", " << -posZ 
+              << "), rotation (" << rotX << ", " << -rotY << ", " << rotZ 
               << "), resolution " << width << "x" << height 
-              << ", FOV " << fov 
+              << ", FOV " << fov
               << ", aspect ratio " << aspectRatio << std::endl;
 #endif
 
