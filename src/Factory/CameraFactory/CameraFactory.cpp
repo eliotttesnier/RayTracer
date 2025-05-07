@@ -2,25 +2,32 @@
 // Created by roussierenoa on 5/1/25.
 //
 
-#include <iostream>
 #include "CameraFactory.hpp"
+#include <iostream>
 
 std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
     const RayTracer::Parser::CameraConfig &config)
 {
-    auto [x, y, z] = config.getPosition();
-    auto [rx, ry, rz] = config.getRotation();
-    Math::Point3D pos(x, y, z);
-    auto cam = std::make_shared<RayTracer::Camera>();
+    auto camera = std::make_shared<RayTracer::Camera>();
+    
+    auto [width, height] = config.getResolution();
+    auto [posX, posY, posZ] = config.getPosition();
+    auto [rotX, rotY, rotZ] = config.getRotation();
+    double fov = config.getFov();
 
-    cam->origin = pos;
-    cam->resolution = config.getResolution();
-    cam->fov = config.getFov();
-    cam->rotateX(rx);
-    cam->rotateY(ry);
-    cam->rotateZ(rz);
+    camera->resolution = std::make_tuple(width, height);
+    camera->fov = fov;
+
+    camera->setPosition(posX, posY, posZ);
+
+    camera->setRotation(rotX, rotY, rotZ);
+
 #ifdef _DEBUG
-    std::cout << "Creating a camera" << std::endl;
+    std::cout << "Camera created with position (" << posX << ", " << posY << ", " << posZ 
+              << "), rotation (" << rotX << ", " << rotY << ", " << rotZ 
+              << "), resolution " << width << "x" << height 
+              << ", FOV " << fov << std::endl;
 #endif
-    return cam;
+
+    return camera;
 }
