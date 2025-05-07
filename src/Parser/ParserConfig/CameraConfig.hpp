@@ -10,28 +10,33 @@
 namespace RayTracer {
 namespace Parser {
 
-    class CameraConfig {
+typedef std::tuple<int, int> resolution_t; // Resolution
+typedef std::tuple<double, double, double> truple_t; // Position || Rotation
+
+class CameraConfig {
     private:
-        const std::tuple<int, int> _resolution;
-        const std::tuple<double, double, double> _position;
-        const std::tuple<double, double, double> _rotation;
+        const resolution_t _resolution;
+        const truple_t _position;
+        const truple_t _rotation;
         const double _fov;
     public:
         double getFov() const;
 
-        std::tuple<int, int> getResolution() const;
+        resolution_t getResolution() const;
 
-        std::tuple<double, double, double> getPosition() const;
+        truple_t getPosition() const;
 
-        std::tuple<double, double, double> getRotation() const;
+        truple_t getRotation() const;
 
         CameraConfig() = delete;
-        CameraConfig(const std::tuple<int, int> &resolution,
-                     const std::tuple<double, double, double> &position,
-                     const std::tuple<double, double, double> &rotation,
-                     const double fov);
+        CameraConfig(
+            const resolution_t &resolution,
+            const truple_t &position,
+            const truple_t &rotation,
+            const double fov
+        );
         ~CameraConfig() = default;
-    };
+};
 
 } // Parser
 } // raytracer
