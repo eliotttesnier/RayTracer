@@ -3,6 +3,10 @@
 //
 
 #include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
 #include "LightFactory.hpp"
 
 #include "AmbientFactory.hpp"
@@ -11,7 +15,8 @@
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
 std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
-    const RayTracer::Parser::LightsConfig &config, std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
+    const RayTracer::Parser::LightsConfig &config,
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
 {
     std::vector<std::shared_ptr<ILight>> lights;
 
@@ -25,7 +30,10 @@ std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
 
     for (const auto &directional : config.getDirectional()) {
         auto [intensity, position, direction, color] = directional;
-        DirectionalFactory factory  = DirectionalFactory(intensity, position, direction, color);
+        DirectionalFactory factory  = DirectionalFactory(intensity,
+                                                         position,
+                                                         direction,
+                                                         color);
 #ifdef _DEBUG
         std::cout << "Creating a directional light" << std::endl;
 #endif
