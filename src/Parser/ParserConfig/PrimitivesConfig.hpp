@@ -16,15 +16,16 @@ namespace Parser {
 typedef std::tuple<double, double, double> truple_t;
 typedef std::tuple<double, double, double, double> quaduple_t;
 typedef std::tuple<double, double, double, double, double> quintuple_t;
+typedef std::tuple<int, int, int> color_t;
 
-typedef std::tuple<quaduple_t, truple_t, std::tuple<int, int, int>> sphere_t; // Position + radius, Color
-typedef std::tuple<quintuple_t, truple_t, truple_t, std::tuple<int, int, int>> cylinder_t; // Position + radius + height, Color
-typedef std::tuple<quintuple_t, truple_t, truple_t, std::tuple<int, int, int>> cone_t; // Position + radius + height, Color
-typedef std::tuple<char, truple_t, truple_t, truple_t, std::tuple<double, double>, std::tuple<int, int, int>> plane_t; // axis, position, Color
-typedef std::tuple<quintuple_t, truple_t, truple_t, std::tuple<int, int, int>> torus_t; // Position + major radius + minor radius, Color
-typedef std::tuple<quaduple_t, truple_t, truple_t, std::tuple<int, int, int>> tanglecube_t; // Position + size, Color
-typedef std::tuple<std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, std::tuple<int, int, int>> triangle_t; // Three points (p1, p2, p3), Color
-typedef std::tuple<std::tuple<double, double, double, std::string>, truple_t, truple_t, std::tuple<int, int, int>> obj_t; // Position + filepath, Color
+typedef std::tuple<quaduple_t, truple_t, color_t> sphere_t; // Position + radius, Color
+typedef std::tuple<quintuple_t, truple_t, truple_t, color_t> cylinder_t; // Position + radius + height, Color
+typedef std::tuple<quintuple_t, truple_t, truple_t, color_t> cone_t; // Position + radius + height, Color
+typedef std::tuple<char, truple_t, truple_t, truple_t, std::tuple<double, double>, color_t> plane_t; // axis, position, Color
+typedef std::tuple<quintuple_t, truple_t, truple_t, color_t> torus_t; // Position + major radius + minor radius, Color
+typedef std::tuple<quaduple_t, truple_t, truple_t, color_t> tanglecube_t; // Position + size, Color
+typedef std::tuple<std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, color_t> triangle_t; // Three points (p1, p2, p3), Color
+typedef std::tuple<std::tuple<double, double, double, std::string>, truple_t, truple_t, color_t> obj_t; // Position + filepath, Color
 
 class PrimitivesConfig {
     private:
