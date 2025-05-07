@@ -2,8 +2,10 @@
 // Created by roussierenoa on 5/1/25.
 //
 
-#include <iostream>
 #include "CameraFactory.hpp"
+
+#include <iostream>
+#include <memory>
 
 std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
     const RayTracer::Parser::CameraConfig &config)
