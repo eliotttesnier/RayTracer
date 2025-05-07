@@ -5,6 +5,9 @@
 #include "CameraFactory.hpp"
 #include <iostream>
 
+#include <iostream>
+#include <memory>
+
 std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
     const RayTracer::Parser::CameraConfig &config)
 {

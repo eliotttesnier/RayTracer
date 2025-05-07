@@ -2,62 +2,63 @@
 // Created by roussierenoa on 4/30/25.
 //
 
+#include <vector>
+
 #include "PrimitivesConfig.hpp"
 
-RayTracer::Parser::PrimitivesConfig::PrimitivesConfig(
-    const std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &sphere,
-    const std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> &plane,
-    const std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &cylinders,
-    const std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &cone,
-    const std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &torus,
-    const std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &tanglecube,
-    const std::vector<std::tuple<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &triangles,
-    const std::vector<std::tuple<std::tuple<double, double, double, std::string>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &obj
-):
-    _sphere(sphere),
-    _cylinders(cylinders),
-    _cone(cone),
-    _plane(plane),
-    _torus(torus),
-    _tanglecube(tanglecube),
-    _triangles(triangles),
-    _obj(obj)
+namespace RayTracer::Parser {
+
+PrimitivesConfig::PrimitivesConfig(
+    const std::vector<sphere_t> &spheres,
+    const std::vector<plane_t> &planes,
+    const std::vector<cylinder_t> &cylinders,
+    const std::vector<cone_t> &cones,
+    const std::vector<torus_t> &toruses,
+    const std::vector<tanglecube_t> &tanglecubes,
+    const std::vector<triangle_t> &triangles,
+    const std::vector<obj_t> &objs
+) :
+_spheres(spheres),
+_cylinders(cylinders),
+_cones(cones),
+_planes(planes),
+_toruses(toruses),
+_tanglecubes(tanglecubes),
+_triangles(triangles),
+_objs(objs)
 {
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser
-::PrimitivesConfig::getCone() const {
-    return this->_cone;
+std::vector<cone_t> PrimitivesConfig::getCones() const {
+    return this->_cones;
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser
-::PrimitivesConfig::getCylinders() const {
+std::vector<cylinder_t> PrimitivesConfig::getCylinders() const {
     return this->_cylinders;
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig
-::getSpheres() const {
-    return this->_sphere;
+std::vector<sphere_t> PrimitivesConfig::getSpheres() const {
+    return this->_spheres;
 }
 
-std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getPlanes() const {
-    return this->_plane;
+std::vector<plane_t> PrimitivesConfig::getPlanes() const {
+    return this->_planes;
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getTorus() const {
-    return this->_torus;
+std::vector<torus_t> PrimitivesConfig::getToruses() const {
+    return this->_toruses;
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::PrimitivesConfig::getTanglecube() const {
-    return this->_tanglecube;
+std::vector<tanglecube_t> PrimitivesConfig::getTanglecubes() const {
+    return this->_tanglecubes;
 }
 
-std::vector<std::tuple<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>>
-RayTracer::Parser::PrimitivesConfig::getTriangles() const {
+std::vector<triangle_t> PrimitivesConfig::getTriangles() const {
     return this->_triangles;
 }
 
-std::vector<std::tuple<std::tuple<double, double, double, std::string>, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>>
-RayTracer::Parser::PrimitivesConfig::getOBJ() const {
-    return this->_obj;
+std::vector<obj_t> PrimitivesConfig::getOBJs() const {
+    return this->_objs;
+}
+
 }
