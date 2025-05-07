@@ -5,9 +5,10 @@
 #include "OBJFactory.hpp"
 #include "Primitives/OBJ/OBJ.hpp"
 
-RayTracer::Factory::OBJFactory::OBJFactory(const Math::Point3D &position, const std::string &filepath):
+RayTracer::Factory::OBJFactory::OBJFactory(const Math::Point3D &position, const Math::Vector3D &rotation, const std::string &filepath):
     _position(position),
-    _filepath(filepath)
+    _filepath(filepath),
+    _rotation(rotation)
 {
 
 }
@@ -16,5 +17,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(std::map<std:
     if (!plugins.contains("OBJ"))
         throw std::runtime_error("OBJ plugin not found");
     auto obj = plugins["OBJ"]->initEntryPointPtr<primitive::OBJ>("create", this->_position, this->_filepath);
+    obj->setRotation(this->_rotation);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

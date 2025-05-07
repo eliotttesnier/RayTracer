@@ -7,6 +7,7 @@
 
 #ifndef POINT3D_HPP_
 #define POINT3D_HPP_
+#include <tuple>
 
 namespace Math {
     class Vector3D;
@@ -30,6 +31,8 @@ namespace Math {
             Point3D &operator+=(const Vector3D &vector);
             Point3D operator-(const Vector3D &vector) const;
             Point3D &operator-=(const Vector3D &vector);
+
+            Point3D &operator=(const std::tuple<double, double, double> &tuple);
 
             Point3D translate(const Vector3D &translation) const;
             Point3D &translateSelf(const Vector3D &translation);

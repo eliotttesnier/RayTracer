@@ -5,10 +5,11 @@
 #include "ConeFactory.hpp"
 #include "Primitives/Cone/Cone.hpp"
 
-RayTracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, double radius, double height):
+RayTracer::Factory::ConeFactory::ConeFactory(const Math::Point3D &position, const Math::Vector3D &rotation, double radius, double height):
     _position(position),
     _radius(radius),
-    _height(height)
+    _height(height),
+    _rotation(rotation)
 {
 
 }
@@ -18,5 +19,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create(std::map<std
     if (!plugins.contains("Cone"))
         throw std::runtime_error("Cone plugin not found");
     auto obj = plugins["Cone"]->initEntryPointPtr<primitive::Cone>("create", this->_position, this->_radius, this->_height);
+    obj->setRotation(this->_rotation);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

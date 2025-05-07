@@ -8,6 +8,8 @@
 #ifndef VECTOR3D_HPP_
 #define VECTOR3D_HPP_
 
+#include <tuple>
+
 namespace Math
 {
     class Vector3D
@@ -33,6 +35,8 @@ namespace Math
             Vector3D &operator*=(const Vector3D &other);
             Vector3D operator/(const Vector3D &other) const;
             Vector3D &operator/=(const Vector3D &other);
+
+            Vector3D &operator=(const std::tuple<double, double, double> &tuple);
 
             Vector3D operator*(double scalar) const;
             Vector3D &operator*=(double scalar);

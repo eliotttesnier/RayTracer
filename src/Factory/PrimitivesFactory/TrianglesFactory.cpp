@@ -8,10 +8,11 @@
 #include "TrianglesFactory.hpp"
 #include "Primitives/Triangles/Triangles.hpp"
 
-RayTracer::Factory::TrianglesFactory::TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3):
+RayTracer::Factory::TrianglesFactory::TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3, const Math::Vector3D &rotation):
     _p1(p1),
     _p2(p2),
-    _p3(p3)
+    _p3(p3),
+    _rotation(rotation)
 {
 
 }
@@ -21,5 +22,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(std::ma
     if (!plugins.contains("Triangles"))
         throw std::runtime_error("Triangles plugin not found");
     auto obj = plugins["Triangles"]->initEntryPointPtr<primitive::Triangles>("create", this->_p1, this->_p2, this->_p3);
+    obj->setRotation(this->_rotation);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
