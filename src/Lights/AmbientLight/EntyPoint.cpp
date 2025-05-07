@@ -2,8 +2,10 @@
 // Created by roussierenoa on 5/2/25.
 //
 
-#include <iostream>
 #include <unistd.h>
+
+#include <iostream>
+
 #include "LoaderType.hpp"
 #include "AmbientLight.hpp"
 #include "../ILight.hpp"

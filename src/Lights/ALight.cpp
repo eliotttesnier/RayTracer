@@ -1,5 +1,14 @@
+/*
+** EPITECH PROJECT, 2025
+** B-OOP-400-NAN-4-1-raytracer-eliott.tesnier
+** File description:
+** ALight
+*/
+
 #include "ALight.hpp"
 #include <limits>
+#include <string>
+#include <vector>
 
 void ALight::setPosition(float x, float y, float z) {
     _x = x; _y = y; _z = z;
