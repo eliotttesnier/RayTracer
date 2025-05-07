@@ -13,7 +13,8 @@
 #include "ParserConfig/PrimitivesConfig.hpp"
 
 namespace RayTracer::Parser {
-    class Parser {
+
+class Parser {
     private:
         std::unique_ptr<CameraConfig> _camConfig;
         std::unique_ptr<LightsConfig> _lightConfig;
@@ -22,12 +23,21 @@ namespace RayTracer::Parser {
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
 
-        std::tuple<double, std::tuple<int, int, int>> _getAmbientData(const libconfig::Setting &root);
-        std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> _getDirectionalData(const libconfig::Setting &root);
+        std::vector<sphere_t> _getSpheresData(const libconfig::Setting &root);
+        std::vector<plane_t> _getPlanesData(const libconfig::Setting &root);
+        std::vector<cylinder_t> _getCylindersData(const libconfig::Setting &root);
+        std::vector<cone_t> _getConesData(const libconfig::Setting &root);
+        std::vector<torus_t> _getTorusData(const libconfig::Setting &root);
+        std::vector<tanglecube_t> _getTanglecubesData(const libconfig::Setting &root);
+        std::vector<triangle_t> _getTrianglesData(const libconfig::Setting &root);
+        std::vector<obj_t> _getOBJsData(const libconfig::Setting &root);
+
+        ambient_t _getAmbientData(const libconfig::Setting &root);
+        std::vector<directional_t> _getDirectionalData(const libconfig::Setting &root);
 
         void _getLightsData(const libconfig::Setting &root);
-    public:
 
+    public:
         CameraConfig getCameraConfig() const;
         LightsConfig getLightConfig() const;
         PrimitivesConfig getPrimitivesConfig() const;
@@ -35,9 +45,8 @@ namespace RayTracer::Parser {
         Parser() = delete;
         Parser(char *path);
         ~Parser() = default;
-    };
+};
+
 }
-
-
 
 #endif //PARSER_HPP
