@@ -8,15 +8,15 @@
 namespace RayTracer::Parser {
 
 CameraConfig::CameraConfig(
-    const resolution_t &resolution,
-    const truple_t &position,
-    const truple_t &rotation,
-    const double fov
+const resolution_t &resolution,
+const truple_t &position,
+const truple_t &rotation,
+const double fov
 ):
-    _resolution(resolution),
-    _position(position),
-    _rotation(rotation),
-    _fov(fov)
+_resolution(resolution),
+_position(position),
+_rotation(rotation),
+_fov(fov)
 {
 }
 
