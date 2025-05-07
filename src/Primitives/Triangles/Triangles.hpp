@@ -14,28 +14,23 @@ namespace RayTracer::primitive {
 
 class Triangles : public APrimitive {
     public:
-        // Constructors & Destructors
         Triangles();
         Triangles(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3);
         ~Triangles() = default;
 
-        // Getters
         Math::Vector3D getNormal() const;
 
-        // Setters
         void setPoints(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3);
+        void setAnchorPoint(const Math::Vector3D &anchorPoint);
 
-        // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
+        Math::Vector3D normalAt(const Math::Point3D& point) const;
 
     private:
-        // Attributes
-        std::string _name;
-        std::string _type;
-        Math::Point3D _position;
-        Math::Vector3D _rotation;
         Math::Point3D _p1, _p2, _p3;
         Math::Vector3D _normal;
+
+        Math::hitdata_t calculateTriangleIntersection(const Math::Ray &localRay) const;
 };
 
 } // namespace Raytracer::primitive

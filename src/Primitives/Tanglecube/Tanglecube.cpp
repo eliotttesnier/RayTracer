@@ -22,6 +22,7 @@ Tanglecube::Tanglecube()
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _size = 1.0;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
 }
 
 Tanglecube::Tanglecube(const Math::Point3D &position, double size)
@@ -31,6 +32,7 @@ Tanglecube::Tanglecube(const Math::Point3D &position, double size)
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _size = size;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
 }
 
 double Tanglecube::getSize() const
@@ -45,24 +47,26 @@ void Tanglecube::setSize(double size)
 
 Math::Vector3D Tanglecube::normalAt(const Math::Point3D& point) const
 {
+    Math::Point3D localPoint = transformPointToLocal(point);
     const double epsilon = 0.0001;
-    double dx = signedDistanceFunction(Math::Point3D(point._x + epsilon, point._y, point._z)) -
-               signedDistanceFunction(Math::Point3D(point._x - epsilon, point._y, point._z));
-    double dy = signedDistanceFunction(Math::Point3D(point._x, point._y + epsilon, point._z)) -
-               signedDistanceFunction(Math::Point3D(point._x, point._y - epsilon, point._z));
-    double dz = signedDistanceFunction(Math::Point3D(point._x, point._y, point._z + epsilon)) -
-               signedDistanceFunction(Math::Point3D(point._x, point._y, point._z - epsilon));
+    double dx = SDF(Math::Point3D(localPoint._x + epsilon, localPoint._y, localPoint._z)) -
+                SDF(Math::Point3D(localPoint._x - epsilon, localPoint._y, localPoint._z));
+    double dy = SDF(Math::Point3D(localPoint._x, localPoint._y + epsilon, localPoint._z)) -
+                SDF(Math::Point3D(localPoint._x, localPoint._y - epsilon, localPoint._z));
+    double dz = SDF(Math::Point3D(localPoint._x, localPoint._y, localPoint._z + epsilon)) -
+                SDF(Math::Point3D(localPoint._x, localPoint._y, localPoint._z - epsilon));
 
-    Math::Vector3D normal(dx, dy, dz);
-    normal.normalize();
-    return normal;
+    Math::Vector3D localNormal(dx, dy, dz);
+    localNormal.normalize();
+
+    return transformNormalToWorld(localNormal);
 }
 
-double Tanglecube::signedDistanceFunction(const Math::Point3D& point) const
+double Tanglecube::SDF(const Math::Point3D& point) const
 {
-    double x = point._x - _position._x;
-    double y = point._y - _position._y;
-    double z = point._z - _position._z;
+    double x = point._x;
+    double y = point._y;
+    double z = point._z;
 
     x /= (_size * 0.25);
     y /= (_size * 0.25);
@@ -81,6 +85,7 @@ double Tanglecube::signedDistanceFunction(const Math::Point3D& point) const
 
 Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
 {
+    Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
     hitData.hit = false;
     hitData.color = {0, 255, 255, 1.0};  // Cyan
@@ -88,25 +93,12 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
     const int MAX_ITERATIONS = 100;
     const double EPSILON = 0.001;
     const double MAX_DIST = 20.0;
-
     double boundingRadius = _size * 4.0;
 
-    Math::Point3D center = _position;
-    Math::Vector3D oc(
-        ray.origin._x - center._x,
-        ray.origin._y - center._y,
-        ray.origin._z - center._z
-    );
-
-    double a = ray.direction._x * ray.direction._x +
-               ray.direction._y * ray.direction._y +
-               ray.direction._z * ray.direction._z;
-
-    double b = 2.0 * (oc._x * ray.direction._x +
-                      oc._y * ray.direction._y +
-                      oc._z * ray.direction._z);
-
-    double c = oc._x * oc._x + oc._y * oc._y + oc._z * oc._z - boundingRadius * boundingRadius;
+    Math::Vector3D oc(localRay.origin._x, localRay.origin._y, localRay.origin._z);
+    double a = localRay.direction.dot(localRay.direction);
+    double b = 2.0 * oc.dot(localRay.direction);
+    double c = oc.dot(oc) - boundingRadius * boundingRadius;
     double discriminant = b * b - 4 * a * c;
 
     if (discriminant >= 0) {
@@ -123,22 +115,22 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
             return hitData;
 
         double tStep = (tEnd - tStart) / MAX_ITERATIONS;
-        double prevValue = signedDistanceFunction(Math::Point3D(
-            ray.origin._x + tStart * ray.direction._x,
-            ray.origin._y + tStart * ray.direction._y,
-            ray.origin._z + tStart * ray.direction._z
+        double prevValue = SDF(Math::Point3D(
+            localRay.origin._x + tStart * localRay.direction._x,
+            localRay.origin._y + tStart * localRay.direction._y,
+            localRay.origin._z + tStart * localRay.direction._z
         ));
 
         for (int i = 1; i <= MAX_ITERATIONS && tStart < tEnd; i++) {
             double t = tStart + i * tStep;
 
-            Math::Point3D point(
-                ray.origin._x + t * ray.direction._x,
-                ray.origin._y + t * ray.direction._y,
-                ray.origin._z + t * ray.direction._z
+            Math::Point3D localPoint(
+                localRay.origin._x + t * localRay.direction._x,
+                localRay.origin._y + t * localRay.direction._y,
+                localRay.origin._z + t * localRay.direction._z
             );
 
-            double currentValue = signedDistanceFunction(point);
+            double currentValue = SDF(localPoint);
 
             if (currentValue * prevValue <= 0 || std::abs(currentValue) < EPSILON) {
                 double tLeft = t - tStep;
@@ -147,19 +139,19 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
                 for (int j = 0; j < 10; j++) {
                     double tMid = (tLeft + tRight) * 0.5;
 
-                    Math::Point3D midPoint(
-                        ray.origin._x + tMid * ray.direction._x,
-                        ray.origin._y + tMid * ray.direction._y,
-                        ray.origin._z + tMid * ray.direction._z
+                    Math::Point3D localMidPoint(
+                        localRay.origin._x + tMid * localRay.direction._x,
+                        localRay.origin._y + tMid * localRay.direction._y,
+                        localRay.origin._z + tMid * localRay.direction._z
                     );
 
-                    double midValue = signedDistanceFunction(midPoint);
+                    double midValue = SDF(localMidPoint);
 
                     if (std::abs(midValue) < EPSILON) {
                         hitData.hit = true;
                         hitData.distance = tMid;
-                        hitData.point = midPoint;
-                        hitData.normal = normalAt(midPoint);
+                        hitData.point = transformPointToWorld(localMidPoint);
+                        hitData.normal = normalAt(hitData.point);
                         return hitData;
                     }
 
@@ -171,16 +163,16 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
                 }
 
                 double tFinal = (tLeft + tRight) * 0.5;
-                Math::Point3D finalPoint(
-                    ray.origin._x + tFinal * ray.direction._x,
-                    ray.origin._y + tFinal * ray.direction._y,
-                    ray.origin._z + tFinal * ray.direction._z
+                Math::Point3D localFinalPoint(
+                    localRay.origin._x + tFinal * localRay.direction._x,
+                    localRay.origin._y + tFinal * localRay.direction._y,
+                    localRay.origin._z + tFinal * localRay.direction._z
                 );
 
                 hitData.hit = true;
                 hitData.distance = tFinal;
-                hitData.point = finalPoint;
-                hitData.normal = normalAt(finalPoint);
+                hitData.point = transformPointToWorld(localFinalPoint);
+                hitData.normal = normalAt(hitData.point);
                 return hitData;
             }
 

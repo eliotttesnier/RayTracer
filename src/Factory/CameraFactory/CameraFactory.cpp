@@ -4,8 +4,6 @@
 
 #include "CameraFactory.hpp"
 #include <iostream>
-
-#include <iostream>
 #include <memory>
 
 std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCamera(
@@ -38,9 +36,9 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Factory::CameraFactory::createCame
     camera->setPosition(posX, posY, -posZ);
 
 #ifdef _DEBUG
-    std::cout << "Camera created with position (" << posX << ", " << posY << ", " << -posZ 
-              << "), rotation (" << rotX << ", " << -rotY << ", " << rotZ 
-              << "), resolution " << width << "x" << height 
+    std::cout << "Camera created with position (" << posX << ", " << posY << ", " << -posZ
+              << "), rotation (" << rotX << ", " << -rotY << ", " << rotZ
+              << "), resolution " << width << "x" << height
               << ", FOV " << fov
               << ", aspect ratio " << aspectRatio << std::endl;
 #endif

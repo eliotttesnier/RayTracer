@@ -15,6 +15,7 @@ Sphere::Sphere() {
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
 }
 
 Sphere::Sphere(const Math::Point3D &position, double radius) {
@@ -23,6 +24,7 @@ Sphere::Sphere(const Math::Point3D &position, double radius) {
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
 }
 
 double Sphere::getRadius() const {
@@ -34,32 +36,24 @@ void Sphere::setRadius(double radius) {
 }
 
 Math::Vector3D Sphere::normalAt(const Math::Point3D& point) const {
-    Math::Vector3D normal(
-        point._x - _position._x,
-        point._y - _position._y,
-        point._z - _position._z
+    Math::Point3D localPoint = transformPointToLocal(point);
+    Math::Vector3D localNormal(
+        localPoint._x,
+        localPoint._y,
+        localPoint._z
     );
+    localNormal.normalize();
 
-    double length = sqrt(normal._x * normal._x +
-                        normal._y * normal._y +
-                        normal._z * normal._z);
-    if (length > 1e-8) {
-        normal._x /= length;
-        normal._y /= length;
-        normal._z /= length;
-    }
-
-    return normal;
+    return transformNormalToWorld(localNormal);
 }
 
 Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
+    Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
+    Math::Vector3D oc(localRay.origin._x, localRay.origin._y, localRay.origin._z);
 
-    Math::Vector3D oc(ray.origin._x - _position._x,
-                     ray.origin._y - _position._y,
-                     ray.origin._z - _position._z);
-    double a = ray.direction.dot(ray.direction);
-    double b = 2.0 * oc.dot(ray.direction);
+    double a = localRay.direction.dot(localRay.direction);
+    double b = 2.0 * oc.dot(localRay.direction);
     double c = oc.dot(oc) - _radius * _radius;
     double discriminant = b * b - 4 * a * c;
 
@@ -86,12 +80,18 @@ Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
 
     if (hitData.hit) {
         hitData.distance = t;
-        hitData.point = Math::Point3D(
-            ray.origin._x + t * ray.direction._x,
-            ray.origin._y + t * ray.direction._y,
-            ray.origin._z + t * ray.direction._z
+
+        Math::Point3D localHitPoint(
+            localRay.origin._x + t * localRay.direction._x,
+            localRay.origin._y + t * localRay.direction._y,
+            localRay.origin._z + t * localRay.direction._z
         );
-        hitData.normal = normalAt(hitData.point);
+
+        Math::Vector3D localNormal(localHitPoint._x, localHitPoint._y, localHitPoint._z);
+        localNormal.normalize();
+
+        hitData.point = transformPointToWorld(localHitPoint);
+        hitData.normal = transformNormalToWorld(localNormal);
     }
 
     hitData.color = {0.0, 0.0, 255.0, 1.0};  // Blue

@@ -108,3 +108,157 @@ Graphic::color_t APrimitive::getColor(
 
     return finalColor;
 }
+
+Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
+{
+    double radX = _rotation._x * M_PI / 180.0;
+    double radY = _rotation._y * M_PI / 180.0;
+    double radZ = _rotation._z * M_PI / 180.0;
+    double cosX = cos(radX);
+    double sinX = sin(radX);
+    double cosY = cos(radY);
+    double sinY = sin(radY);
+    double cosZ = cos(radZ);
+    double sinZ = sin(radZ);
+
+    Math::Point3D localOrigin(
+        ray.origin._x - _position._x,
+        ray.origin._y - _position._y + _anchorPoint._y,
+        ray.origin._z - _position._z
+    );
+
+    rotatePointToLocal(localOrigin, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    Math::Vector3D localDirection = ray.direction;
+    rotateVectorToLocal(localDirection, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    return Math::Ray(localOrigin, localDirection);
+}
+
+Math::Point3D APrimitive::transformPointToLocal(const Math::Point3D &point) const
+{
+    double radX = _rotation._x * M_PI / 180.0;
+    double radY = _rotation._y * M_PI / 180.0;
+    double radZ = _rotation._z * M_PI / 180.0;
+    double cosX = cos(radX);
+    double sinX = sin(radX);
+    double cosY = cos(radY);
+    double sinY = sin(radY);
+    double cosZ = cos(radZ);
+    double sinZ = sin(radZ);
+
+    Math::Point3D localPoint(
+        point._x - _position._x,
+        point._y - _position._y + _anchorPoint._y,
+        point._z - _position._z
+    );
+
+    rotatePointToLocal(localPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    return localPoint;
+}
+
+Math::Point3D APrimitive::transformPointToWorld(const Math::Point3D &localPoint) const
+{
+    double radX = _rotation._x * M_PI / 180.0;
+    double radY = _rotation._y * M_PI / 180.0;
+    double radZ = _rotation._z * M_PI / 180.0;
+    double cosX = cos(radX);
+    double sinX = sin(radX);
+    double cosY = cos(radY);
+    double sinY = sin(radY);
+    double cosZ = cos(radZ);
+    double sinZ = sin(radZ);
+
+    Math::Point3D worldPoint = localPoint;
+    rotatePointToWorld(worldPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    worldPoint._x += _position._x;
+    worldPoint._y += _position._y - _anchorPoint._y;
+    worldPoint._z += _position._z;
+
+    return worldPoint;
+}
+
+Math::Vector3D APrimitive::transformNormalToWorld(const Math::Vector3D &localNormal) const
+{
+    double radX = _rotation._x * M_PI / 180.0;
+    double radY = _rotation._y * M_PI / 180.0;
+    double radZ = _rotation._z * M_PI / 180.0;
+    double cosX = cos(radX);
+    double sinX = sin(radX);
+    double cosY = cos(radY);
+    double sinY = sin(radY);
+    double cosZ = cos(radZ);
+    double sinZ = sin(radZ);
+
+    Math::Vector3D worldNormal = localNormal;
+    rotateVectorToWorld(worldNormal, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    worldNormal.normalize();
+    return worldNormal;
+}
+
+void APrimitive::rotatePointToLocal(Math::Point3D &point, double cosX, double sinX,
+    double cosY, double sinY, double cosZ, double sinZ) const
+{
+    double origX = point._x;
+    point._x = cosZ * origX + sinZ * point._y;
+    point._y = -sinZ * origX + cosZ * point._y;
+
+    origX = point._x;
+    point._x = cosY * origX - sinY * point._z;
+    point._z = sinY * origX + cosY * point._z;
+
+    double origY = point._y;
+    point._y = cosX * origY + sinX * point._z;
+    point._z = -sinX * origY + cosX * point._z;
+}
+
+void APrimitive::rotateVectorToLocal(Math::Vector3D &vector, double cosX, double sinX,
+    double cosY, double sinY, double cosZ, double sinZ) const
+{
+    double origX = vector._x;
+    vector._x = cosZ * origX + sinZ * vector._y;
+    vector._y = -sinZ * origX + cosZ * vector._y;
+
+    origX = vector._x;
+    vector._x = cosY * origX - sinY * vector._z;
+    vector._z = sinY * origX + cosY * vector._z;
+
+    double origY = vector._y;
+    vector._y = cosX * origY + sinX * vector._z;
+    vector._z = -sinX * origY + cosX * vector._z;
+}
+
+void APrimitive::rotatePointToWorld(Math::Point3D &point, double cosX, double sinX,
+    double cosY, double sinY, double cosZ, double sinZ) const
+{
+    double origY = point._y;
+    point._y = cosX * origY - sinX * point._z;
+    point._z = sinX * origY + cosX * point._z;
+
+    double origX = point._x;
+    point._x = cosY * origX + sinY * point._z;
+    point._z = -sinY * origX + cosY * point._z;
+
+    origX = point._x;
+    point._x = cosZ * origX - sinZ * point._y;
+    point._y = sinZ * origX + cosZ * point._y;
+}
+
+void APrimitive::rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
+    double cosY, double sinY, double cosZ, double sinZ) const
+{
+    double origY = vector._y;
+    vector._y = cosX * origY - sinX * vector._z;
+    vector._z = sinX * origY + cosX * vector._z;
+
+    double origX = vector._x;
+    vector._x = cosY * origX + sinY * vector._z;
+    vector._z = -sinY * origX + cosY * vector._z;
+
+    origX = vector._x;
+    vector._x = cosZ * origX - sinZ * vector._y;
+    vector._y = sinZ * origX + cosZ * vector._y;
+}
