@@ -8,10 +8,11 @@
 
 //TODO: Utiliser Libloader pour charger les primitives
 
-RayTracer::Factory::CylinderFactory::CylinderFactory(const Math::Point3D &position, double radius, double height):
+RayTracer::Factory::CylinderFactory::CylinderFactory(const Math::Point3D &position, const Math::Vector3D &rotation, double radius, double height):
     _position(position),
     _radius(radius),
-    _height(height)
+    _height(height),
+    _rotation(rotation)
 {
 
 }
@@ -20,5 +21,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(std::map
     if (!plugins.contains("Cylinder"))
         throw std::runtime_error("Cylinder plugin not found");
     auto obj = plugins["Cylinder"]->initEntryPointPtr<primitive::Cylinder>("create", this->_position, this->_radius, this->_height);
+    obj->setRotation(this->_rotation);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

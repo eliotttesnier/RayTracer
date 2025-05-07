@@ -18,13 +18,14 @@ namespace RayTracer::Factory {
 
     class TrianglesFactory : public IPrimitiveFactory {
     public:
-        TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3);
+        TrianglesFactory(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3, const Math::Vector3D &rotation);
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         Math::Point3D _p1;
         Math::Point3D _p2;
         Math::Point3D _p3;
+        Math::Vector3D _rotation;
     };
 
 } // namespace Raytracer::Factory

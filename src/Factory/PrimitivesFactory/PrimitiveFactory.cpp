@@ -34,8 +34,10 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     // Planes
     for (const auto& plane : config.getPlanes()) {
         auto [axis, position, rotation, size, color] = plane;
-        Math::Point3D pos = Math::Point3D(std::get<0>(position), std::get<1>(position), std::get<2>(position));;
-        Math::Vector3D rot = Math::Vector3D(0, 0, 0);
+        auto [x, y, z] = position;
+        auto [rx, ry, rz] = rotation;
+        Math::Point3D pos = Math::Point3D(x, y, z);
+        Math::Vector3D rot = Math::Vector3D(rx, ry, rz);
 
         RayTracer::Factory::PlaneFactory factory(pos, rot, size);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
@@ -49,9 +51,11 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     for (const auto& cylinder : config.getCylinders()) {
         auto [posRad, rotation, color] = cylinder;
         auto [x, y, z, radius, height] = posRad;
+        auto [rx, ry, rz] = rotation;
         Math::Point3D pos(x, y, z);
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::CylinderFactory factory(pos, radius, height);
+        RayTracer::Factory::CylinderFactory factory(pos, rota, radius, height);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a cylinder" << std::endl;
@@ -63,9 +67,11 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     for (const auto &cone : config.getCone()) {
         auto [posRad, rotation, color] = cone;
         auto [x, y, z, radius, height] = posRad;
+        auto [rx, ry, rz] = rotation;
         Math::Point3D pos(x, y, z);
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::ConeFactory factory(pos, radius, height);
+        RayTracer::Factory::ConeFactory factory(pos, rota, radius, height);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a cone" << std::endl;
@@ -77,9 +83,11 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
     for (const auto &torus : config.getTorus()) {
         auto [posRad, rotation, color] = torus;
         auto [x, y, z, majorRadius, minorRadius] = posRad;
+        auto [rx, ry, rz] = rotation;
         Math::Point3D pos(x, y, z);
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::TorusFactory factory(pos, majorRadius, minorRadius);
+        RayTracer::Factory::TorusFactory factory(pos, rota, majorRadius, minorRadius);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a torus" << std::endl;
@@ -92,9 +100,10 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         auto [posSize, rotation, color] = tanglecube;
         auto [x, y, z, size] = posSize;
         auto [rx, ry, rz] = rotation;
-        Math::Point3D pos(x, y, z);
+            Math::Point3D pos(x, y, z);
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::TanglecubeFactory factory(pos, size);
+        RayTracer::Factory::TanglecubeFactory factory(pos, rota, size);
         // TODO: faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
         std::cout << "Creating a tanglecube" << std::endl;
@@ -110,8 +119,9 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         Math::Point3D point1(std::get<0>(p1), std::get<1>(p1), std::get<2>(p1));
         Math::Point3D point2(std::get<0>(p2), std::get<1>(p2), std::get<2>(p2));
         Math::Point3D point3(std::get<0>(p3), std::get<1>(p3), std::get<2>(p3));
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3);
+        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3, rota);
 #ifdef _DEBUG
         std::cout << "Creating a triangle" << std::endl;
 #endif
@@ -124,8 +134,9 @@ std::vector<std::shared_ptr<IPrimitive>> RayTracer::Factory::PrimitiveFactory::c
         auto [x, y, z, filepath] = posPath;
         auto [rx, ry, rz] = rotation;
         Math::Point3D pos(x, y, z);
+        Math::Vector3D rota(rx, ry, rz);
 
-        RayTracer::Factory::OBJFactory factory(pos, filepath);
+        RayTracer::Factory::OBJFactory factory(pos, rota, filepath);
 #ifdef _DEBUG
         std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
 #endif
