@@ -6,6 +6,9 @@
 */
 
 #include "APrimitive.hpp"
+#include <string>
+#include <vector>
+#include <algorithm>
 
 const std::string APrimitive::getName() const
 {
@@ -86,7 +89,8 @@ Graphic::color_t APrimitive::getColor(
 
     for (const auto& light : lights) {
         if (light->intersect(ray, hitData.point, primitives)) {
-            Graphic::color_t lightContribution = light->calculateLighting(hitData, ray, viewDir);
+            Graphic::color_t lightContribution =
+                light->calculateLighting(hitData, ray, viewDir);
 
             finalColor.r += lightContribution.r;
             finalColor.g += lightContribution.g;

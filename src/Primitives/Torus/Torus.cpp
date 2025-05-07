@@ -89,7 +89,7 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {255.0, 255.0, 0.0, 1.0}; // Yellow
+    hitData.color = {255.0, 255.0, 0.0, 1.0};  // Yellow
 
     const int MAX_STEPS = 128;
     const double EPSILON = 0.0001;
@@ -113,8 +113,8 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
         }
         t += dist;
     }
-    
+
     return hitData;
 }
 
-} // namespace Raytracer::primitive
+}  // namespace Raytracer::primitive

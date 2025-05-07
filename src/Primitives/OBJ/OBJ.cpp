@@ -5,13 +5,18 @@
 ** OBJ
 */
 
+#include "OBJ.hpp"
+
+#include <cmath>
+
+#include <algorithm>
 #include <iostream>
+#include <limits>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <algorithm>
-#include <cmath>
 #include <vector>
-#include "OBJ.hpp"
+
 #include "../Triangles/Triangles.hpp"
 
 namespace RayTracer::primitive {
@@ -57,7 +62,9 @@ void OBJ::loadFromFile()
         size_t idx2 = std::get<1>(face);
         size_t idx3 = std::get<2>(face);
 
-        if (idx1 >= _vertices.size() || idx2 >= _vertices.size() || idx3 >= _vertices.size()) {
+        if (idx1 >= _vertices.size() ||
+            idx2 >= _vertices.size() ||
+            idx3 >= _vertices.size()) {
             std::cerr << "OBJ: Invalid face indices" << std::endl;
             continue;
         }
@@ -79,7 +86,8 @@ void OBJ::loadFromFile()
     }
 
 #ifdef _DEBUG
-    std::cout << "OBJ: Loaded " << _triangles.size() << " triangles from " << _filepath << std::endl;
+    std::cout << "OBJ: Loaded " << _triangles.size() << " triangles from "
+              << _filepath << std::endl;
 #endif
 }
 
@@ -151,4 +159,4 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     return closestHit;
 }
 
-} // namespace RayTracer::primitive
+}  // namespace RayTracer::primitive
