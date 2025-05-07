@@ -29,9 +29,9 @@ typedef std::tuple<std::tuple<double, double, double, std::string>, truple_t, tr
 class PrimitivesConfig {
     private:
         std::vector<sphere_t> _spheres;
-        std::vector<cylinder_t> cylinders;
+        std::vector<cylinder_t> _cylinders;
         std::vector<cone_t> _cones;
-        std::vector<plane_t> planes;
+        std::vector<plane_t> _planes;
         std::vector<torus_t> _toruses;
         std::vector<tanglecube_t> _tanglecubes;
         std::vector<triangle_t> _triangles;
@@ -40,12 +40,12 @@ class PrimitivesConfig {
     public:
         std::vector<sphere_t> getSpheres() const;
         std::vector<cylinder_t> getCylinders() const;
-        std::vector<cone_t> getCone() const;
+        std::vector<cone_t> getCones() const;
         std::vector<plane_t> getPlanes() const;
-        std::vector<torus_t> getTorus() const;
-        std::vector<tanglecube_t> getTanglecube() const;
+        std::vector<torus_t> getToruses() const;
+        std::vector<tanglecube_t> getTanglecubes() const;
         std::vector<triangle_t> getTriangles() const;
-        std::vector<obj_t> getOBJ() const;
+        std::vector<obj_t> getOBJs() const;
 
         PrimitivesConfig() = delete;
         PrimitivesConfig(
