@@ -159,8 +159,8 @@ void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
 
     sf::Image image = exportTexture.copyToImage();
     if (image.saveToFile(outputFilename)) {
-        std::cout << AnsiColor::GREEN << "✅ " << AnsiColor::BOLD << "Image exported to: " 
-                  << AnsiColor::RESET << AnsiColor::CYAN << AnsiColor::UNDERLINE 
+        std::cout << AnsiColor::GREEN << "✅ " << AnsiColor::BOLD << "Image exported to: "
+                  << AnsiColor::RESET << AnsiColor::CYAN << AnsiColor::UNDERLINE
                   << outputFilename << AnsiColor::RESET << std::endl;
     } else {
         std::cerr << "Failed to export image to: " << outputFilename << std::endl;

@@ -110,8 +110,9 @@ std::string Renderer::formatTime(double seconds)
 
 void Renderer::updateProgress()
 {
-    int completed = _completedLines.load();
-    int percentage = (completed * 100) / _height;
+    int completedPixels = _completedPixels.load();
+    int totalPixels = _width * _height;
+    int percentage = (completedPixels * 100) / totalPixels;
 
     std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
         << AnsiColor::RESET << " [" << AnsiColor::CYAN;
@@ -127,16 +128,24 @@ void Renderer::updateProgress()
     std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
               << std::setw(3) << percentage << "%" << AnsiColor::RESET;
 
-    if (completed > 0 && _pixelsPerSecond > 0) {
+    if (completedPixels > 0) {
         auto now = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = now - _startTime;
-        double remainingLines = _height - completed;
-        double remainingPixels = remainingLines * _width;
+        double pixelsPerSec = completedPixels / elapsed.count();
+        _pixelsPerSecond = pixelsPerSec;
+
+        double remainingPixels = totalPixels - completedPixels;
         double estimatedRemainingSeconds = remainingPixels / _pixelsPerSecond;
-        std::cout << " | " << AnsiColor::MAGENTA << "Est. remaining: "
+
+        std::cout << " | " << AnsiColor::CYAN << completedPixels << "/" << totalPixels
+                  << " pixels" << AnsiColor::RESET
+                  << " | " << AnsiColor::GREEN << std::fixed << std::setprecision(1)
+                  << pixelsPerSec / 1000 << "k px/s" << AnsiColor::RESET
+                  << " | " << AnsiColor::MAGENTA << "Remaining: "
                   << AnsiColor::BOLD << formatTime(estimatedRemainingSeconds)
-                  << AnsiColor::RESET << "                     ";
+                  << AnsiColor::RESET << "                                 ";
     }
+
     std::cout << std::flush;
 }
 
@@ -177,18 +186,17 @@ void Renderer::renderSegment(int startY, int endY)
             }
 
             localBuffer[y - startY][x] = pixelColor;
+            _completedPixels++;
+            if (_showProgress && (_completedPixels % 500 == 0)) {
+                std::lock_guard<std::mutex> lock(_mutex);
+                updateProgress();
+            }
         }
 
-        _completedLines++;
-        if (_completedLines == 10) {
+        if (_completedPixels == _width * 10) {
             auto now = std::chrono::steady_clock::now();
             std::chrono::duration<double> elapsed = now - _startTime;
-            _pixelsPerSecond = (_completedLines * _width) / elapsed.count();
-        }
-
-        if (_showProgress && (_completedLines % 10 == 0 || _completedLines == _height)) {
-            std::lock_guard<std::mutex> lock(_mutex);
-            updateProgress();
+            _pixelsPerSecond = _completedPixels / elapsed.count();
         }
     }
 
@@ -212,7 +220,7 @@ void Renderer::renderPreview()
         _pixelBuffer[y].resize(_width);
     }
 
-    _completedLines = 0;
+    _completedPixels = 0;
     _pixelsPerSecond = 0.0;
     _startTime = std::chrono::steady_clock::now();
     std::cout << AnsiColor::CYAN << AnsiColor::BOLD << "⚡ Starting preview render "
@@ -250,7 +258,8 @@ void Renderer::renderPreview()
         std::cout << "=";
     }
     std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
-              << "100%" << AnsiColor::RESET << "                   " << std::endl;
+              << "100%" << AnsiColor::RESET
+              << "                                                 " << std::endl;
 
     auto endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - _startTime;
@@ -294,7 +303,7 @@ void Renderer::render()
         _pixelBuffer[y].resize(_width);
     }
 
-    _completedLines = 0;
+    _completedPixels = 0;
     _pixelsPerSecond = 0.0;
     _startTime = std::chrono::steady_clock::now();
     std::cout << AnsiColor::CYAN << AnsiColor::BOLD << "🚀 Starting full render "
@@ -338,7 +347,7 @@ void Renderer::render()
     }
     std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
               << "100%" << AnsiColor::RESET <<
-              "                                           " << std::endl;
+              "                                                     " << std::endl;
 
     auto endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - _startTime;
