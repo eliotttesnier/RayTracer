@@ -18,7 +18,7 @@ typedef std::tuple<double, double, double, double> quaduple_t;
 typedef std::tuple<double, double, double, double, double> quintuple_t;
 typedef std::tuple<int, int, int> color_t;
 
-typedef std::tuple<quaduple_t, truple_t, color_t> sphere_t; // Position + radius, Color
+typedef std::tuple<quaduple_t, truple_t, truple_t, color_t> sphere_t; // Position + radius, rotation, scale, Color
 typedef std::tuple<quintuple_t, truple_t, truple_t, color_t> cylinder_t; // Position + radius + height, Color
 typedef std::tuple<quintuple_t, truple_t, truple_t, color_t> cone_t; // Position + radius + height, Color
 typedef std::tuple<char, truple_t, truple_t, truple_t, std::tuple<double, double>, color_t> plane_t; // axis, position, Color

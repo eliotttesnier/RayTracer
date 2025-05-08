@@ -12,10 +12,12 @@
 
 RayTracer::Factory::SphereFactory::SphereFactory(
             const Math::Point3D &position,
+            const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
             double radius):
     _radius(radius),
     _position(position),
+    _rotation(rotation),
     _scale(scale)
 {
 }
@@ -31,6 +33,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::SphereFactory::create(
         this->_position,
         this->_radius
     );
+    obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
