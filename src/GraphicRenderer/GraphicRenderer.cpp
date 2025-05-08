@@ -145,9 +145,10 @@ void GraphicRenderer::switchToFinalImage()
     float scaledHeight = _height * scale;
     _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
     _isPreviewMode = false;
+    _inputFilename = _finalFilename;
 }
 
-void GraphicRenderer::exportToPNG() const
+void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
 {
     sf::Texture exportTexture;
     if (!exportTexture.create(_width, _height)) {
@@ -156,20 +157,13 @@ void GraphicRenderer::exportToPNG() const
     }
     exportTexture.update(_pixels.data());
 
-    std::string outputFilename = _inputFilename;
-    size_t dotPos = outputFilename.find_last_of('.');
-    if (dotPos != std::string::npos) {
-        outputFilename = outputFilename.substr(0, dotPos);
-    }
-    outputFilename += ".png";
-
     sf::Image image = exportTexture.copyToImage();
     if (image.saveToFile(outputFilename)) {
         std::cout << AnsiColor::GREEN << "✅ " << AnsiColor::BOLD << "Image exported to: "
                   << AnsiColor::RESET << AnsiColor::CYAN << AnsiColor::UNDERLINE
                   << outputFilename << AnsiColor::RESET << std::endl;
     } else {
-        std::cerr << "Failed to export image." << std::endl;
+        std::cerr << "Failed to export image to: " << outputFilename << std::endl;
     }
 }
 
@@ -178,6 +172,7 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
     bool finalImageLoaded = false;
     sf::Clock checkClock;
 
+    exportToPNG("preview.png");
     while (_window.isOpen()) {
         sf::Event event;
         while (_window.pollEvent(event)) {
@@ -191,6 +186,7 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         if (_isPreviewMode && !finalImageLoaded && renderingComplete.load()) {
             switchToFinalImage();
             finalImageLoaded = true;
+            exportToPNG("output.png");
         }
 
         _window.clear(sf::Color::Black);
@@ -223,6 +219,4 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         _window.display();
         sf::sleep(sf::milliseconds(100));
     }
-    if (!_isPreviewMode)
-        exportToPNG();
 }

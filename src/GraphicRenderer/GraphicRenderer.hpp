@@ -25,7 +25,7 @@ class GraphicRenderer {
 
         void run(std::atomic<bool>& renderingComplete);
         bool loadFromFile(const std::string& filename);
-        void exportToPNG() const;
+        void exportToPNG(const std::string& outputFilename) const;
         void switchToFinalImage();
         void displayLoadingMessage(const std::string& message);
 
