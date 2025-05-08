@@ -24,14 +24,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
 
+    // Spheres
     for (const auto& sphere : config.getSpheres()) {
-        auto [posRad, sc, color] = sphere;
+        auto [posRad, rotation, sc, color] = sphere;
         auto [x, y, z, radius] = posRad;
         Math::Point3D pos(x, y, z);
+        Math::Vector3D rota;
         Math::Vector3D scale;
+        rota = rotation;
         scale = sc;
 
-        RayTracer::Factory::SphereFactory factory(pos, scale, radius);
+        RayTracer::Factory::SphereFactory factory(pos, rota, scale, radius);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG

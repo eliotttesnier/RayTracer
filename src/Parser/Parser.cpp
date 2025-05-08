@@ -52,11 +52,15 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
         const auto &position = s["position"];
+        const auto &rotation = s["rotation"];
         const auto &scale = s["scale"];
         const auto &color = s["color"];
         double px = position["x"];
         double py = position["y"];
         double pz = position["z"];
+        double rx = rotation["x"];
+        double ry = rotation["y"];
+        double rz = rotation["z"];
         double sx = scale["x"];
         double sy = scale["y"];
         double sz = scale["z"];
@@ -66,12 +70,15 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
         int cb = color["b"];
         spheresVector.emplace_back(
             std::make_tuple(px, py, pz, radius),
+            std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
-            std::cout << "Sphere: pos(" << px << ", " << py << ", " << pz << "), r=" << radius
-                    << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
+            std::cout << "Sphere: pos(" << px << ", " << py << ", " << pz << "), "
+                << "r=" << radius << ", "
+                << "rota(" << rx << ", " << ry << ", " << rz << "), "
+                << "color(" << cr << ", " << cg << ", " << cb << ")\n";
         #endif
     }
 
