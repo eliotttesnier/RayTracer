@@ -16,6 +16,7 @@
 #include <vector>
 #include <algorithm>
 #include <tuple>
+#include <iomanip>
 #include "../Lights/AmbientLight/AmbientLight.hpp"
 #include "../Lights/DirectionalLight/DirectionalLight.hpp"
 
@@ -64,6 +65,24 @@ void Renderer::setOutputFile(const std::string& outputFile)
     _outputFile = outputFile;
 }
 
+void Renderer::updateProgress()
+{
+    int completed = _completedLines.load();
+    int percentage = (completed * 100) / _height;
+
+    std::cout << "\rRendering: [";
+    int barWidth = 50;
+    int pos = barWidth * percentage / 100;
+
+    for (int i = 0; i < barWidth; ++i) {
+        if (i < pos) std::cout << "=";
+        else if (i == pos) std::cout << ">";
+        else std::cout << " ";
+    }
+
+    std::cout << "] " << std::setw(3) << percentage << "%" << std::flush;
+}
+
 void Renderer::renderSegment(int startY, int endY)
 {
     std::vector<std::vector<Graphic::color_t>> localBuffer(endY - startY,
@@ -102,6 +121,12 @@ void Renderer::renderSegment(int startY, int endY)
 
             localBuffer[y - startY][x] = pixelColor;
         }
+
+        _completedLines++;
+        if (_showProgress && (_completedLines % 10 == 0 || _completedLines == _height)) {
+            std::lock_guard<std::mutex> lock(_mutex);
+            updateProgress();
+        }
     }
 
     std::lock_guard<std::mutex> lock(_mutex);
@@ -119,6 +144,10 @@ void Renderer::render()
     for (int y = 0; y < _height; y++) {
         _pixelBuffer[y].resize(_width);
     }
+
+    _completedLines = 0;
+    std::cout << "Starting render of " << _width << "x" << _height
+              << " image (" << _height * _width << " pixels)..." << std::endl;
 
     unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
     std::vector<std::thread> threads;
@@ -145,11 +174,18 @@ void Renderer::render()
         throw;
     }
 
+    std::cout << "\rRendering: [";
+    for (int i = 0; i < 50; ++i) {
+        std::cout << "=";
+    }
+    std::cout << "] 100%" << std::endl;
+
     saveToFile();
 }
 
 void Renderer::saveToFile()
 {
+    std::cout << "Saving image to " << _outputFile << "..." << std::endl;
     std::ofstream file(_outputFile);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open output file: " + _outputFile);

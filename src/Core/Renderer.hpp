@@ -13,6 +13,8 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <atomic>
+#include <chrono>
 #include "../Primitives/IPrimitive.hpp"
 #include "../Lights/ILight.hpp"
 #include "../Graphic/Camera.hpp"
@@ -35,6 +37,8 @@ class Renderer {
     private:
         void renderSegment(int startY, int endY);
         void saveToFile();
+        void updateProgress();
+        std::string formatTime(double seconds);
 
         std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
@@ -46,6 +50,10 @@ class Renderer {
         double _aspectRatio;
         double _fov;
         std::mutex _mutex;
+        std::atomic<int> _completedLines{0};
+        bool _showProgress{true};
+        std::chrono::time_point<std::chrono::steady_clock> _startTime;
+        double _pixelsPerSecond{0.0};
 };
 
 #endif /* !RENDERER_HPP_ */
