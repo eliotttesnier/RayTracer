@@ -129,8 +129,19 @@ Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
 
     rotatePointToLocal(localOrigin, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
+    if (_scale._x != 0) localOrigin._x /= _scale._x;
+    if (_scale._y != 0) localOrigin._y /= _scale._y;
+    if (_scale._z != 0) localOrigin._z /= _scale._z;
+
     Math::Vector3D localDirection = ray.direction;
     rotateVectorToLocal(localDirection, cosX, sinX, cosY, sinY, cosZ, sinZ);
+
+    if (_scale._x != _scale._y || _scale._y != _scale._z || _scale._x != _scale._z) {
+        if (_scale._x != 0) localDirection._x /= _scale._x;
+        if (_scale._y != 0) localDirection._y /= _scale._y;
+        if (_scale._z != 0) localDirection._z /= _scale._z;
+        localDirection.normalize();
+    }
 
     return Math::Ray(localOrigin, localDirection);
 }
@@ -155,6 +166,10 @@ Math::Point3D APrimitive::transformPointToLocal(const Math::Point3D &point) cons
 
     rotatePointToLocal(localPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
+    if (_scale._x != 0) localPoint._x /= _scale._x;
+    if (_scale._y != 0) localPoint._y /= _scale._y;
+    if (_scale._z != 0) localPoint._z /= _scale._z;
+
     return localPoint;
 }
 
@@ -171,6 +186,10 @@ Math::Point3D APrimitive::transformPointToWorld(const Math::Point3D &localPoint)
     double sinZ = sin(radZ);
 
     Math::Point3D worldPoint = localPoint;
+    worldPoint._x *= _scale._x;
+    worldPoint._y *= _scale._y;
+    worldPoint._z *= _scale._z;
+
     rotatePointToWorld(worldPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     worldPoint._x += _position._x;
@@ -192,7 +211,12 @@ Math::Vector3D APrimitive::transformNormalToWorld(const Math::Vector3D &localNor
     double cosZ = cos(radZ);
     double sinZ = sin(radZ);
 
-    Math::Vector3D worldNormal = localNormal;
+    Math::Vector3D scaledNormal = localNormal;
+    scaledNormal._x *= (_scale._x != 0) ? (1.0 / _scale._x) : 1.0;
+    scaledNormal._y *= (_scale._y != 0) ? (1.0 / _scale._y) : 1.0;
+    scaledNormal._z *= (_scale._z != 0) ? (1.0 / _scale._z) : 1.0;
+
+    Math::Vector3D worldNormal = scaledNormal;
     rotateVectorToWorld(worldNormal, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     worldNormal.normalize();
