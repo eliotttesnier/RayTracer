@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <tuple>
 #include <iomanip>
+#include <sstream>
 #include "../Lights/AmbientLight/AmbientLight.hpp"
 #include "../Lights/DirectionalLight/DirectionalLight.hpp"
 
@@ -65,6 +66,21 @@ void Renderer::setOutputFile(const std::string& outputFile)
     _outputFile = outputFile;
 }
 
+std::string Renderer::formatTime(double seconds)
+{
+    int hours = static_cast<int>(seconds) / 3600;
+    int minutes = (static_cast<int>(seconds) % 3600) / 60;
+    int secs = static_cast<int>(seconds) % 60;
+
+    std::stringstream ss;
+    if (hours > 0)
+        ss << hours << "h ";
+    if (hours > 0 || minutes > 0)
+        ss << minutes << "m ";
+    ss << secs << "s";
+    return ss.str();
+}
+
 void Renderer::updateProgress()
 {
     int completed = _completedLines.load();
@@ -80,7 +96,16 @@ void Renderer::updateProgress()
         else std::cout << " ";
     }
 
-    std::cout << "] " << std::setw(3) << percentage << "%" << std::flush;
+    std::cout << "] " << std::setw(3) << percentage << "%";
+    if (completed > 0 && _pixelsPerSecond > 0) {
+        auto now = std::chrono::steady_clock::now();
+        std::chrono::duration<double> elapsed = now - _startTime;
+        double remainingLines = _height - completed;
+        double remainingPixels = remainingLines * _width;
+        double estimatedRemainingSeconds = remainingPixels / _pixelsPerSecond;
+        std::cout << " | Est. remaining: " << formatTime(estimatedRemainingSeconds);
+    }
+    std::cout << std::flush;
 }
 
 void Renderer::renderSegment(int startY, int endY)
@@ -123,6 +148,12 @@ void Renderer::renderSegment(int startY, int endY)
         }
 
         _completedLines++;
+        if (_completedLines == 10) {
+            auto now = std::chrono::steady_clock::now();
+            std::chrono::duration<double> elapsed = now - _startTime;
+            _pixelsPerSecond = (_completedLines * _width) / elapsed.count();
+        }
+
         if (_showProgress && (_completedLines % 10 == 0 || _completedLines == _height)) {
             std::lock_guard<std::mutex> lock(_mutex);
             updateProgress();
@@ -146,6 +177,8 @@ void Renderer::render()
     }
 
     _completedLines = 0;
+    _pixelsPerSecond = 0.0;
+    _startTime = std::chrono::steady_clock::now();
     std::cout << "Starting render of " << _width << "x" << _height
               << " image (" << _height * _width << " pixels)..." << std::endl;
 
@@ -179,6 +212,11 @@ void Renderer::render()
         std::cout << "=";
     }
     std::cout << "] 100%" << std::endl;
+    auto endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsedTime = endTime - _startTime;
+    std::cout << "Total render time: " << formatTime(elapsedTime.count()) << std::endl;
+    std::cout << "Average pixels per second: " << std::fixed << std::setprecision(0)
+              << (_width * _height) / elapsedTime.count() << std::endl;
 
     saveToFile();
 }
