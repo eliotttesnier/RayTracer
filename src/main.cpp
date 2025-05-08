@@ -8,6 +8,8 @@
 #include <memory>
 #include <cmath>
 #include <limits>
+#include <chrono>
+#include <atomic>
 
 #include "Core/Core.hpp"
 #include "Graphic/Camera.hpp"
@@ -21,10 +23,20 @@ int main(int ac, char **av) {
             RayTracer::Core core(av);
             Renderer renderer(core.getCamera(), core.getPrimitives(), core.getLights());
 
-            renderer.render();
+            renderer.renderPreview();
+            std::atomic<bool> renderingComplete(false);
+            std::cout << "Displaying preview image." << std::endl;
+            GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
 
-            GraphicRenderer graphicRenderer("output.ppm");
-            graphicRenderer.run();
+            std::thread renderThread([&]() {
+                renderer.render();
+                std::cout << "Full resolution rendering complete." << std::endl;
+                renderingComplete = true;
+            });
+            graphicRenderer.run(renderingComplete);
+
+            if (renderThread.joinable())
+                renderThread.join();
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;

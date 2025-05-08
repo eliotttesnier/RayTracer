@@ -24,10 +24,13 @@
 Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
     const std::vector<std::shared_ptr<IPrimitive>> primitives,
     const std::vector<std::shared_ptr<ILight>> lights)
-    : _camera(camera), _primitives(primitives), _lights(lights), _outputFile("output.ppm")
+    : _camera(camera), _primitives(primitives), _lights(lights),
+    _outputFile("output.ppm"), _previewOutputFile("preview.ppm")
 {
     _width = std::get<0>(camera->getResolution());
     _height = std::get<1>(camera->getResolution());
+    _previewWidth = 256;
+    _previewHeight = static_cast<int>(_previewWidth * (_height / static_cast<double>(_width)));
     _aspectRatio = static_cast<double>(_width) / _height;
     _fov = camera->getFov();
     _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
@@ -57,6 +60,8 @@ void Renderer::setResolution(int width, int height)
 {
     _width = width;
     _height = height;
+    _previewWidth = 256;
+    _previewHeight = static_cast<int>(_previewWidth*(_height / static_cast<double>(_width)));
     _aspectRatio = static_cast<double>(_width) / _height;
     _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
 }
@@ -168,6 +173,90 @@ void Renderer::renderSegment(int startY, int endY)
     }
 }
 
+void Renderer::renderPreview()
+{
+    int originalWidth = _width;
+    int originalHeight = _height;
+    _width = _previewWidth;
+    _height = _previewHeight;
+    _aspectRatio = static_cast<double>(_width) / _height;
+    _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
+    for (int y = 0; y < _height; y++) {
+        _pixelBuffer[y].resize(_width);
+    }
+
+    _completedLines = 0;
+    _pixelsPerSecond = 0.0;
+    _startTime = std::chrono::steady_clock::now();
+    std::cout << "Starting preview render (" << _width << "x" << _height << ")..."
+        << std::endl;
+
+    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    std::vector<std::thread> threads;
+    const int linesPerThread = _height / numThreads;
+
+    try {
+        for (unsigned int i = 0; i < numThreads; i++) {
+            int startY = i * linesPerThread;
+            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
+        }
+
+        for (auto& thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+    } catch (const std::exception& e) {
+        for (auto& thread : threads) {
+            if (thread.joinable()) {
+                thread.join();
+            }
+        }
+        throw;
+    }
+
+    std::cout << "\rPreview rendering: [";
+    for (int i = 0; i < 50; ++i) {
+        std::cout << "=";
+    }
+    std::cout << "] 100%" << std::endl;
+
+    auto endTime = std::chrono::steady_clock::now();
+    std::chrono::duration<double> elapsedTime = endTime - _startTime;
+    std::cout << "Preview render time: " << formatTime(elapsedTime.count()) << std::endl;
+
+    savePreviewToFile();
+    _width = originalWidth;
+    _height = originalHeight;
+}
+
+void Renderer::savePreviewToFile()
+{
+    std::cout << "Saving preview to " << _previewOutputFile << "..." << std::endl;
+    std::ofstream file(_previewOutputFile);
+    if (!file.is_open()) {
+        throw std::runtime_error("Failed to open preview file: " + _previewOutputFile);
+    }
+
+    file << "P3\n" << _width << " " << _height << "\n255\n";
+
+    for (int y = 0; y < _height; y++) {
+        for (int x = 0; x < _width; x++) {
+            const Graphic::color_t& color = _pixelBuffer[y][x];
+            int r = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.r))));
+            int g = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.g))));
+            int b = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.b))));
+
+            file << r << " " << g << " " << b << "\n";
+        }
+        file << "\n";
+    }
+
+    file.close();
+    std::cout << "Preview complete. Output saved to " << _previewOutputFile << std::endl;
+}
+
 void Renderer::render()
 {
     _aspectRatio = static_cast<double>(_width) / _height;
@@ -179,7 +268,7 @@ void Renderer::render()
     _completedLines = 0;
     _pixelsPerSecond = 0.0;
     _startTime = std::chrono::steady_clock::now();
-    std::cout << "Starting render of " << _width << "x" << _height
+    std::cout << "Starting full render of " << _width << "x" << _height
               << " image (" << _height * _width << " pixels)..." << std::endl;
 
     unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);

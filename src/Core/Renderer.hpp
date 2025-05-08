@@ -32,11 +32,13 @@ class Renderer {
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
         void render();
+        void renderPreview();
 
     protected:
     private:
         void renderSegment(int startY, int endY);
         void saveToFile();
+        void savePreviewToFile();
         void updateProgress();
         std::string formatTime(double seconds);
 
@@ -45,8 +47,11 @@ class Renderer {
         std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::vector<Graphic::color_t>> _pixelBuffer;
         std::string _outputFile;
+        std::string _previewOutputFile;
         int _width;
         int _height;
+        int _previewWidth;
+        int _previewHeight;
         double _aspectRatio;
         double _fov;
         std::mutex _mutex;
