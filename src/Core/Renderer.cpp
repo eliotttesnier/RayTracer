@@ -71,12 +71,8 @@ void Renderer::renderSegment(int startY, int endY)
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
-            double u = static_cast<double>(x) / (_width - 1);
-            double v = static_cast<double>(y) / (_height - 1);
-
-            u = u * 2.0 - 1.0;
-            v = 1.0 - v * 2.0;
-            u *= _aspectRatio;
+            double u = (2.0 * static_cast<double>(x) / (_width - 1)) - 1.0;
+            double v = 1.0 - (2.0 * static_cast<double>(y) / (_height - 1));
 
             Math::Ray ray = _camera->ray(u, v);
 
