@@ -108,7 +108,8 @@ void Renderer::updateProgress()
         double remainingLines = _height - completed;
         double remainingPixels = remainingLines * _width;
         double estimatedRemainingSeconds = remainingPixels / _pixelsPerSecond;
-        std::cout << " | Est. remaining: " << formatTime(estimatedRemainingSeconds);
+        std::cout << " | Est. remaining: " << formatTime(estimatedRemainingSeconds)
+            << "                     ";
     }
     std::cout << std::flush;
 }
@@ -220,7 +221,7 @@ void Renderer::renderPreview()
     for (int i = 0; i < 50; ++i) {
         std::cout << "=";
     }
-    std::cout << "] 100%" << std::endl;
+    std::cout << "] 100%                   " << std::endl;
 
     auto endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - _startTime;
@@ -233,7 +234,6 @@ void Renderer::renderPreview()
 
 void Renderer::savePreviewToFile()
 {
-    std::cout << "Saving preview to " << _previewOutputFile << "..." << std::endl;
     std::ofstream file(_previewOutputFile);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open preview file: " + _previewOutputFile);
@@ -254,7 +254,6 @@ void Renderer::savePreviewToFile()
     }
 
     file.close();
-    std::cout << "Preview complete. Output saved to " << _previewOutputFile << std::endl;
 }
 
 void Renderer::render()
@@ -312,7 +311,6 @@ void Renderer::render()
 
 void Renderer::saveToFile()
 {
-    std::cout << "Saving image to " << _outputFile << "..." << std::endl;
     std::ofstream file(_outputFile);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open output file: " + _outputFile);
@@ -333,5 +331,4 @@ void Renderer::saveToFile()
     }
 
     file.close();
-    std::cout << "Rendering complete. Output saved to " << _outputFile << std::endl;
 }

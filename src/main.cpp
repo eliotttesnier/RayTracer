@@ -25,12 +25,10 @@ int main(int ac, char **av) {
 
             renderer.renderPreview();
             std::atomic<bool> renderingComplete(false);
-            std::cout << "Displaying preview image." << std::endl;
             GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
 
             std::thread renderThread([&]() {
                 renderer.render();
-                std::cout << "Full resolution rendering complete." << std::endl;
                 renderingComplete = true;
             });
             graphicRenderer.run(renderingComplete);
