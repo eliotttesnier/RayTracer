@@ -11,6 +11,14 @@
 
 #include "GraphicRenderer.hpp"
 
+namespace AnsiColor {
+const std::string RESET      = "\033[0m";
+const std::string BOLD       = "\033[1m";
+const std::string UNDERLINE  = "\033[4m";
+const std::string GREEN      = "\033[32m";
+const std::string CYAN       = "\033[36m";
+}
+
 GraphicRenderer::GraphicRenderer(std::string const &previewFilename,
         std::string const &finalFilename)
     : _inputFilename(previewFilename),
@@ -157,7 +165,9 @@ void GraphicRenderer::exportToPNG() const
 
     sf::Image image = exportTexture.copyToImage();
     if (image.saveToFile(outputFilename)) {
-        std::cout << "Image exported to: " << outputFilename << std::endl;
+        std::cout << AnsiColor::GREEN << "✅ " << AnsiColor::BOLD << "Image exported to: "
+                  << AnsiColor::RESET << AnsiColor::CYAN << AnsiColor::UNDERLINE
+                  << outputFilename << AnsiColor::RESET << std::endl;
     } else {
         std::cerr << "Failed to export image." << std::endl;
     }

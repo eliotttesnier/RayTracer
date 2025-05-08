@@ -21,6 +21,28 @@
 #include "../Lights/AmbientLight/AmbientLight.hpp"
 #include "../Lights/DirectionalLight/DirectionalLight.hpp"
 
+namespace AnsiColor {
+const std::string RESET      = "\033[0m";
+const std::string BOLD       = "\033[1m";
+const std::string UNDERLINE  = "\033[4m";
+const std::string BLACK      = "\033[30m";
+const std::string RED        = "\033[31m";
+const std::string GREEN      = "\033[32m";
+const std::string YELLOW     = "\033[33m";
+const std::string BLUE       = "\033[34m";
+const std::string MAGENTA    = "\033[35m";
+const std::string CYAN       = "\033[36m";
+const std::string WHITE      = "\033[37m";
+const std::string BG_BLACK   = "\033[40m";
+const std::string BG_RED     = "\033[41m";
+const std::string BG_GREEN   = "\033[42m";
+const std::string BG_YELLOW  = "\033[43m";
+const std::string BG_BLUE    = "\033[44m";
+const std::string BG_MAGENTA = "\033[45m";
+const std::string BG_CYAN    = "\033[46m";
+const std::string BG_WHITE   = "\033[47m";
+}
+
 Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
     const std::vector<std::shared_ptr<IPrimitive>> primitives,
     const std::vector<std::shared_ptr<ILight>> lights)
@@ -91,25 +113,29 @@ void Renderer::updateProgress()
     int completed = _completedLines.load();
     int percentage = (completed * 100) / _height;
 
-    std::cout << "\rRendering: [";
+    std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
+        << AnsiColor::RESET << " [" << AnsiColor::CYAN;
     int barWidth = 50;
     int pos = barWidth * percentage / 100;
 
     for (int i = 0; i < barWidth; ++i) {
         if (i < pos) std::cout << "=";
-        else if (i == pos) std::cout << ">";
+        else if (i == pos) std::cout << AnsiColor::GREEN << ">" << AnsiColor::CYAN;
         else std::cout << " ";
     }
 
-    std::cout << "] " << std::setw(3) << percentage << "%";
+    std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
+              << std::setw(3) << percentage << "%" << AnsiColor::RESET;
+
     if (completed > 0 && _pixelsPerSecond > 0) {
         auto now = std::chrono::steady_clock::now();
         std::chrono::duration<double> elapsed = now - _startTime;
         double remainingLines = _height - completed;
         double remainingPixels = remainingLines * _width;
         double estimatedRemainingSeconds = remainingPixels / _pixelsPerSecond;
-        std::cout << " | Est. remaining: " << formatTime(estimatedRemainingSeconds)
-            << "                     ";
+        std::cout << " | " << AnsiColor::MAGENTA << "Est. remaining: "
+                  << AnsiColor::BOLD << formatTime(estimatedRemainingSeconds)
+                  << AnsiColor::RESET << "                     ";
     }
     std::cout << std::flush;
 }
@@ -189,8 +215,9 @@ void Renderer::renderPreview()
     _completedLines = 0;
     _pixelsPerSecond = 0.0;
     _startTime = std::chrono::steady_clock::now();
-    std::cout << "Starting preview render (" << _width << "x" << _height << ")..."
-        << std::endl;
+    std::cout << AnsiColor::CYAN << AnsiColor::BOLD << "⚡ Starting preview render "
+              << AnsiColor::RESET << "(" << AnsiColor::YELLOW << _width << "x" << _height
+              << AnsiColor::RESET << ")..." << std::endl;
 
     unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
     std::vector<std::thread> threads;
@@ -217,15 +244,18 @@ void Renderer::renderPreview()
         throw;
     }
 
-    std::cout << "\rPreview rendering: [";
+    std::cout << "\r" << AnsiColor::BOLD << "Preview rendering:"
+        << AnsiColor::RESET << " [" << AnsiColor::GREEN;
     for (int i = 0; i < 50; ++i) {
         std::cout << "=";
     }
-    std::cout << "] 100%                   " << std::endl;
+    std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
+              << "100%" << AnsiColor::RESET << "                   " << std::endl;
 
     auto endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - _startTime;
-    std::cout << "Preview render time: " << formatTime(elapsedTime.count()) << std::endl;
+    std::cout << AnsiColor::MAGENTA << "Preview render time: " << AnsiColor::BOLD
+              << formatTime(elapsedTime.count()) << AnsiColor::RESET << std::endl;
 
     savePreviewToFile();
     _width = originalWidth;
@@ -267,10 +297,16 @@ void Renderer::render()
     _completedLines = 0;
     _pixelsPerSecond = 0.0;
     _startTime = std::chrono::steady_clock::now();
-    std::cout << "Starting full render of " << _width << "x" << _height
-              << " image (" << _height * _width << " pixels)..." << std::endl;
+    std::cout << AnsiColor::CYAN << AnsiColor::BOLD << "🚀 Starting full render "
+              << AnsiColor::RESET << "(" << AnsiColor::YELLOW << _width << "x" << _height
+              << AnsiColor::RESET << " = " << AnsiColor::YELLOW << _height * _width
+              << AnsiColor::RESET << " pixels)";
 
     unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
+              << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
+              << AnsiColor::RESET << std::endl;
+
     std::vector<std::thread> threads;
     const int linesPerThread = _height / numThreads;
 
@@ -295,16 +331,28 @@ void Renderer::render()
         throw;
     }
 
-    std::cout << "\rRendering: [";
+    std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
+        << AnsiColor::RESET << " [" << AnsiColor::GREEN;
     for (int i = 0; i < 50; ++i) {
         std::cout << "=";
     }
-    std::cout << "] 100%" << std::endl;
+    std::cout << AnsiColor::RESET << "] " << AnsiColor::BOLD << AnsiColor::YELLOW
+              << "100%" << AnsiColor::RESET <<
+              "                                           " << std::endl;
+
     auto endTime = std::chrono::steady_clock::now();
     std::chrono::duration<double> elapsedTime = endTime - _startTime;
-    std::cout << "Total render time: " << formatTime(elapsedTime.count()) << std::endl;
-    std::cout << "Average pixels per second: " << std::fixed << std::setprecision(0)
-              << (_width * _height) / elapsedTime.count() << std::endl;
+
+    std::cout << AnsiColor::MAGENTA << "Total render time: " << AnsiColor::BOLD
+              << formatTime(elapsedTime.count()) << AnsiColor::RESET << std::endl;
+
+    double pixelsPerSec = (_width * _height) / elapsedTime.count();
+    std::cout << AnsiColor::CYAN << "Average pixels per second: " << AnsiColor::BOLD
+              << std::fixed << std::setprecision(0) << pixelsPerSec
+              << AnsiColor::RESET << std::endl;
+
+    std::cout << AnsiColor::GREEN << "✅ Rendering complete! Saving to "
+              << AnsiColor::UNDERLINE << _outputFile << AnsiColor::RESET << std::endl;
 
     saveToFile();
 }
