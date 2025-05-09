@@ -54,5 +54,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
         this->_materials,
         plugins
     );
+    obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
