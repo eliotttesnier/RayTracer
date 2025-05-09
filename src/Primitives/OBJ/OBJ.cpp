@@ -110,18 +110,14 @@ void OBJ::loadFromFile()
             continue;
         }
 
-        // Get vertices from the model
         Math::Point3D v1 = _vertices[idx1];
         Math::Point3D v2 = _vertices[idx2];
         Math::Point3D v3 = _vertices[idx3];
-
-        // Apply transformations (rotation and position)
         Math::Point3D transformedV1 = transformVertex(v1);
         Math::Point3D transformedV2 = transformVertex(v2);
         Math::Point3D transformedV3 = transformVertex(v3);
 
         try {
-            // Create triangle with the transformed vertices
             auto triangle = std::make_shared<RayTracer::primitive::Triangles>(
                 transformedV1, transformedV2, transformedV3);
             _triangles.push_back(triangle);
