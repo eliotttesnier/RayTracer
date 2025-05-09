@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Cylinder/Cylinder.hpp"
 
@@ -16,13 +17,15 @@ RayTracer::Factory::CylinderFactory::CylinderFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
+            const Math::Vector3D &shear,
             double radius,
             double height):
     _radius(radius),
     _height(height),
     _position(position),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear)
 {
 }
 
@@ -30,7 +33,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Cylinder"))
+    if (plugins.find("Cylinder") == plugins.end())
         throw std::runtime_error("Cylinder plugin not found");
     auto obj = plugins["Cylinder"]->initEntryPointPtr<primitive::Cylinder>(
         "create",
@@ -40,5 +43,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Tanglecube/Tanglecube.hpp"
 
@@ -14,11 +15,13 @@ RayTracer::Factory::TanglecubeFactory::TanglecubeFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
+            const Math::Vector3D &shear,
             double size):
     _size(size),
     _position(position),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear)
 {
 }
 
@@ -26,7 +29,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TanglecubeFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Tanglecube"))
+    if (plugins.find("Tanglecube") == plugins.end())
         throw std::runtime_error("Tanglecube plugin not found");
     auto obj = plugins["Tanglecube"]->initEntryPointPtr<primitive::Tanglecube>(
         "create",
@@ -35,5 +38,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TanglecubeFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

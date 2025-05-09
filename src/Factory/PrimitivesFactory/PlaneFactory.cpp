@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <stdexcept>
 
 #include "Primitives/Plane/Plane.hpp"
 
@@ -15,11 +16,13 @@ RayTracer::Factory::PlaneFactory::PlaneFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
+            const Math::Vector3D &shear,
             const std::tuple<double, double> &size):
     _size(size),
     _position(position),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear)
 {
 }
 
@@ -27,7 +30,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Plane"))
+    if (plugins.find("Plane") == plugins.end())
         throw std::runtime_error("Plane plugin not found");
     auto obj = plugins["Plane"]->initEntryPointPtr<primitive::Plane>(
         "create",
@@ -36,5 +39,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
         this->_size
     );
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
