@@ -36,14 +36,12 @@ class IPrimitive {
         virtual void setPosition(const Math::Point3D &position) = 0;
         virtual void setRotation(const Math::Vector3D &rotation) = 0;
         virtual void setScale(const Math::Vector3D &scale) = 0;
+        virtual void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) = 0;
 
         // Methods
         virtual Math::hitdata_t intersect(const Math::Ray &ray) = 0;
         virtual Graphic::color_t getColor(
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
+            RayTracer::Materials::infos_t infos
         ) = 0;
 };
 

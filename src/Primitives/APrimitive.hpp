@@ -10,6 +10,7 @@
 
 #include <cmath>
 
+#include "../Materials/IMaterial.hpp"
 #include "IPrimitive.hpp"
 
 class APrimitive : public IPrimitive {
@@ -20,6 +21,7 @@ class APrimitive : public IPrimitive {
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
         Math::Vector3D _anchorPoint;
+        std::shared_ptr<RayTracer::Materials::IMaterial> _material;
 
     public:
         virtual ~APrimitive() = default;
@@ -36,14 +38,12 @@ class APrimitive : public IPrimitive {
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
         void setScale(const Math::Vector3D &scale) override;
+        void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Graphic::color_t getColor(
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
+            RayTracer::Materials::infos_t infos
         ) override;
 
         Math::Ray transformRayToLocal(const Math::Ray &ray) const;
