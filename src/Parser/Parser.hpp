@@ -8,6 +8,8 @@
 #include <libconfig.h++>
 #include <memory>
 #include <vector>
+#include <unordered_set>
+#include <string>
 #include "ParserConfig/LightsConfig.hpp"
 #include "ParserConfig/CameraConfig.hpp"
 #include "ParserConfig/PrimitivesConfig.hpp"
@@ -19,6 +21,7 @@ class Parser {
         std::unique_ptr<CameraConfig> _camConfig;
         std::unique_ptr<LightsConfig> _lightConfig;
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;
+        std::unordered_set<std::string> _importedScenes;
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
@@ -31,6 +34,12 @@ class Parser {
         std::vector<tanglecube_t> _getTanglecubesData(const libconfig::Setting &root);
         std::vector<triangle_t> _getTrianglesData(const libconfig::Setting &root);
         std::vector<obj_t> _getOBJsData(const libconfig::Setting &root);
+
+        void _importScenes(const libconfig::Setting &root);
+        void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
+        void _importPrimitives(const libconfig::Setting &sourceRoot, libconfig::Setting &targetRoot);
+        void _importLights(const libconfig::Setting &sourceRoot, libconfig::Setting &targetRoot);
+        void _copySettings(const libconfig::Setting &source, libconfig::Setting &target);
 
         ambient_t _getAmbientData(const libconfig::Setting &root);
         std::vector<directional_t> _getDirectionalData(const libconfig::Setting &root);
