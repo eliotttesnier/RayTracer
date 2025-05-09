@@ -186,4 +186,11 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
     return calculateConeIntersection(localRay);
 }
 
+Graphic::color_t Cone::getColor(
+    RayTracer::Materials::infos_t infos
+)
+{
+    return _material->calculateColor(*this, infos);
+}
+
 }  // namespace RayTracer::primitive
