@@ -21,6 +21,13 @@ class Sphere : public APrimitive {
         double getRadius() const;
         void setRadius(double radius);
 
+        Graphic::color_t getColor(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+
     private:
         double _radius;
 };

@@ -21,6 +21,13 @@ Point3D::Point3D(double x, double y, double z) : _x(x), _y(y), _z(z)
 {
 }
 
+Point3D::Point3D(const std::tuple<double, double, double> &tuple)
+{
+    _x = std::get<0>(tuple);
+    _y = std::get<1>(tuple);
+    _z = std::get<2>(tuple);
+}
+
 Point3D Point3D::operator+(const Point3D &other) const
 {
     return Point3D(_x + other._x, _y + other._y, _z + other._z);

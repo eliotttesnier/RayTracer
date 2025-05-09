@@ -10,6 +10,7 @@
 #include <iostream>
 #include <limits>
 #include <algorithm>
+#include <vector>
 
 #include "Cone.hpp"
 
@@ -201,6 +202,22 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
         return hitData;
 
     return calculateConeIntersection(localRay);
+}
+
+Graphic::color_t Cone::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace RayTracer::primitive

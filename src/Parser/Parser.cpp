@@ -46,11 +46,16 @@ void Parser::_getCameraData(const libconfig::Setting &root)
 std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector;
-
     const auto &spheres = root["primitives"]["spheres"];
-
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
+        std::vector<std::string> materials;
+        if (s.exists("materials")) {
+            const auto &mats = s["materials"];
+            for (int j = 0; j < mats.getLength(); ++j) {
+                materials.push_back(mats[j].c_str());
+            }
+        }
         const auto &position = s["position"];
         const auto &rotation = s["rotation"];
         const auto &scale = s["scale"];
@@ -73,6 +78,7 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
         int cg = color["g"];
         int cb = color["b"];
         spheresVector.emplace_back(
+            materials,
             std::make_tuple(px, py, pz, radius),
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
@@ -93,11 +99,16 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
 std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
 {
     std::vector<plane_t> planesVector;
-
     const auto &planes = root["primitives"]["planes"];
-
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
+        std::vector<std::string> materials;
+        if (p.exists("materials")) {
+            const auto &mats = p["materials"];
+            for (int j = 0; j < mats.getLength(); ++j) {
+                materials.push_back(mats[j].c_str());
+            }
+        }
         std::string axis = p["axis"];
         const auto &position = p["position"];
         const auto &rotation = p["rotation"];
@@ -120,6 +131,7 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
         int cg = color["g"];
         int cb = color["b"];
         planesVector.emplace_back(
+            materials,
             axis[0],
             std::make_tuple(x, y, z),
             std::make_tuple(rx, ry, rz),
@@ -147,6 +159,13 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
 
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
+        std::vector<std::string> materials;
+        if (s.exists("materials")) {
+            const auto &mats = s["materials"];
+            for (int j = 0; j < mats.getLength(); ++j) {
+                materials.push_back(mats[j].c_str());
+            }
+        }
         const auto &position = s["position"];
         const auto &rotation = s["rotation"];
         const auto &scale = s["scale"];
@@ -170,6 +189,7 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
         int cg = color["g"];
         int cb = color["b"];
         cylinderVector.emplace_back(
+            materials,
             std::make_tuple(px, py, pz, radius, height),
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
@@ -198,6 +218,13 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
 
         for (int i = 0; i < cone.getLength(); ++i) {
             const auto &s = cone[i];
+            std::vector<std::string> materials;
+            if (s.exists("materials")) {
+                const auto &mats = s["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
             const auto &position = s["position"];
             const auto &rotation = s["rotation"];
             const auto &scale = s["scale"];
@@ -221,6 +248,7 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
             int cg = color["g"];
             int cb = color["b"];
             coneVector.emplace_back(
+                materials,
                 std::make_tuple(px, py, pz, radius, height),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
@@ -256,6 +284,13 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
 
         for (int i = 0; i < torus.getLength(); ++i) {
             const auto &s = torus[i];
+            std::vector<std::string> materials;
+            if (s.exists("materials")) {
+                const auto &mats = s["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
             const auto &scale = s["scale"];
@@ -277,6 +312,7 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
             double minorRadius = s["r"];
             int cr = color["r"], cg = color["g"], cb = color["b"];
             torusVector.emplace_back(
+                materials,
                 std::make_tuple(px, py, pz, majorRadius, minorRadius),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
@@ -311,6 +347,13 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
 
         for (int i = 0; i < tanglecube.getLength(); ++i) {
             const auto &s = tanglecube[i];
+            std::vector<std::string> materials;
+            if (s.exists("materials")) {
+                const auto &mats = s["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
             const auto &scale = s["scale"];
@@ -333,6 +376,7 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
             int cg = color["g"];
             int cb = color["b"];
             tangleCubeVector.emplace_back(
+                materials,
                 std::make_tuple(px, py, pz, size),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
@@ -367,6 +411,13 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
 
         for (int i = 0; i < triangles.getLength(); ++i) {
             const auto &t = triangles[i];
+            std::vector<std::string> materials;
+            if (t.exists("materials")) {
+                const auto &mats = t["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
             const auto &p1 = t["p1"];
             const auto &p2 = t["p2"];
             const auto &p3 = t["p3"];
@@ -396,6 +447,7 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
             int cg = color["g"];
             int cb = color["b"];
             triangleVector.emplace_back(
+                materials,
                 std::make_tuple(
                     std::make_tuple(p1x, p1y, p1z),
                     std::make_tuple(p2x, p2y, p2z),
@@ -435,6 +487,13 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
 
         for (int i = 0; i < objs.getLength(); ++i) {
             const auto &o = objs[i];
+            std::vector<std::string> materials;
+            if (o.exists("materials")) {
+                const auto &mats = o["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
             const auto &pos = o["position"];
             const auto &rota = o["rotation"];
             const auto &scale = o["scale"];
@@ -457,6 +516,7 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
             int cg = color["g"];
             int cb = color["b"];
             objVector.emplace_back(
+                materials,
                 std::make_tuple(px, py, pz, filepath),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),

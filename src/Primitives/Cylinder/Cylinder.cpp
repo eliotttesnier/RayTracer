@@ -9,6 +9,7 @@
 #include <string>
 #include <limits>
 #include <algorithm>
+#include <vector>
 #include "Cylinder.hpp"
 namespace RayTracer::primitive {
 
@@ -181,6 +182,22 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
         return hitData;
 
     return calculateCylinderIntersection(localRay);
+}
+
+Graphic::color_t Cylinder::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }

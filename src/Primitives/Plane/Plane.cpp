@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <vector>
 #include "Plane.hpp"
 
 namespace RayTracer::primitive {
@@ -66,4 +67,21 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
 
     return hitData;
 }
+
+Graphic::color_t Plane::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+}
+
 }

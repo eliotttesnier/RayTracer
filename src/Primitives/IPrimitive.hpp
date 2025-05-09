@@ -12,11 +12,14 @@
 #include <vector>
 #include <memory>
 
-#include "../Lights/ILight.hpp"
 #include "../Math/HitData.hpp"
 #include "../Math/Ray.hpp"
 #include "../Graphic/Color.hpp"
+#include "../Materials/IMaterial.hpp"
 
+namespace RayTracer::Materials {
+    class IMaterial;
+}
 class ILight;
 class IPrimitive;
 
@@ -38,6 +41,7 @@ class IPrimitive {
         virtual void setRotation(const Math::Vector3D &rotation) = 0;
         virtual void setScale(const Math::Vector3D &scale) = 0;
         virtual void setShear(const Math::Vector3D &shear) = 0;
+        virtual void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) = 0;
 
         // Methods
         virtual Math::hitdata_t intersect(const Math::Ray &ray) = 0;

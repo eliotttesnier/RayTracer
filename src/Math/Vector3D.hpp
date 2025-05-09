@@ -21,6 +21,7 @@ namespace Math
 
             Vector3D();
             Vector3D(double x, double y, double z);
+            Vector3D(const std::tuple<double, double, double> &tuple);
             ~Vector3D() = default;
 
             double length() const;
