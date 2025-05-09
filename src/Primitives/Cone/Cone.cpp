@@ -24,6 +24,9 @@ Cone::Cone()
     _radius = 1.0;
     _height = 1.0;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_height/2.0, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _height/2.0, _radius);
 }
 
 Cone::Cone(const Math::Point3D &position, double radius, double height)
@@ -35,6 +38,9 @@ Cone::Cone(const Math::Point3D &position, double radius, double height)
     _radius = radius;
     _height = height;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_height/2.0, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _height/2.0, _radius);
 }
 
 double Cone::getRadius() const
@@ -45,6 +51,10 @@ double Cone::getRadius() const
 void Cone::setRadius(double radius)
 {
     _radius = radius;
+    _boundingBox.min._x = -_radius;
+    _boundingBox.min._z = -_radius;
+    _boundingBox.max._x = _radius;
+    _boundingBox.max._z = _radius;
 }
 
 double Cone::getHeight() const
@@ -56,6 +66,8 @@ void Cone::setHeight(double height)
 {
     _height = height;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox.min._y = -_height/2.0;
+    _boundingBox.max._y = _height/2.0;
 }
 
 Math::hitdata_t Cone::calculateConeIntersection(const Math::Ray &localRay) const
@@ -182,6 +194,11 @@ Math::Vector3D Cone::normalAt(const Math::Point3D& point) const
 Math::hitdata_t Cone::intersect(const Math::Ray &ray)
 {
     Math::Ray localRay = transformRayToLocal(ray);
+    Math::hitdata_t hitData;
+    hitData.hit = false;
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     return calculateConeIntersection(localRay);
 }
