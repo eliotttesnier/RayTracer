@@ -12,11 +12,14 @@
 #include <vector>
 #include <memory>
 
-#include "../Lights/ILight.hpp"
 #include "../Math/HitData.hpp"
 #include "../Math/Ray.hpp"
 #include "../Graphic/Color.hpp"
+#include "../Materials/IMaterial.hpp"
 
+namespace RayTracer::Materials {
+    class IMaterial;
+}
 class ILight;
 class IPrimitive;
 
@@ -43,7 +46,10 @@ class IPrimitive {
         // Methods
         virtual Math::hitdata_t intersect(const Math::Ray &ray) = 0;
         virtual Graphic::color_t getColor(
-            RayTracer::Materials::infos_t infos
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
 };
 

@@ -82,10 +82,16 @@ Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
 }
 
 Graphic::color_t APrimitive::getColor(
-    RayTracer::Materials::infos_t infos
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    (void) infos;
+    (void) hitData;
+    (void) ray;
+    (void) lights;
+    (void) primitives;
     return Graphic::color_t{0.0, 0.0, 0.0, 1.0};
 }
 

@@ -46,7 +46,10 @@ class APrimitive : public IPrimitive {
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Graphic::color_t getColor(
-            RayTracer::Materials::infos_t infos
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
         Math::Ray transformRayToLocal(const Math::Ray &ray) const;
