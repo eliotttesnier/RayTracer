@@ -128,11 +128,20 @@ Math::hitdata_t Triangles::intersect(const Math::Ray &ray)
     return calculateTriangleIntersection(localRay);
 }
 
-Graphic::color_t Cone::getColor(
-    RayTracer::Materials::infos_t infos
+Graphic::color_t Triangles::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _material->calculateColor(*this, infos);
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace Raytracer::primitive

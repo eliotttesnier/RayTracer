@@ -27,7 +27,10 @@ class Triangles : public APrimitive {
         Math::Vector3D normalAt(const Math::Point3D& point) const;
 
         Graphic::color_t getColor(
-            RayTracer::Materials::infos_t infos
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
     private:
