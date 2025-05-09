@@ -18,6 +18,8 @@ class APrimitive : public IPrimitive {
         std::string _type;
         Math::Point3D _position;
         Math::Vector3D _rotation;
+        Math::Vector3D _scale;
+        Math::Vector3D _anchorPoint;
 
     public:
         virtual ~APrimitive() = default;
@@ -33,6 +35,7 @@ class APrimitive : public IPrimitive {
         void setType(const std::string &type) override;
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
+        void setScale(const Math::Vector3D &scale) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
@@ -42,6 +45,20 @@ class APrimitive : public IPrimitive {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
+
+        Math::Ray transformRayToLocal(const Math::Ray &ray) const;
+        Math::Point3D transformPointToLocal(const Math::Point3D &point) const;
+        Math::Point3D transformPointToWorld(const Math::Point3D &localPoint) const;
+        Math::Vector3D transformNormalToWorld(const Math::Vector3D &localNormal) const;
+
+        void rotatePointToLocal(Math::Point3D &point, double cosX, double sinX,
+                               double cosY, double sinY, double cosZ, double sinZ) const;
+        void rotateVectorToLocal(Math::Vector3D &vector, double cosX, double sinX,
+                                double cosY, double sinY, double cosZ, double sinZ) const;
+        void rotatePointToWorld(Math::Point3D &point, double cosX, double sinX,
+                               double cosY, double sinY, double cosZ, double sinZ) const;
+        void rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
+                                double cosY, double sinY, double cosZ, double sinZ) const;
 };
 
 #endif /* !APRIMITIVE_HPP_ */

@@ -24,7 +24,7 @@ class Tanglecube : public APrimitive {
 
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
-        double signedDistanceFunction(const Math::Point3D& point) const;
+        double SDF(const Math::Point3D& point) const;
 
     private:
         //attributes

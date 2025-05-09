@@ -13,18 +13,21 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <atomic>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 
 class GraphicRenderer {
     public:
-        GraphicRenderer(std::string const &filename);
+        GraphicRenderer(std::string const &previewFilename, std::string const &finalFilename = "");
         ~GraphicRenderer() = default;
 
-        void run();
+        void run(std::atomic<bool>& renderingComplete);
         bool loadFromFile(const std::string& filename);
-        void exportToPNG() const;
+        void exportToPNG(const std::string& outputFilename) const;
+        void switchToFinalImage();
+        void displayLoadingMessage(const std::string& message);
 
     private:
         int _width, _height;
@@ -33,6 +36,10 @@ class GraphicRenderer {
         sf::Texture _texture;
         sf::Sprite _sprite;
         std::string _inputFilename;
+        std::string _finalFilename;
+        bool _isPreviewMode;
+        sf::Font _font;
+        sf::Text _loadingText;
 };
 
 #endif /* !GRAPHICRENDERER_HPP_ */

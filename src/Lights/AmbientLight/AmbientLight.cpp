@@ -4,7 +4,8 @@
 
 #include "AmbientLight.hpp"
 #include <iostream>
-#include <algorithm> // Added for std::min
+#include <algorithm>
+#include <vector>
 
 RayTracer::light::AmbientLight::AmbientLight()
 {

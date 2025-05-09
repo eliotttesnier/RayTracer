@@ -13,6 +13,8 @@
 #include <string>
 #include <thread>
 #include <mutex>
+#include <atomic>
+#include <chrono>
 #include "../Primitives/IPrimitive.hpp"
 #include "../Lights/ILight.hpp"
 #include "../Graphic/Camera.hpp"
@@ -30,22 +32,33 @@ class Renderer {
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
         void render();
+        void renderPreview();
 
     protected:
     private:
         void renderSegment(int startY, int endY);
         void saveToFile();
+        void savePreviewToFile();
+        void updateProgress();
+        std::string formatTime(double seconds);
 
         std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
         std::vector<std::shared_ptr<ILight>> _lights;
         std::vector<std::vector<Graphic::color_t>> _pixelBuffer;
         std::string _outputFile;
+        std::string _previewOutputFile;
         int _width;
         int _height;
+        int _previewWidth;
+        int _previewHeight;
         double _aspectRatio;
         double _fov;
         std::mutex _mutex;
+        std::atomic<int> _completedPixels{0};
+        bool _showProgress{true};
+        std::chrono::time_point<std::chrono::steady_clock> _startTime;
+        double _pixelsPerSecond{0.0};
 };
 
 #endif /* !RENDERER_HPP_ */

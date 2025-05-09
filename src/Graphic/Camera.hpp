@@ -12,6 +12,7 @@
 #include "../Math/Point3D.hpp"
 #include "../Math/Rectangle3D.hpp"
 #include "../Math/Ray.hpp"
+#include "../Math/Matrix4x4.hpp"
 
 namespace RayTracer {
 class Camera {
@@ -20,6 +21,7 @@ class Camera {
         RayTracer::Rectangle3D screen;
         std::tuple<int, int> resolution;
         double fov;
+        Math::Matrix4x4 transformMatrix;
 
         Camera();
         Camera(const Math::Point3D &origin, const RayTracer::Rectangle3D &screen);
@@ -33,6 +35,10 @@ class Camera {
         void tilt(double degrees);
         void pan(double degrees);
         void roll(double degrees);
+        void setPosition(double x, double y, double z);
+        Math::Point3D getPosition() const;
+        void setRotation(double x, double y, double z);
+        void updateTransformMatrix();
         std::tuple<int, int> getResolution() const;
         double getFov() const;
 

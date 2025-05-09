@@ -1,6 +1,18 @@
+/*
+** EPITECH PROJECT, 2025
+** raytracer
+** File description:
+** Cone
+*/
+
 #include <cmath>
 #include <string>
+#include <iostream>
+#include <limits>
+#include <algorithm>
+
 #include "Cone.hpp"
+
 namespace RayTracer::primitive {
 
 Cone::Cone()
@@ -11,6 +23,7 @@ Cone::Cone()
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
     _height = 1.0;
+    _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
 }
 
 Cone::Cone(const Math::Point3D &position, double radius, double height)
@@ -21,6 +34,7 @@ Cone::Cone(const Math::Point3D &position, double radius, double height)
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
     _height = height;
+    _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
 }
 
 double Cone::getRadius() const
@@ -41,41 +55,30 @@ double Cone::getHeight() const
 void Cone::setHeight(double height)
 {
     _height = height;
+    _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
 }
 
-Math::Vector3D Cone::normalAt(const Math::Point3D& point) const
-{
-    double dx = point._x - _position._x;
-    double dz = point._z - _position._z;
-    double dy = point._y - _position._y;
-
-    double k = _radius / _height;
-
-    Math::Vector3D normal(2 * dx, -2 * (k * k) * dy, 2 * dz);
-    normal.normalize();
-    return normal;
-}
-
-Math::hitdata_t Cone::intersect(const Math::Ray &ray)
+Math::hitdata_t Cone::calculateConeIntersection(const Math::Ray &localRay) const
 {
     Math::hitdata_t hitData;
     hitData.hit = false;
 
-    // Cone surface intersection
     double k = _radius / _height;
     k = k * k;
 
-    Math::Vector3D oc(ray.origin._x - _position._x,
-                     ray.origin._y - _position._y,
-                     ray.origin._z - _position._z);
+    Math::Vector3D oc(
+        localRay.origin._x,
+        localRay.origin._y + _anchorPoint._y,
+        localRay.origin._z
+    );
 
-    double a = ray.direction._x * ray.direction._x -
-               k * ray.direction._y * ray.direction._y +
-               ray.direction._z * ray.direction._z;
+    double a = localRay.direction._x * localRay.direction._x -
+               k * localRay.direction._y * localRay.direction._y +
+               localRay.direction._z * localRay.direction._z;
 
-    double b = 2.0 * (oc._x * ray.direction._x -
-                      k * oc._y * ray.direction._y +
-                      oc._z * ray.direction._z);
+    double b = 2.0 * (oc._x * localRay.direction._x -
+                      k * oc._y * localRay.direction._y +
+                      oc._z * localRay.direction._z);
 
     double c = oc._x * oc._x -
                k * oc._y * oc._y +
@@ -89,50 +92,98 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
         double t1 = (-b - sqrtd) / (2.0 * a);
         double t2 = (-b + sqrtd) / (2.0 * a);
 
-        double y1 = ray.origin._y + t1 * ray.direction._y - _position._y;
-        double y2 = ray.origin._y + t2 * ray.direction._y - _position._y;
+        double y1 = localRay.origin._y + t1 * localRay.direction._y;
+        double y2 = localRay.origin._y + t2 * localRay.direction._y;
 
-        if (y1 >= 0 && y1 <= _height && t1 > 0.001) {
+        if (y1 >= -_anchorPoint._y && y1 <= _anchorPoint._y && t1 > 0.001) {
             cone_t = t1;
-        } else if (y2 >= 0 && y2 <= _height && t2 > 0.001) {
+        } else if (y2 >= -_anchorPoint._y && y2 <= _anchorPoint._y && t2 > 0.001) {
             cone_t = t2;
         }
     }
 
-    // Base circle intersection (now at top)
     double base_t = std::numeric_limits<double>::infinity();
-    if (std::abs(ray.direction._y) > 0.001) {
-        // Changed to check intersection at top (position + height)
-        double t = (_position._y + _height - ray.origin._y) / ray.direction._y;
+    if (std::abs(localRay.direction._y) > 0.001) {
+        double t = (_anchorPoint._y - localRay.origin._y) / localRay.direction._y;
+
         if (t > 0.001) {
-            double x = ray.origin._x + t * ray.direction._x - _position._x;
-            double z = ray.origin._z + t * ray.direction._z - _position._z;
+            double x = localRay.origin._x + t * localRay.direction._x;
+            double z = localRay.origin._z + t * localRay.direction._z;
             if (x * x + z * z <= _radius * _radius) {
                 base_t = t;
             }
         }
     }
 
-    // Use the closest intersection
     double t = std::min(cone_t, base_t);
     if (std::isfinite(t)) {
         hitData.hit = true;
         hitData.distance = t;
-        hitData.point = Math::Point3D(
-            ray.origin._x + t * ray.direction._x,
-            ray.origin._y + t * ray.direction._y,
-            ray.origin._z + t * ray.direction._z
+
+        Math::Point3D localHitPoint(
+            localRay.origin._x + t * localRay.direction._x,
+            localRay.origin._y + t * localRay.direction._y,
+            localRay.origin._z + t * localRay.direction._z
         );
-        
+
+        Math::Vector3D localNormal;
         if (t == base_t) {
-            hitData.normal = Math::Vector3D(0, 1, 0);  // Changed normal to point upward
+            localNormal = Math::Vector3D(0, 1, 0);
         } else {
-            hitData.normal = normalAt(hitData.point);
+            double apex_y = -_anchorPoint._y;
+            double k = _radius / _height;
+            double dx = localHitPoint._x;
+            double dy = localHitPoint._y - apex_y;
+            double dz = localHitPoint._z;
+
+            localNormal = Math::Vector3D(
+                2 * dx,
+                -2 * (k * k) * dy,
+                2 * dz
+            );
+            localNormal.normalize();
         }
+
+        hitData.point = transformPointToWorld(localHitPoint);
+        hitData.normal = transformNormalToWorld(localNormal);
     }
 
     hitData.color = {0.0, 255.0, 0.0, 1.0};
     return hitData;
 }
 
-}  // namespace Raytracer::primitive
+Math::Vector3D Cone::normalAt(const Math::Point3D& point) const
+{
+    Math::Point3D localPoint = transformPointToLocal(point);
+    Math::Vector3D localNormal;
+
+    if (std::abs(localPoint._y - _anchorPoint._y) < 0.001) {
+        localNormal = Math::Vector3D(0, 1, 0);
+    } else {
+        double k = _radius / _height;
+        k = k * k;
+
+        double apex_y = -_anchorPoint._y;
+        double dx = localPoint._x;
+        double dy = localPoint._y - apex_y;
+        double dz = localPoint._z;
+
+        localNormal = Math::Vector3D(
+            2 * dx,
+            -2 * k * dy,
+            2 * dz
+        );
+        localNormal.normalize();
+    }
+
+    return transformNormalToWorld(localNormal);
+}
+
+Math::hitdata_t Cone::intersect(const Math::Ray &ray)
+{
+    Math::Ray localRay = transformRayToLocal(ray);
+
+    return calculateConeIntersection(localRay);
+}
+
+}  // namespace RayTracer::primitive

@@ -3,12 +3,17 @@
 //
 
 #include "Parser.hpp"
+
 #include <iostream>
 #include <string>
+#include <vector>
+#include <memory>
 #include <libconfig.h++>
 
+namespace RayTracer::Parser {
 
-void RayTracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
+void Parser::_getCameraData(const libconfig::Setting &root)
+{
     const auto &camera = root["camera"];
     const auto &res = camera["resolution"];
     const auto &pos = camera["position"];
@@ -24,117 +29,221 @@ void RayTracer::Parser::Parser::_getCameraData(const libconfig::Setting &root) {
     double ry = rot.lookup("y");
     double rz = rot.lookup("z");
     double fov = camera["fieldOfView"];
-#ifdef _DEBUG
-    std::cout << "Camera: " << width << "x" << height << ", pos(" << x << ", " << y << ", " << z << "), rota(" << rx << ", " << ry << ", " << rz << "), fov(" << fov << ")" << std::endl;;
-#endif
-    this->_camConfig = std::make_unique<CameraConfig>(std::make_tuple(width, height), std::make_tuple(x, y, z), std::make_tuple(rx, ry, rz), fov);
+    #ifdef _DEBUG
+        std::cout << "Camera: " << width << "x" << height << ", "
+            << "pos(" << x << ", " << y << ", " << z << "), "
+            << "rota(" << rx << ", " << ry << ", " << rz << "), "
+            << "fov(" << fov << ")" << std::endl;
+    #endif
+    this->_camConfig = std::make_unique<CameraConfig>(
+        std::make_tuple(width, height),
+        std::make_tuple(x, y, z),
+        std::make_tuple(rx, ry, rz),
+        fov
+    );
 }
 
-void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &root)
+std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
 {
-    std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<int, int, int>>> spheresVector;
+    std::vector<sphere_t> spheresVector;
+
     const auto &spheres = root["primitives"]["spheres"];
+
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
-        const auto &color = s["color"];
         const auto &position = s["position"];
+        const auto &rotation = s["rotation"];
+        const auto &scale = s["scale"];
+        const auto &color = s["color"];
         double px = position["x"];
         double py = position["y"];
         double pz = position["z"];
+        double rx = rotation["x"];
+        double ry = rotation["y"];
+        double rz = rotation["z"];
+        double sx = scale["x"];
+        double sy = scale["y"];
+        double sz = scale["z"];
         double radius = s["r"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
-        spheresVector.emplace_back(std::make_tuple(px, py, pz, radius), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-        std::cout << "Sphere: pos(" << px << ", " << py << ", " << pz << "), r=" << radius
-                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+        spheresVector.emplace_back(
+            std::make_tuple(px, py, pz, radius),
+            std::make_tuple(rx, ry, rz),
+            std::make_tuple(sx, sy, sz),
+            std::make_tuple(cr, cg, cb)
+        );
+        #ifdef _DEBUG
+            std::cout << "Sphere: pos(" << px << ", " << py << ", " << pz << "), "
+                << "r=" << radius << ", "
+                << "rota(" << rx << ", " << ry << ", " << rz << "), "
+                << "color(" << cr << ", " << cg << ", " << cb << ")\n";
+        #endif
     }
 
-    std::vector<std::tuple<char, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double>, std::tuple<int, int, int>>> planesVector;
+    return spheresVector;
+}
+
+std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
+{
+    std::vector<plane_t> planesVector;
+
     const auto &planes = root["primitives"]["planes"];
+
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
         std::string axis = p["axis"];
-        const auto &color = p["color"];
         const auto &position = p["position"];
         const auto &rotation = p["rotation"];
+        const auto &scale = p["scale"];
+        const auto &color = p["color"];
         double x = position["x"];
         double y = position["y"];
         double z = position["z"];
         double rx = rotation["x"];
         double ry = rotation["y"];
         double rz = rotation["z"];
+        double sx = scale["x"];
+        double sy = scale["y"];
+        double sz = scale["z"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
         double width = p["width"];
         double height = p["height"];
-        planesVector.emplace_back(axis[0], std::make_tuple(x, y, z), std::make_tuple(rx, ry, rz), std::make_tuple(width, height), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-        std::cout << "Plane: axis=" << axis << ", positionx=" << x << ", positiony=" << y << ", positionz= << z"
-                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+        planesVector.emplace_back(
+            axis[0],
+            std::make_tuple(x, y, z),
+            std::make_tuple(rx, ry, rz),
+            std::make_tuple(sx, sy, sz),
+            std::make_tuple(width, height),
+            std::make_tuple(cr, cg, cb)
+        );
+        #ifdef _DEBUG
+            std::cout << "Plane: "
+                "axis=" << axis << ", "
+                "positionx=" << x << ", "
+                "positiony=" << y << ", "
+                "positionz=" << z << ", "
+                "color(" << cr << ", " << cg << ", " << cb << ")"
+                << std::endl;
+        #endif
     }
 
-    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> cylinderVector;
+    return planesVector;
+}
+
+std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root)
+{
+    std::vector<cylinder_t> cylinderVector;
+
     const auto &cylinder = root["primitives"]["cylinders"];
+
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
-        const auto &color = s["color"];
         const auto &position = s["position"];
         const auto &rotation = s["rotation"];
+        const auto &scale = s["scale"];
+        const auto &color = s["color"];
         double px = position["x"];
         double py = position["y"];
         double pz = position["z"];
         double rx = rotation["x"];
         double ry = rotation["y"];
         double rz = rotation["z"];
+        double sx = scale["x"];
+        double sy = scale["y"];
+        double sz = scale["z"];
         double radius = s["r"];
         double height = s["h"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
-        cylinderVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-        std::cout << "Cylinder: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
-                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+        cylinderVector.emplace_back(
+            std::make_tuple(px, py, pz, radius, height),
+            std::make_tuple(rx, ry, rz),
+            std::make_tuple(sx, sy, sz),
+            std::make_tuple(cr, cg, cb)
+        );
+        #ifdef _DEBUG
+            std::cout << "Cylinder: "
+                "pos(" << px << ", " << py << ", " << pz << "), "
+                "r=" << radius << ", "
+                "h=" << height << ", "
+                "color(" << cr << ", " << cg << ", " << cb << ")"
+                << std::endl;
+        #endif
     }
 
-    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> coneVector;
-    const auto &cone = root["primitives"]["cones"];
-    for (int i = 0; i < cone.getLength(); ++i) {
-        const auto &s = cone[i];
-        const auto &color = s["color"];
-        const auto &position = s["position"];
-        const auto &rotation = s["rotation"];
-        double px = position["x"];
-        double py = position["y"];
-        double pz = position["z"];
-        double rx = rotation["x"];
-        double ry = rotation["y"];
-        double rz = rotation["z"];
-        double radius = s["r"];
-        double height = s["h"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
-        coneVector.emplace_back(std::make_tuple(px, py, pz, radius, height), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-        std::cout << "Cone: pos(" << px << ", " << py << ", " << pz << "), r=" << radius << ", h=" << height
-                  << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+    return cylinderVector;
+}
+
+std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
+{
+    std::vector<cone_t> coneVector;
+
+    try {
+        const auto &cone = root["primitives"]["cones"];
+
+        for (int i = 0; i < cone.getLength(); ++i) {
+            const auto &s = cone[i];
+            const auto &position = s["position"];
+            const auto &rotation = s["rotation"];
+            const auto &scale = s["scale"];
+            const auto &color = s["color"];
+            double px = position["x"];
+            double py = position["y"];
+            double pz = position["z"];
+            double rx = rotation["x"];
+            double ry = rotation["y"];
+            double rz = rotation["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
+            double radius = s["r"];
+            double height = s["h"];
+            int cr = color["r"];
+            int cg = color["g"];
+            int cb = color["b"];
+            coneVector.emplace_back(
+                std::make_tuple(px, py, pz, radius, height),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "Cone: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "r=" << radius << ", "
+                    "h=" << height << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No cones found in config" << std::endl;
+        #endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Cone setting type error: " << e.what() << std::endl;
     }
 
-    std::vector<std::tuple<std::tuple<double, double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> torusVector;
+    return coneVector;
+}
+
+std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
+{
+    std::vector<torus_t> torusVector;
+
     try {
         const auto &torus = root["primitives"]["toruses"];
+
         for (int i = 0; i < torus.getLength(); ++i) {
             const auto &s = torus[i];
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
+            const auto &scale = s["scale"];
             const auto &color = s["color"];
             double px = pos["x"];
             double py = pos["y"];
@@ -142,31 +251,49 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
             double rx = rota["x"];
             double ry = rota["y"];
             double rz = rota["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
             double majorRadius = s["R"];
             double minorRadius = s["r"];
             int cr = color["r"], cg = color["g"], cb = color["b"];
-            torusVector.emplace_back(std::make_tuple(px, py, pz, majorRadius, minorRadius), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-            std::cout << "Torus: pos(" << px << ", " << py << ", " << pz 
-                      << "), R=" << majorRadius << ", r=" << minorRadius
-                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+            torusVector.emplace_back(
+                std::make_tuple(px, py, pz, majorRadius, minorRadius),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "Torus: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "R=" << majorRadius << ", "
+                    "r=" << minorRadius << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-#ifdef _DEBUG
-        std::cout << "No toruses found in config" << std::endl;
-#endif
+        #ifdef _DEBUG
+            std::cout << "No toruses found in config" << std::endl;
+        #endif
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Torus setting type error: " << e.what() << std::endl;
     }
 
-    std::vector<std::tuple<std::tuple<double, double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> tanglecubeVector;
+    return torusVector;
+}
+
+std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &root)
+{
+    std::vector<tanglecube_t> tangleCubeVector;
     try {
         const auto &tanglecube = root["primitives"]["tanglecubes"];
+
         for (int i = 0; i < tanglecube.getLength(); ++i) {
             const auto &s = tanglecube[i];
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
+            const auto &scale = s["scale"];
             const auto &color = s["color"];
             double size = s["size"];
             double px = pos["x"];
@@ -175,33 +302,51 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
             double rx = rota["x"];
             double ry = rota["y"];
             double rz = rota["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
-            tanglecubeVector.emplace_back(std::make_tuple(px, py, pz, size), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-            std::cout << "Tanglecube: pos(" << px << ", " << py << ", " << pz 
-                      << "), size=" << size
-                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+            tangleCubeVector.emplace_back(
+                std::make_tuple(px, py, pz, size),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "Tanglecube: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "size=" << size << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-#ifdef _DEBUG
-        std::cout << "No tanglecubes found in config" << std::endl;
-#endif
+        #ifdef _DEBUG
+            std::cout << "No tanglecubes found in config" << std::endl;
+        #endif
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Tanglecube setting type error: " << e.what() << std::endl;
     }
 
-    std::vector<std::tuple<std::tuple<std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<double, double, double>>, std::tuple<double, double, double>, std::tuple<int, int, int>>> triangleVector;
+    return tangleCubeVector;
+}
+
+std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root)
+{
+    std::vector<triangle_t> triangleVector;
+
     try {
         const auto &triangles = root["primitives"]["triangles"];
+
         for (int i = 0; i < triangles.getLength(); ++i) {
             const auto &t = triangles[i];
             const auto &p1 = t["p1"];
             const auto &p2 = t["p2"];
             const auto &p3 = t["p3"];
             const auto &rotation = t["rotation"];
+            const auto &scale = t["scale"];
             const auto &color = t["color"];
             double p1x = p1["x"];
             double p1y = p1["y"];
@@ -215,6 +360,9 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
             double rx = rotation["x"];
             double ry = rotation["y"];
             double rz = rotation["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
@@ -225,31 +373,41 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
                     std::make_tuple(p3x, p3y, p3z)
                 ),
                 std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
                 std::make_tuple(cr, cg, cb)
             );
-#ifdef _DEBUG
-            std::cout << "Triangle: p1(" << p1x << "," << p1y << "," << p1z << "), "
-                      << "p2(" << p2x << "," << p2y << "," << p2z << "), "
-                      << "p3(" << p3x << "," << p3y << "," << p3z << "), "
-                      << "color(" << cr << "," << cg << "," << cb << ")\n";
-#endif
+            #ifdef _DEBUG
+                std::cout << "Triangle: "
+                    "p1(" << p1x << "," << p1y << "," << p1z << "), "
+                    "p2(" << p2x << "," << p2y << "," << p2z << "), "
+                    "p3(" << p3x << "," << p3y << "," << p3z << "), "
+                    "color(" << cr << "," << cg << "," << cb << ")"
+                    << std::endl;
+            #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-#ifdef _DEBUG
-        std::cout << "No triangles found in config" << std::endl;
-#endif
+        #ifdef _DEBUG
+            std::cout << "No triangles found in config" << std::endl;
+        #endif
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Triangle setting type error: " << e.what() << std::endl;
     }
 
-    // OBJ files
-    std::vector<std::tuple<std::tuple<double, double, double, std::string>, std::tuple<double, double, double>, std::tuple<int, int, int>>> objVector;
+    return triangleVector;
+}
+
+std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
+{
+    std::vector<obj_t> objVector;
+
     try {
         const auto &objs = root["primitives"]["objs"];
+
         for (int i = 0; i < objs.getLength(); ++i) {
             const auto &o = objs[i];
             const auto &pos = o["position"];
             const auto &rota = o["rotation"];
+            const auto &scale = o["scale"];
             const auto &color = o["color"];
             std::string filepath = o["filepath"].c_str();
             double px = pos["x"];
@@ -258,50 +416,97 @@ void RayTracer::Parser::Parser::_getPrimitivesData(const libconfig::Setting &roo
             double rx = rota["x"];
             double ry = rota["y"];
             double rz = rota["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
-            objVector.emplace_back(std::make_tuple(px, py, pz, filepath), std::make_tuple(rx, ry, rz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-            std::cout << "OBJ: pos(" << px << ", " << py << ", " << pz 
-                      << "), filepath=" << filepath
-                      << ", color(" << cr << ", " << cg << ", " << cb << ")\n";
-#endif
+            objVector.emplace_back(
+                std::make_tuple(px, py, pz, filepath),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "OBJ: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "filepath=" << filepath << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-#ifdef _DEBUG
-        std::cout << "No OBJ files found in config" << std::endl;
-#endif
+        #ifdef _DEBUG
+            std::cout << "No OBJ files found in config" << std::endl;
+        #endif
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] OBJ setting type error: " << e.what() << std::endl;
     }
 
-    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
-        spheresVector, planesVector, cylinderVector, coneVector, 
-        torusVector, tanglecubeVector, triangleVector, objVector);
+    return objVector;
 }
 
-std::tuple<double, std::tuple<int, int, int>> RayTracer::Parser::Parser::_getAmbientData(const libconfig::Setting &root)
+void Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
-    std::tuple<double, std::tuple<int, int, int>> ambientData;
-    const auto &ambient = root["lights"]["ambient"];
-    const auto &s = ambient[0];
-    const auto &color = s["color"];
-    double intensity = s["intensity"];
-    int cr = color["r"];
-    int cg = color["g"];
-    int cb = color["b"];
-    ambientData = std::make_tuple(intensity, std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-    std::cout << "Ambient Light: intensity= "<< intensity
-              << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
-#endif
+    std::vector<sphere_t> spheresVector = _getSpheresData(root);
+
+    std::vector<plane_t> planesVector = _getPlanesData(root);
+
+    std::vector<cylinder_t> cylinderVector = _getCylindersData(root);
+
+    std::vector<cone_t> coneVector = _getConesData(root);
+
+    std::vector<torus_t> torusVector = _getTorusData(root);
+
+    std::vector<tanglecube_t> tangleCubeVector = _getTanglecubesData(root);
+
+    std::vector<triangle_t> triangleVector = _getTrianglesData(root);
+
+    std::vector<obj_t> objVector = _getOBJsData(root);
+
+    this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
+        spheresVector,
+        planesVector,
+        cylinderVector,
+        coneVector,
+        torusVector,
+        tangleCubeVector,
+        triangleVector,
+        objVector
+    );
+}
+
+ambient_t Parser::_getAmbientData(const libconfig::Setting &root)
+{
+    ambient_t ambientData;
+
+    try {
+        const auto &ambient = root["lights"]["ambient"];
+        const auto &s = ambient[0];
+        const auto &color = s["color"];
+        double intensity = s["intensity"];
+        int cr = color["r"];
+        int cg = color["g"];
+        int cb = color["b"];
+        ambientData = std::make_tuple(intensity, std::make_tuple(cr, cg, cb));
+        #ifdef _DEBUG
+            std::cout << "Ambient Light: intensity= "<< intensity
+                      << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+        #endif
+    } catch (const libconfig::SettingNotFoundException &e) {
+        std::cerr << "[WARNING] Ambient light not found in config" << std::endl;
+        ambientData = std::make_tuple(0.0, std::make_tuple(0, 0, 0));
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Ambient light setting type error: " << e.what() << std::endl;
+        ambientData = std::make_tuple(0.0, std::make_tuple(0, 0, 0));
+    }
     return ambientData;
 }
 
-std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> RayTracer::Parser::Parser::_getDirectionalData(const libconfig::Setting &root)
+std::vector<directional_t> Parser::_getDirectionalData(const libconfig::Setting &root)
 {
-    std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> directionalData;
+    std::vector<directional_t> directionalData;
     const auto &directional = root["lights"]["directional"];
 
     for (int i = 0; i < directional.getLength(); ++i) {
@@ -319,37 +524,46 @@ std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<do
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
-        directionalData.emplace_back(intensity, std::make_tuple(px, py, pz), std::make_tuple(dx, dy, dz), std::make_tuple(cr, cg, cb));
-#ifdef _DEBUG
-        std::cout << "Directional Light " << i << ": intensity= "<< intensity
-                  << ", direction(" << dx << ", " << dy << ", " << dz << ")"
-                  << ", position(" << px << ", " << py << ", " << pz << ")"
-                  << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
-#endif
+        directionalData.emplace_back(
+            intensity,
+            std::make_tuple(px, py, pz),
+            std::make_tuple(dx, dy, dz),
+            std::make_tuple(cr, cg, cb)
+        );
+        #ifdef _DEBUG
+            std::cout << "Directional Light " << i << ": intensity= "<< intensity
+                    << ", direction(" << dx << ", " << dy << ", " << dz << ")"
+                    << ", position(" << px << ", " << py << ", " << pz << ")"
+                    << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+        #endif
     }
     return directionalData;
 }
 
-void RayTracer::Parser::Parser::_getLightsData(const libconfig::Setting &root)
+void Parser::_getLightsData(const libconfig::Setting &root)
 {
     auto ambient = this->_getAmbientData(root);
     auto directional = this->_getDirectionalData(root);
     this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional);
 }
 
-RayTracer::Parser::CameraConfig RayTracer::Parser::Parser::getCameraConfig() const {
+CameraConfig Parser::getCameraConfig() const
+{
     return *this->_camConfig;
 }
 
-RayTracer::Parser::LightsConfig RayTracer::Parser::Parser::getLightConfig() const {
+LightsConfig Parser::getLightConfig() const
+{
     return *this->_lightConfig;
 }
 
-RayTracer::Parser::PrimitivesConfig RayTracer::Parser::Parser::getPrimitivesConfig() const {
+PrimitivesConfig Parser::getPrimitivesConfig() const
+{
     return *this->_primitiveConfig;
 }
 
-RayTracer::Parser::Parser::Parser(char *path) {
+Parser::Parser(char *path)
+{
     libconfig::Config cfg;
 
     try {
@@ -365,9 +579,9 @@ RayTracer::Parser::Parser::Parser(char *path) {
 
     try {
         const libconfig::Setting &root = cfg.getRoot();
-#ifdef _DEBUG
-    std::cout << "Parsing ["<< path <<"]" << std::endl;
-#endif
+        #ifdef _DEBUG
+            std::cout << "Parsing ["<< path <<"]" << std::endl;
+        #endif
         this->_getCameraData(root);
         this->_getLightsData(root);
         this->_getPrimitivesData(root);
@@ -375,4 +589,6 @@ RayTracer::Parser::Parser::Parser(char *path) {
         std::cerr << "[ERROR] Missing setting: " << e.getPath() << "\n";
         throw;
     }
+}
+
 }

@@ -9,21 +9,29 @@
 
 namespace RayTracer {
 namespace Parser {
-    class LightsConfig {
+
+typedef std::tuple<double, double, double> truple_t;
+typedef std::tuple<int, int, int> color_t;
+
+typedef std::tuple<double, truple_t, truple_t, color_t> directional_t; // Intensity, position, direction, color
+typedef std::tuple<double, color_t> ambient_t; // Intensity, color
+
+class LightsConfig {
     private:
-        const std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>>  _directional;
-        const std::tuple<double, std::tuple<int, int, int>> _ambient;
+        const std::vector<directional_t>  _directional;
+        const ambient_t _ambient;
+
     public:
-
-        std::tuple<double, std::tuple<int, int, int>> getAmbient() const;
-
-        std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> getDirectional() const;
+        ambient_t getAmbient() const;
+        std::vector<directional_t> getDirectional() const;
 
         LightsConfig() = delete;
-        LightsConfig(const std::tuple<double, std::tuple<int, int, int>> &ambiant, /* Intensité couleur */
-                     const std::vector<std::tuple<double, std::tuple<double, double, double>, std::tuple<double, double, double>, std::tuple<int, int, int>>> &diffuse /* Intenstié, position, direction, couleur */);
+        LightsConfig(
+            const ambient_t &ambiant, /* Intensité couleur */
+            const std::vector<directional_t> &directional /* Intenstié, position, direction, couleur */
+        );
         ~LightsConfig() = default;
-    };
+};
 
 } // Parser
 } // raytracer

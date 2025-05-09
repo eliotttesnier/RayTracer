@@ -11,14 +11,26 @@
 
 #include "GraphicRenderer.hpp"
 
-GraphicRenderer::GraphicRenderer(std::string const &filename) : _inputFilename(filename)
+namespace AnsiColor {
+const std::string RESET      = "\033[0m";
+const std::string BOLD       = "\033[1m";
+const std::string UNDERLINE  = "\033[4m";
+const std::string GREEN      = "\033[32m";
+const std::string CYAN       = "\033[36m";
+}
+
+GraphicRenderer::GraphicRenderer(std::string const &previewFilename,
+        std::string const &finalFilename)
+    : _inputFilename(previewFilename),
+    _finalFilename(finalFilename.empty() ? "output.ppm" : finalFilename),
+    _isPreviewMode(true)
 {
-    if (!loadFromFile(filename)) {
-        std::cerr << "Failed to load PPM file: " << filename << std::endl;
-        throw std::runtime_error("Failed to load PPM file");
+    if (!loadFromFile(previewFilename)) {
+        std::cerr << "Failed to load preview PPM file: " << previewFilename << std::endl;
+        throw std::runtime_error("Failed to load preview PPM file");
     }
 
-    _window.create(sf::VideoMode(1920, 1080), "Ray Tracer Visualizer");
+    _window.create(sf::VideoMode(1920, 1080), "Ray Tracer Visualizer - Preview Mode");
 
     if (!_texture.create(_width, _height)) {
         std::cerr << "Failed to create texture." << std::endl;
@@ -27,16 +39,22 @@ GraphicRenderer::GraphicRenderer(std::string const &filename) : _inputFilename(f
 
     _texture.update(_pixels.data());
     _sprite.setTexture(_texture);
-
-    float scaleX = 1920.0f / _width;
-    float scaleY = 1080.0f / _height;
+    float scaleX = 1920.0f / static_cast<float>(_width);
+    float scaleY = 1080.0f / static_cast<float>(_height);
     float scale = std::min(scaleX, scaleY);
-
     _sprite.setScale(scale, scale);
 
     float scaledWidth = _width * scale;
     float scaledHeight = _height * scale;
-    _sprite.setPosition((1920 - scaledWidth) / 2.0f, (1080 - scaledHeight) / 2.0f);
+    _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
+
+    if (!_font.loadFromFile("assets/Arial.ttf"))
+        std::cerr << "Warning: Could not load font for loading message" << std::endl;
+    else {
+        _loadingText.setFont(_font);
+        _loadingText.setCharacterSize(24);
+        _loadingText.setFillColor(sf::Color::White);
+    }
 }
 
 bool GraphicRenderer::loadFromFile(const std::string& filename)
@@ -79,7 +97,58 @@ bool GraphicRenderer::loadFromFile(const std::string& filename)
     return true;
 }
 
-void GraphicRenderer::exportToPNG() const
+void GraphicRenderer::displayLoadingMessage(const std::string& message)
+{
+    if (_font.getInfo().family.empty())
+        return;
+
+    sf::Text text = _loadingText;
+    text.setString(message);
+
+    sf::FloatRect textRect = text.getLocalBounds();
+    text.setOrigin(textRect.left + textRect.width/2.0f, textRect.top + textRect.height/2.0f);
+    text.setPosition(1920/2.0f, 1080/2.0f);
+
+    sf::RectangleShape background(sf::Vector2f(textRect.width + 20, textRect.height + 20));
+    background.setFillColor(sf::Color(0, 0, 0, 200));
+    background.setOrigin(background.getSize().x/2.0f, background.getSize().y/2.0f);
+    background.setPosition(1920/2.0f, 1080/2.0f);
+
+    _window.clear(sf::Color::Black);
+    _window.draw(background);
+    _window.draw(text);
+    _window.display();
+}
+
+void GraphicRenderer::switchToFinalImage()
+{
+    if (!_isPreviewMode)
+        return;
+
+    displayLoadingMessage("Loading final image...");
+    if (!loadFromFile(_finalFilename)) {
+        std::cerr << "Failed to load final PPM file: " << _finalFilename << std::endl;
+        return;
+    }
+
+    _window.setTitle("Ray Tracer Visualizer - Final Image");
+    _texture.create(_width, _height);
+    _texture.update(_pixels.data());
+    _sprite.setTexture(_texture, true);
+
+    float scaleX = 1920.0f / static_cast<float>(_width);
+    float scaleY = 1080.0f / static_cast<float>(_height);
+    float scale = std::min(scaleX, scaleY);
+    _sprite.setScale(scale, scale);
+
+    float scaledWidth = _width * scale;
+    float scaledHeight = _height * scale;
+    _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
+    _isPreviewMode = false;
+    _inputFilename = _finalFilename;
+}
+
+void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
 {
     sf::Texture exportTexture;
     if (!exportTexture.create(_width, _height)) {
@@ -88,23 +157,22 @@ void GraphicRenderer::exportToPNG() const
     }
     exportTexture.update(_pixels.data());
 
-    std::string outputFilename = _inputFilename;
-    size_t dotPos = outputFilename.find_last_of('.');
-    if (dotPos != std::string::npos) {
-        outputFilename = outputFilename.substr(0, dotPos);
-    }
-    outputFilename += ".png";
-
     sf::Image image = exportTexture.copyToImage();
     if (image.saveToFile(outputFilename)) {
-        std::cout << "Image exported to: " << outputFilename << std::endl;
+        std::cout << AnsiColor::GREEN << "✅ " << AnsiColor::BOLD << "Image exported to: "
+                  << AnsiColor::RESET << AnsiColor::CYAN << AnsiColor::UNDERLINE
+                  << outputFilename << AnsiColor::RESET << std::endl;
     } else {
-        std::cerr << "Failed to export image." << std::endl;
+        std::cerr << "Failed to export image to: " << outputFilename << std::endl;
     }
 }
 
-void GraphicRenderer::run()
+void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 {
+    bool finalImageLoaded = false;
+    sf::Clock checkClock;
+
+    exportToPNG("preview.png");
     while (_window.isOpen()) {
         sf::Event event;
         while (_window.pollEvent(event)) {
@@ -115,9 +183,40 @@ void GraphicRenderer::run()
                 _window.close();
         }
 
+        if (_isPreviewMode && !finalImageLoaded && renderingComplete.load()) {
+            switchToFinalImage();
+            finalImageLoaded = true;
+            exportToPNG("output.png");
+        }
+
         _window.clear(sf::Color::Black);
         _window.draw(_sprite);
+
+        if (_isPreviewMode && _font.getInfo().family.length() > 0) {
+            sf::Text statusText;
+            statusText.setFont(_font);
+            statusText.setCharacterSize(16);
+            statusText.setFillColor(sf::Color::White);
+
+            if (renderingComplete.load()) {
+                statusText.setString("Switching to final image...");
+            } else {
+                int n = (static_cast<int>(checkClock.getElapsedTime().asSeconds() * 2) % 4);
+                std::string dots;
+                for (int i = 0; i < n; i++) dots += ".";
+                statusText.setString("Rendering full resolution image" + dots);
+            }
+
+            statusText.setPosition(10, 10);
+            sf::FloatRect textRect = statusText.getLocalBounds();
+            sf::RectangleShape back(sf::Vector2f(textRect.width + 20, textRect.height + 10));
+            back.setFillColor(sf::Color(0, 0, 0, 180));
+            back.setPosition(5, 5);
+            _window.draw(back);
+            _window.draw(statusText);
+        }
+
         _window.display();
+        sf::sleep(sf::milliseconds(100));
     }
-    exportToPNG();
 }

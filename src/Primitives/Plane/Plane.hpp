@@ -17,6 +17,7 @@ class Plane : public APrimitive {
         ~Plane() = default;
 
         Math::hitdata_t intersect(const Math::Ray &ray) override;
+        Math::Vector3D normalAt(const Math::Point3D& point) const;
 
         double getWidth() const;
         void setWidth(double width);

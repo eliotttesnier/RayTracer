@@ -5,13 +5,18 @@
 ** OBJ
 */
 
+#include "OBJ.hpp"
+
+#include <cmath>
+
+#include <algorithm>
 #include <iostream>
+#include <limits>
+#include <memory>
 #include <sstream>
 #include <string>
-#include <algorithm>
-#include <cmath>
 #include <vector>
-#include "OBJ.hpp"
+
 #include "../Triangles/Triangles.hpp"
 
 namespace RayTracer::primitive {
@@ -22,6 +27,7 @@ OBJ::OBJ()
     _type = "obj";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
+    _anchorPoint = Math::Vector3D(0, 0, 0);
     _filepath = "";
 }
 
@@ -31,6 +37,7 @@ OBJ::OBJ(const Math::Point3D &position, const std::string &filepath)
     _type = "obj";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
+    _anchorPoint = Math::Vector3D(0, 0, 0);
     _filepath = filepath;
     loadFromFile();
 }
@@ -52,12 +59,35 @@ void OBJ::loadFromFile()
         return;
     }
 
+    if (!_vertices.empty()) {
+        Math::Point3D min(_vertices[0]);
+        Math::Point3D max(_vertices[0]);
+
+        for (const auto &vertex : _vertices) {
+            min._x = std::min(min._x, vertex._x);
+            min._y = std::min(min._y, vertex._y);
+            min._z = std::min(min._z, vertex._z);
+
+            max._x = std::max(max._x, vertex._x);
+            max._y = std::max(max._y, vertex._y);
+            max._z = std::max(max._z, vertex._z);
+        }
+
+        _anchorPoint = Math::Vector3D(
+            (max._x + min._x) / 2.0,
+            (max._y + min._y) / 2.0,
+            (max._z + min._z) / 2.0
+        );
+    }
+
     for (const auto &face : _faces) {
         size_t idx1 = std::get<0>(face);
         size_t idx2 = std::get<1>(face);
         size_t idx3 = std::get<2>(face);
 
-        if (idx1 >= _vertices.size() || idx2 >= _vertices.size() || idx3 >= _vertices.size()) {
+        if (idx1 >= _vertices.size() ||
+            idx2 >= _vertices.size() ||
+            idx3 >= _vertices.size()) {
             std::cerr << "OBJ: Invalid face indices" << std::endl;
             continue;
         }
@@ -72,6 +102,7 @@ void OBJ::loadFromFile()
 
         try {
             auto triangle = std::make_shared<RayTracer::primitive::Triangles>(v1, v2, v3);
+            triangle->setRotation(_rotation);
             _triangles.push_back(triangle);
         } catch (const std::exception &e) {
             std::cerr << "OBJ: Failed to create triangle: " << e.what() << std::endl;
@@ -79,7 +110,8 @@ void OBJ::loadFromFile()
     }
 
 #ifdef _DEBUG
-    std::cout << "OBJ: Loaded " << _triangles.size() << " triangles from " << _filepath << std::endl;
+    std::cout << "OBJ: Loaded " << _triangles.size() << " triangles from "
+              << _filepath << std::endl;
 #endif
 }
 
@@ -135,12 +167,14 @@ void OBJ::triangulatePolygon(const std::vector<size_t>& polygonIndices)
 
 Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
 {
+    Math::Ray transformedRay = transformRayToLocal(ray);
     Math::hitdata_t closestHit;
+
     closestHit.hit = false;
     closestHit.distance = std::numeric_limits<double>::infinity();
 
     for (const auto &triangle : _triangles) {
-        Math::hitdata_t hitData = triangle->intersect(ray);
+        Math::hitdata_t hitData = triangle->intersect(transformedRay);
 
         if (hitData.hit && hitData.distance < closestHit.distance)
             closestHit = hitData;
@@ -151,4 +185,4 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     return closestHit;
 }
 
-} // namespace RayTracer::primitive
+}  // namespace RayTracer::primitive
