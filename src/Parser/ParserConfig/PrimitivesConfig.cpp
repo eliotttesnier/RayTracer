@@ -9,14 +9,14 @@
 namespace RayTracer::Parser {
 
 PrimitivesConfig::PrimitivesConfig(
-    const std::vector<sphere_t> &spheres,
-    const std::vector<plane_t> &planes,
-    const std::vector<cylinder_t> &cylinders,
-    const std::vector<cone_t> &cones,
-    const std::vector<torus_t> &toruses,
-    const std::vector<tanglecube_t> &tanglecubes,
-    const std::vector<triangle_t> &triangles,
-    const std::vector<obj_t> &objs
+const std::vector<sphere_t> &spheres,
+const std::vector<plane_t> &planes,
+const std::vector<cylinder_t> &cylinders,
+const std::vector<cone_t> &cones,
+const std::vector<torus_t> &toruses,
+const std::vector<tanglecube_t> &tanglecubes,
+const std::vector<triangle_t> &triangles,
+const std::vector<obj_t> &objs
 ) :
 _spheres(spheres),
 _cylinders(cylinders),

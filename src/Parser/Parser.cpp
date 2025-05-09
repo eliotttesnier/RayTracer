@@ -642,7 +642,7 @@ void Parser::_importScene(const std::string &filepath, libconfig::Setting &targe
 }
 
 void Parser::_importPrimitives(const libconfig::Setting &sourceRoot,
-    libconfig::Setting &targetRoot)
+libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("primitives"))
@@ -682,7 +682,7 @@ void Parser::_importPrimitives(const libconfig::Setting &sourceRoot,
 }
 
 void Parser::_importLights(const libconfig::Setting &sourceRoot,
-    libconfig::Setting &targetRoot)
+libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("lights"))
