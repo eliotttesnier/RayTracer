@@ -110,23 +110,26 @@ void OBJ::loadFromFile()
             continue;
         }
 
+        // Get vertices from the model
         Math::Point3D v1 = _vertices[idx1];
         Math::Point3D v2 = _vertices[idx2];
         Math::Point3D v3 = _vertices[idx3];
 
-        v1 = v1 + Math::Vector3D(_position._x, _position._y, _position._z);
-        v2 = v2 + Math::Vector3D(_position._x, _position._y, _position._z);
-        v3 = v3 + Math::Vector3D(_position._x, _position._y, _position._z);
+        // Apply transformations (rotation and position)
+        Math::Point3D transformedV1 = transformVertex(v1);
+        Math::Point3D transformedV2 = transformVertex(v2);
+        Math::Point3D transformedV3 = transformVertex(v3);
 
         try {
-            auto triangle = std::make_shared<RayTracer::primitive::Triangles>(v1, v2, v3);
-            triangle->setRotation(_rotation);
+            // Create triangle with the transformed vertices
+            auto triangle = std::make_shared<RayTracer::primitive::Triangles>(
+                transformedV1, transformedV2, transformedV3);
             _triangles.push_back(triangle);
 
             AABB triangleBound;
-            triangleBound.expand(v1);
-            triangleBound.expand(v2);
-            triangleBound.expand(v3);
+            triangleBound.expand(transformedV1);
+            triangleBound.expand(transformedV2);
+            triangleBound.expand(transformedV3);
             _triangleBounds.push_back(triangleBound);
         } catch (const std::exception &e) {
             std::cerr << "OBJ: Failed to create triangle: " << e.what() << std::endl;
@@ -226,6 +229,24 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     if (closestHit.hit)
         closestHit.color = {255.0, 255.0, 255.0, 1.0};  // White
     return closestHit;
+}
+
+Math::Point3D OBJ::transformVertex(const Math::Point3D& vertex)
+{
+    Math::Point3D result = vertex;
+    double cosX = std::cos(_rotation._x * M_PI / 180.0);
+    double sinX = std::sin(_rotation._x * M_PI / 180.0);
+    double cosY = std::cos(_rotation._y * M_PI / 180.0);
+    double sinY = std::sin(_rotation._y * M_PI / 180.0);
+    double cosZ = std::cos(_rotation._z * M_PI / 180.0);
+    double sinZ = std::sin(_rotation._z * M_PI / 180.0);
+
+    result = result - Math::Vector3D(_anchorPoint._x, _anchorPoint._y, _anchorPoint._z);
+    rotatePointToWorld(result, cosX, sinX, cosY, sinY, cosZ, sinZ);
+    result = result + Math::Vector3D(_anchorPoint._x, _anchorPoint._y, _anchorPoint._z);
+    result = result + Math::Vector3D(_position._x, _position._y, _position._z);
+
+    return result;
 }
 
 }  // namespace RayTracer::primitive

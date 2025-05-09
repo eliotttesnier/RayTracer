@@ -49,6 +49,7 @@ class OBJ : public APrimitive {
 
         bool parseOBJFile();
         void triangulatePolygon(const std::vector<size_t>& polygonIndices);
+        Math::Point3D transformVertex(const Math::Point3D& vertex);
 };
 
 } // namespace Raytracer::primitive
