@@ -33,8 +33,7 @@ RayTracer::Factory::TorusFactory::TorusFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::TorusFactory::create(
-    std::map<std::string,
-    std::unique_ptr<Loader::LibLoader>> &plugins) const
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
     if (plugins.find("Torus") == plugins.end())
         throw std::runtime_error("Torus plugin not found");

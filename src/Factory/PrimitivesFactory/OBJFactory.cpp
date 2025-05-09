@@ -31,8 +31,7 @@ RayTracer::Factory::OBJFactory::OBJFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
-    std::map<std::string,
-    std::unique_ptr<Loader::LibLoader>> &plugins
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("OBJ") == plugins.end())
