@@ -54,6 +54,7 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
         const auto &position = s["position"];
         const auto &rotation = s["rotation"];
         const auto &scale = s["scale"];
+        const auto &shear = s["shear"];
         const auto &color = s["color"];
         double px = position["x"];
         double py = position["y"];
@@ -64,6 +65,9 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
         double sx = scale["x"];
         double sy = scale["y"];
         double sz = scale["z"];
+        double shx = shear["x"];
+        double shy = shear["y"];
+        double shz = shear["z"];
         double radius = s["r"];
         int cr = color["r"];
         int cg = color["g"];
@@ -72,6 +76,7 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
             std::make_tuple(px, py, pz, radius),
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
+            std::make_tuple(shx, shy, shz),
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
@@ -97,6 +102,7 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
         const auto &position = p["position"];
         const auto &rotation = p["rotation"];
         const auto &scale = p["scale"];
+        const auto &shear = p["shear"];
         const auto &color = p["color"];
         double x = position["x"];
         double y = position["y"];
@@ -107,6 +113,9 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
         double sx = scale["x"];
         double sy = scale["y"];
         double sz = scale["z"];
+        double shx = shear["x"];
+        double shy = shear["y"];
+        double shz = shear["z"];
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
@@ -117,15 +126,14 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
             std::make_tuple(x, y, z),
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
+            std::make_tuple(shx, shy, shz),
             std::make_tuple(width, height),
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
             std::cout << "Plane: "
                 "axis=" << axis << ", "
-                "positionx=" << x << ", "
-                "positiony=" << y << ", "
-                "positionz=" << z << ", "
+                "position(" << x << ", " << y << ", " << z << "), "
                 "color(" << cr << ", " << cg << ", " << cb << ")"
                 << std::endl;
         #endif
@@ -145,6 +153,7 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
         const auto &position = s["position"];
         const auto &rotation = s["rotation"];
         const auto &scale = s["scale"];
+        const auto &shear = s["shear"];
         const auto &color = s["color"];
         double px = position["x"];
         double py = position["y"];
@@ -155,6 +164,9 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
         double sx = scale["x"];
         double sy = scale["y"];
         double sz = scale["z"];
+        double shx = shear["x"];
+        double shy = shear["y"];
+        double shz = shear["z"];
         double radius = s["r"];
         double height = s["h"];
         int cr = color["r"];
@@ -164,6 +176,7 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
             std::make_tuple(px, py, pz, radius, height),
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
+            std::make_tuple(shx, shy, shz),
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
@@ -191,6 +204,7 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
             const auto &position = s["position"];
             const auto &rotation = s["rotation"];
             const auto &scale = s["scale"];
+            const auto &shear = s["shear"];
             const auto &color = s["color"];
             double px = position["x"];
             double py = position["y"];
@@ -201,6 +215,9 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
             double sx = scale["x"];
             double sy = scale["y"];
             double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
             double radius = s["r"];
             double height = s["h"];
             int cr = color["r"];
@@ -210,6 +227,7 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
                 std::make_tuple(px, py, pz, radius, height),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
@@ -244,6 +262,7 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
             const auto &scale = s["scale"];
+            const auto &shear = s["shear"];
             const auto &color = s["color"];
             double px = pos["x"];
             double py = pos["y"];
@@ -254,6 +273,9 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
             double sx = scale["x"];
             double sy = scale["y"];
             double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
             double majorRadius = s["R"];
             double minorRadius = s["r"];
             int cr = color["r"], cg = color["g"], cb = color["b"];
@@ -261,6 +283,7 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
                 std::make_tuple(px, py, pz, majorRadius, minorRadius),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
@@ -294,6 +317,7 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
             const auto &scale = s["scale"];
+            const auto &shear = s["shear"];
             const auto &color = s["color"];
             double size = s["size"];
             double px = pos["x"];
@@ -305,6 +329,9 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
             double sx = scale["x"];
             double sy = scale["y"];
             double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
@@ -312,6 +339,7 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
                 std::make_tuple(px, py, pz, size),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
@@ -347,6 +375,7 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
             const auto &p3 = t["p3"];
             const auto &rotation = t["rotation"];
             const auto &scale = t["scale"];
+            const auto &shear = t["shear"];
             const auto &color = t["color"];
             double p1x = p1["x"];
             double p1y = p1["y"];
@@ -363,6 +392,9 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
             double sx = scale["x"];
             double sy = scale["y"];
             double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
@@ -374,6 +406,7 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
                 ),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
@@ -408,6 +441,7 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
             const auto &pos = o["position"];
             const auto &rota = o["rotation"];
             const auto &scale = o["scale"];
+            const auto &shear = o["shear"];
             const auto &color = o["color"];
             std::string filepath = o["filepath"].c_str();
             double px = pos["x"];
@@ -419,6 +453,9 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
             double sx = scale["x"];
             double sy = scale["y"];
             double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
@@ -426,6 +463,7 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
                 std::make_tuple(px, py, pz, filepath),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
                 std::make_tuple(cr, cg, cb)
             );
             #ifdef _DEBUG
