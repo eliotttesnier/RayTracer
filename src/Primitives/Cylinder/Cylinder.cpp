@@ -21,6 +21,9 @@ Cylinder::Cylinder()
     _radius = 1.0;
     _height = 1.0;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_height/2.0, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _height/2.0, _radius);
 }
 
 Cylinder::Cylinder(const Math::Point3D &position, double radius, double height)
@@ -32,6 +35,9 @@ Cylinder::Cylinder(const Math::Point3D &position, double radius, double height)
     _radius = radius;
     _height = height;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_height/2.0, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _height/2.0, _radius);
 }
 
 double Cylinder::getRadius() const
@@ -42,6 +48,10 @@ double Cylinder::getRadius() const
 void Cylinder::setRadius(double radius)
 {
     _radius = radius;
+    _boundingBox.min._x = -_radius;
+    _boundingBox.min._z = -_radius;
+    _boundingBox.max._x = _radius;
+    _boundingBox.max._z = _radius;
 }
 
 double Cylinder::getHeight() const
@@ -53,6 +63,8 @@ void Cylinder::setHeight(double height)
 {
     _height = height;
     _anchorPoint = Math::Vector3D(0, _height / 2.0, 0);
+    _boundingBox.min._y = -_height/2.0;
+    _boundingBox.max._y = _height/2.0;
 }
 
 Math::Vector3D Cylinder::normalAt(const Math::Point3D& point) const
@@ -162,6 +174,11 @@ Math::hitdata_t Cylinder::calculateCylinderIntersection(const Math::Ray &localRa
 Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
 {
     Math::Ray localRay = transformRayToLocal(ray);
+    Math::hitdata_t hitData;
+    hitData.hit = false;
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     return calculateCylinderIntersection(localRay);
 }
