@@ -23,6 +23,10 @@ Tanglecube::Tanglecube()
     _rotation = Math::Vector3D(0, 0, 0);
     _size = 1.0;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    double boundSize = _size * 2.5;
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
 }
 
 Tanglecube::Tanglecube(const Math::Point3D &position, double size)
@@ -33,6 +37,10 @@ Tanglecube::Tanglecube(const Math::Point3D &position, double size)
     _rotation = Math::Vector3D(0, 0, 0);
     _size = size;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    double boundSize = _size * 2.5;
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
 }
 
 double Tanglecube::getSize() const
@@ -43,6 +51,9 @@ double Tanglecube::getSize() const
 void Tanglecube::setSize(double size)
 {
     _size = size;
+    double boundSize = _size * 2.5;
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
 }
 
 Math::Vector3D Tanglecube::normalAt(const Math::Point3D& point) const
@@ -89,6 +100,9 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
     Math::hitdata_t hitData;
     hitData.hit = false;
     hitData.color = {0, 255, 255, 1.0};  // Cyan
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     const int MAX_ITERATIONS = 100;
     const double EPSILON = 0.001;

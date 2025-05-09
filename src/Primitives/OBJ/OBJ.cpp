@@ -60,23 +60,10 @@ void OBJ::loadFromFile()
     }
 
     if (!_vertices.empty()) {
-        Math::Point3D min(_vertices[0]);
-        Math::Point3D max(_vertices[0]);
-
-        for (const auto &vertex : _vertices) {
-            min._x = std::min(min._x, vertex._x);
-            min._y = std::min(min._y, vertex._y);
-            min._z = std::min(min._z, vertex._z);
-
-            max._x = std::max(max._x, vertex._x);
-            max._y = std::max(max._y, vertex._y);
-            max._z = std::max(max._z, vertex._z);
-        }
-
         _anchorPoint = Math::Vector3D(
-            (max._x + min._x) / 2.0,
-            (max._y + min._y) / 2.0,
-            (max._z + min._z) / 2.0
+            (_boundingBox.min._x + _boundingBox.max._x) / 2.0,
+            (_boundingBox.min._y + _boundingBox.max._y) / 2.0,
+            (_boundingBox.min._z + _boundingBox.max._z) / 2.0
         );
     }
 
@@ -95,15 +82,20 @@ void OBJ::loadFromFile()
         Math::Point3D v1 = _vertices[idx1];
         Math::Point3D v2 = _vertices[idx2];
         Math::Point3D v3 = _vertices[idx3];
-
-        v1 = v1 + Math::Vector3D(_position._x, _position._y, _position._z);
-        v2 = v2 + Math::Vector3D(_position._x, _position._y, _position._z);
-        v3 = v3 + Math::Vector3D(_position._x, _position._y, _position._z);
+        Math::Point3D transformedV1 = transformVertex(v1);
+        Math::Point3D transformedV2 = transformVertex(v2);
+        Math::Point3D transformedV3 = transformVertex(v3);
 
         try {
-            auto triangle = std::make_shared<RayTracer::primitive::Triangles>(v1, v2, v3);
-            triangle->setRotation(_rotation);
+            auto triangle = std::make_shared<RayTracer::primitive::Triangles>(
+                transformedV1, transformedV2, transformedV3);
             _triangles.push_back(triangle);
+
+            AABB triangleBound;
+            triangleBound.expand(transformedV1);
+            triangleBound.expand(transformedV2);
+            triangleBound.expand(transformedV3);
+            _triangleBounds.push_back(triangleBound);
         } catch (const std::exception &e) {
             std::cerr << "OBJ: Failed to create triangle: " << e.what() << std::endl;
         }
@@ -123,6 +115,7 @@ bool OBJ::parseOBJFile()
         return false;
     }
 
+    _boundingBox = AABB();
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
@@ -131,15 +124,26 @@ bool OBJ::parseOBJFile()
 
         if (type == "v") {
             double x, y, z;
-            if (iss >> x >> y >> z)
-                _vertices.emplace_back(x, y, z);
+            if (iss >> x >> y >> z) {
+                Math::Point3D vertex(x, y, z);
+                _vertices.emplace_back(vertex);
+                _boundingBox.expand(vertex);
+            }
         } else if (type == "f") {
             std::vector<size_t> faceIndices;
             std::string vertex;
 
             while (iss >> vertex) {
-                size_t vertexIdx = std::stoul(vertex.substr(0, vertex.find('/'))) - 1;
-                faceIndices.push_back(vertexIdx);
+                std::istringstream vStream(vertex);
+                std::string vPart;
+                std::getline(vStream, vPart, '/');
+
+                try {
+                    size_t vertexIdx = std::stoul(vPart) - 1;
+                    faceIndices.push_back(vertexIdx);
+                } catch (const std::exception& e) {
+                    std::cerr << "OBJ: Invalid vertex index: " << vPart << std::endl;
+                }
             }
             triangulatePolygon(faceIndices);
         }
@@ -150,18 +154,20 @@ bool OBJ::parseOBJFile()
 
 void OBJ::triangulatePolygon(const std::vector<size_t>& polygonIndices)
 {
+    if (polygonIndices.size() < 3)
+        return;
+
     if (polygonIndices.size() == 3) {
         _faces.emplace_back(polygonIndices[0], polygonIndices[1], polygonIndices[2]);
         return;
     }
-    if (polygonIndices.size() > 3) {
-        for (size_t i = 1; i < polygonIndices.size() - 1; ++i) {
-            _faces.emplace_back(
-                polygonIndices[0],
-                polygonIndices[i],
-                polygonIndices[i + 1]
-            );
-        }
+
+    for (size_t i = 1; i < polygonIndices.size() - 1; ++i) {
+        _faces.emplace_back(
+            polygonIndices[0],
+            polygonIndices[i],
+            polygonIndices[i + 1]
+        );
     }
 }
 
@@ -173,9 +179,14 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     closestHit.hit = false;
     closestHit.distance = std::numeric_limits<double>::infinity();
 
-    for (const auto &triangle : _triangles) {
-        Math::hitdata_t hitData = triangle->intersect(transformedRay);
+    if (!_boundingBox.intersect(transformedRay))
+        return closestHit;
 
+    for (size_t i = 0; i < _triangles.size(); i++) {
+        if (!_triangleBounds[i].intersect(transformedRay))
+            continue;
+
+        Math::hitdata_t hitData = _triangles[i]->intersect(transformedRay);
         if (hitData.hit && hitData.distance < closestHit.distance)
             closestHit = hitData;
     }
@@ -183,6 +194,24 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     if (closestHit.hit)
         closestHit.color = {255.0, 255.0, 255.0, 1.0};  // White
     return closestHit;
+}
+
+Math::Point3D OBJ::transformVertex(const Math::Point3D& vertex)
+{
+    Math::Point3D result = vertex;
+    double cosX = std::cos(_rotation._x * M_PI / 180.0);
+    double sinX = std::sin(_rotation._x * M_PI / 180.0);
+    double cosY = std::cos(_rotation._y * M_PI / 180.0);
+    double sinY = std::sin(_rotation._y * M_PI / 180.0);
+    double cosZ = std::cos(_rotation._z * M_PI / 180.0);
+    double sinZ = std::sin(_rotation._z * M_PI / 180.0);
+
+    result = result - Math::Vector3D(_anchorPoint._x, _anchorPoint._y, _anchorPoint._z);
+    rotatePointToWorld(result, cosX, sinX, cosY, sinY, cosZ, sinZ);
+    result = result + Math::Vector3D(_anchorPoint._x, _anchorPoint._y, _anchorPoint._z);
+    result = result + Math::Vector3D(_position._x, _position._y, _position._z);
+
+    return result;
 }
 
 }  // namespace RayTracer::primitive

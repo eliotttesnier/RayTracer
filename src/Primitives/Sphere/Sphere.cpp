@@ -16,6 +16,9 @@ Sphere::Sphere() {
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_radius, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _radius, _radius);
 }
 
 Sphere::Sphere(const Math::Point3D &position, double radius) {
@@ -25,6 +28,9 @@ Sphere::Sphere(const Math::Point3D &position, double radius) {
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_radius, -_radius, -_radius);
+    _boundingBox.max = Math::Point3D(_radius, _radius, _radius);
 }
 
 double Sphere::getRadius() const {
@@ -50,6 +56,11 @@ Math::Vector3D Sphere::normalAt(const Math::Point3D& point) const {
 Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
     Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
+    hitData.hit = false;
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
+
     Math::Vector3D oc(localRay.origin._x, localRay.origin._y, localRay.origin._z);
 
     double a = localRay.direction.dot(localRay.direction);
@@ -57,11 +68,8 @@ Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
     double c = oc.dot(oc) - _radius * _radius;
     double discriminant = b * b - 4 * a * c;
 
-    hitData.hit = false;
-
-    if (discriminant < 0) {
+    if (discriminant < 0)
         return hitData;
-    }
 
     double sqrtd = sqrt(discriminant);
     double t1 = (-b - sqrtd) / (2.0 * a);
