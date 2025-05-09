@@ -128,4 +128,11 @@ Math::hitdata_t Triangles::intersect(const Math::Ray &ray)
     return calculateTriangleIntersection(localRay);
 }
 
+Graphic::color_t Cone::getColor(
+    RayTracer::Materials::infos_t infos
+)
+{
+    return _material->calculateColor(*this, infos);
+}
+
 }  // namespace Raytracer::primitive

@@ -26,6 +26,10 @@ class Triangles : public APrimitive {
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
 
+        Graphic::color_t getColor(
+            RayTracer::Materials::infos_t infos
+        ) override;
+
     private:
         Math::Point3D _p1, _p2, _p3;
         Math::Vector3D _normal;
