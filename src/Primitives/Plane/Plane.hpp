@@ -24,6 +24,10 @@ class Plane : public APrimitive {
         double getHeight() const;
         void setHeight(double height);
 
+        Graphic::color_t getColor(
+            RayTracer::Materials::infos_t infos
+        ) override;
+
     private:
         double _width;
         double _height;
