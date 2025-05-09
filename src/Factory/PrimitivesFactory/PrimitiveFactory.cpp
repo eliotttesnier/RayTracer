@@ -120,7 +120,8 @@ std::vector<std::shared_ptr<IPrimitive>>
         scale = sc;
         shear = sh;
 
-        RayTracer::Factory::TorusFactory factory(pos, rota, scale, shear, majorRadius, minorRadius);
+        RayTracer::Factory::TorusFactory factory(pos, rota, scale, shear,
+                majorRadius, minorRadius);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -167,7 +168,8 @@ std::vector<std::shared_ptr<IPrimitive>>
         scale = sc;
         shear = sh;
 
-        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3, rota, scale, shear);
+        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3,
+                rota, scale, shear);
 #ifdef _DEBUG
         std::cout << "Creating a triangle" << std::endl;
 #endif
