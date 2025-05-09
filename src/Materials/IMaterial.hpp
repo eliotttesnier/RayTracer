@@ -11,68 +11,87 @@
 #include <memory>
 #include <vector>
 
-#include "../Lights/ILight.hpp"
 #include "../Graphic/Color.hpp"
 #include "../Math/HitData.hpp"
 #include "../Math/Ray.hpp"
+#include "../Lights/ILight.hpp"
 
-#include "../Primitives/Cone/Cone.hpp"
-#include "../Primitives/Cylinder/Cylinder.hpp"
-#include "../Primitives/Plane/Plane.hpp"
-#include "../Primitives/Sphere/Sphere.hpp"
-#include "../Primitives/Torus/Torus.hpp"
-#include "../Primitives/Tanglecube/Tanglecube.hpp"
-#include "../Primitives/Triangles/Triangles.hpp"
-#include "../Primitives/OBJ/OBJ.hpp"
-
+class ILight;
 class IPrimitive;
+
+namespace RayTracer::primitive {
+    class Cone;
+    class Cylinder;
+    class Plane;
+    class Sphere;
+    class Torus;
+    class Tanglecube;
+    class Triangles;
+    class OBJ;
+}
 
 namespace RayTracer::Materials {
 
-typedef struct infos_s {
-    Math::hitdata_t hitData;
-    Math::Ray ray;
-    std::vector<std::shared_ptr<ILight>> lights;
-    std::vector<std::shared_ptr<IPrimitive>> primitives;
-} infos_t;
-
 class IMaterial {
     public:
-        IMaterial() = default;
-        virtual ~IMaterial() = default;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Cone &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Cylinder &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Plane &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Sphere &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Torus &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Tanglecube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Triangles &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::OBJ &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
 
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Cone obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Cylinder obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Plane obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Sphere obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Torus obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Tanglecube obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::Triangles obj,
-            infos_t infos
-        ) = 0;
-        virtual Graphic::color_t calculateColor(
-            RayTracer::primitive::OBJ obj,
-            infos_t infos
-        ) = 0;
+        virtual ~IMaterial() = default;
 };
 
 };
