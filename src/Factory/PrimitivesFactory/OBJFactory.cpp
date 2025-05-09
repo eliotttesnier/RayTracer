@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/OBJ/OBJ.hpp"
 
@@ -14,11 +15,13 @@ RayTracer::Factory::OBJFactory::OBJFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
+            const Math::Vector3D &shear,
             const std::string &filepath):
     _filepath(filepath),
     _position(position),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear)
 {
 }
 
@@ -26,7 +29,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("OBJ"))
+    if (plugins.find("OBJ") == plugins.end())
         throw std::runtime_error("OBJ plugin not found");
     auto obj = plugins["OBJ"]->initEntryPointPtr<primitive::OBJ>(
         "create",
@@ -35,5 +38,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

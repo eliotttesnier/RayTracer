@@ -20,6 +20,7 @@ class APrimitive : public IPrimitive {
         Math::Point3D _position;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
+        Math::Vector3D _shear;
         Math::Vector3D _anchorPoint;
         std::shared_ptr<RayTracer::Materials::IMaterial> _material;
 
@@ -31,6 +32,7 @@ class APrimitive : public IPrimitive {
         const std::string getType() const override;
         const Math::Point3D getPosition() const override;
         const Math::Vector3D getRotation() const override;
+        const Math::Vector3D getShear() const override;
 
         // Setters
         void setName(const std::string &name) override;
@@ -38,6 +40,7 @@ class APrimitive : public IPrimitive {
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
         void setScale(const Math::Vector3D &scale) override;
+        void setShear(const Math::Vector3D &shear) override;
         void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) override;
 
         // Methods

@@ -29,6 +29,7 @@ class IPrimitive {
         virtual const std::string getType() const = 0;
         virtual const Math::Point3D getPosition() const = 0;
         virtual const Math::Vector3D getRotation() const = 0;
+        virtual const Math::Vector3D getShear() const = 0;
 
         // Setters
         virtual void setName(const std::string &name) = 0;
@@ -36,6 +37,7 @@ class IPrimitive {
         virtual void setPosition(const Math::Point3D &position) = 0;
         virtual void setRotation(const Math::Vector3D &rotation) = 0;
         virtual void setScale(const Math::Vector3D &scale) = 0;
+        virtual void setShear(const Math::Vector3D &shear) = 0;
         virtual void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) = 0;
 
         // Methods

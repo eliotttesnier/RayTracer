@@ -26,15 +26,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Spheres
     for (const auto& sphere : config.getSpheres()) {
-        auto [posRad, rotation, sc, color] = sphere;
+        auto [posRad, rotation, sc, sh, color] = sphere;
         auto [x, y, z, radius] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::SphereFactory factory(pos, rota, scale, radius);
+        RayTracer::Factory::SphereFactory factory(pos, rota, scale, shear, radius);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -45,15 +47,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Planes
     for (const auto& plane : config.getPlanes()) {
-        auto [axis, position, rotation, sc, size, color] = plane;
+        auto [axis, position, rotation, sc, sh, size, color] = plane;
         Math::Point3D pos;
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         pos = position;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, size);
+        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, shear, size);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -64,15 +68,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Cylinders
     for (const auto& cylinder : config.getCylinders()) {
-        auto [posRad, rotation, sc, color] = cylinder;
+        auto [posRad, rotation, sc, sh, color] = cylinder;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::CylinderFactory factory(pos, rota, scale, radius, height);
+        RayTracer::Factory::CylinderFactory factory(pos, rota, scale, shear, radius, height);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -83,15 +89,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Cone
     for (const auto &cone : config.getCones()) {
-        auto [posRad, rotation, sc, color] = cone;
+        auto [posRad, rotation, sc, sh, color] = cone;
         auto [x, y, z, radius, height] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::ConeFactory factory(pos, rota, scale, radius, height);
+        RayTracer::Factory::ConeFactory factory(pos, rota, scale, shear, radius, height);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -102,15 +110,18 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Torus
     for (const auto &torus : config.getToruses()) {
-        auto [posRad, rotation, sc, color] = torus;
+        auto [posRad, rotation, sc, sh, color] = torus;
         auto [x, y, z, majorRadius, minorRadius] = posRad;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::TorusFactory factory(pos, rota, scale, majorRadius, minorRadius);
+        RayTracer::Factory::TorusFactory factory(pos, rota, scale, shear,
+                majorRadius, minorRadius);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -121,15 +132,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Tanglecube
     for (const auto &tanglecube : config.getTanglecubes()) {
-        auto [posSize, rotation, sc, color] = tanglecube;
+        auto [posSize, rotation, sc, sh, color] = tanglecube;
         auto [x, y, z, size] = posSize;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::TanglecubeFactory factory(pos, rota, scale, size);
+        RayTracer::Factory::TanglecubeFactory factory(pos, rota, scale, shear, size);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
@@ -140,20 +153,23 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Triangles
     for (const auto &triangle : config.getTriangles()) {
-        auto [points, rotation, sc, color] = triangle;
+        auto [points, rotation, sc, sh, color] = triangle;
         auto [p1, p2, p3] = points;
         Math::Point3D point1;
         Math::Point3D point2;
         Math::Point3D point3;
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         point1 = p1;
         point2 = p2;
         point3 = p3;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3, rota, scale);
+        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3,
+                rota, scale, shear);
 #ifdef _DEBUG
         std::cout << "Creating a triangle" << std::endl;
 #endif
@@ -162,16 +178,17 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // OBJ files
     for (const auto &obj : config.getOBJs()) {
-        auto [posPath, rotation, sc, color] = obj;
+        auto [posPath, rotation, sc, sh, color] = obj;
         auto [x, y, z, filepath] = posPath;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota;
         Math::Vector3D scale;
+        Math::Vector3D shear;
         rota = rotation;
         scale = sc;
+        shear = sh;
 
-
-        RayTracer::Factory::OBJFactory factory(pos, rota, scale, filepath);
+        RayTracer::Factory::OBJFactory factory(pos, rota, scale, shear, filepath);
 #ifdef _DEBUG
         std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
 #endif
