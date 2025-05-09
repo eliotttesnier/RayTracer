@@ -17,6 +17,17 @@
 
 namespace RayTracer::primitive {
 
+struct AABB {
+    Math::Point3D min;
+    Math::Point3D max;
+
+    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
+             max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
+
+    bool intersect(const Math::Ray &ray) const;
+    void expand(const Math::Point3D &point);
+};
+
 class OBJ : public APrimitive {
     public:
         OBJ();
@@ -33,6 +44,8 @@ class OBJ : public APrimitive {
         std::vector<Math::Point3D> _vertices;
         std::vector<std::tuple<size_t, size_t, size_t>> _faces;
         std::vector<std::shared_ptr<IPrimitive>> _triangles;
+        AABB _boundingBox;
+        std::vector<AABB> _triangleBounds;
 
         bool parseOBJFile();
         void triangulatePolygon(const std::vector<size_t>& polygonIndices);

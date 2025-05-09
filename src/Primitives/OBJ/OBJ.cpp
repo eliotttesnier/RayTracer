@@ -21,6 +21,37 @@
 
 namespace RayTracer::primitive {
 
+bool AABB::intersect(const Math::Ray &ray) const
+{
+    double tx1 = (min._x - ray.origin._x) / ray.direction._x;
+    double tx2 = (max._x - ray.origin._x) / ray.direction._x;
+    double tmin = std::min(tx1, tx2);
+    double tmax = std::max(tx1, tx2);
+
+    double ty1 = (min._y - ray.origin._y) / ray.direction._y;
+    double ty2 = (max._y - ray.origin._y) / ray.direction._y;
+    tmin = std::max(tmin, std::min(ty1, ty2));
+    tmax = std::min(tmax, std::max(ty1, ty2));
+
+    double tz1 = (min._z - ray.origin._z) / ray.direction._z;
+    double tz2 = (max._z - ray.origin._z) / ray.direction._z;
+    tmin = std::max(tmin, std::min(tz1, tz2));
+    tmax = std::min(tmax, std::max(tz1, tz2));
+
+    return tmax >= tmin && tmax > 0;
+}
+
+void AABB::expand(const Math::Point3D &point)
+{
+    min._x = std::min(min._x, point._x);
+    min._y = std::min(min._y, point._y);
+    min._z = std::min(min._z, point._z);
+
+    max._x = std::max(max._x, point._x);
+    max._y = std::max(max._y, point._y);
+    max._z = std::max(max._z, point._z);
+}
+
 OBJ::OBJ()
 {
     _name = "obj";
@@ -60,23 +91,10 @@ void OBJ::loadFromFile()
     }
 
     if (!_vertices.empty()) {
-        Math::Point3D min(_vertices[0]);
-        Math::Point3D max(_vertices[0]);
-
-        for (const auto &vertex : _vertices) {
-            min._x = std::min(min._x, vertex._x);
-            min._y = std::min(min._y, vertex._y);
-            min._z = std::min(min._z, vertex._z);
-
-            max._x = std::max(max._x, vertex._x);
-            max._y = std::max(max._y, vertex._y);
-            max._z = std::max(max._z, vertex._z);
-        }
-
         _anchorPoint = Math::Vector3D(
-            (max._x + min._x) / 2.0,
-            (max._y + min._y) / 2.0,
-            (max._z + min._z) / 2.0
+            (_boundingBox.min._x + _boundingBox.max._x) / 2.0,
+            (_boundingBox.min._y + _boundingBox.max._y) / 2.0,
+            (_boundingBox.min._z + _boundingBox.max._z) / 2.0
         );
     }
 
@@ -104,6 +122,12 @@ void OBJ::loadFromFile()
             auto triangle = std::make_shared<RayTracer::primitive::Triangles>(v1, v2, v3);
             triangle->setRotation(_rotation);
             _triangles.push_back(triangle);
+
+            AABB triangleBound;
+            triangleBound.expand(v1);
+            triangleBound.expand(v2);
+            triangleBound.expand(v3);
+            _triangleBounds.push_back(triangleBound);
         } catch (const std::exception &e) {
             std::cerr << "OBJ: Failed to create triangle: " << e.what() << std::endl;
         }
@@ -123,6 +147,7 @@ bool OBJ::parseOBJFile()
         return false;
     }
 
+    _boundingBox = AABB();
     std::string line;
     while (std::getline(file, line)) {
         std::istringstream iss(line);
@@ -131,15 +156,26 @@ bool OBJ::parseOBJFile()
 
         if (type == "v") {
             double x, y, z;
-            if (iss >> x >> y >> z)
-                _vertices.emplace_back(x, y, z);
+            if (iss >> x >> y >> z) {
+                Math::Point3D vertex(x, y, z);
+                _vertices.emplace_back(vertex);
+                _boundingBox.expand(vertex);
+            }
         } else if (type == "f") {
             std::vector<size_t> faceIndices;
             std::string vertex;
 
             while (iss >> vertex) {
-                size_t vertexIdx = std::stoul(vertex.substr(0, vertex.find('/'))) - 1;
-                faceIndices.push_back(vertexIdx);
+                std::istringstream vStream(vertex);
+                std::string vPart;
+                std::getline(vStream, vPart, '/');
+
+                try {
+                    size_t vertexIdx = std::stoul(vPart) - 1;
+                    faceIndices.push_back(vertexIdx);
+                } catch (const std::exception& e) {
+                    std::cerr << "OBJ: Invalid vertex index: " << vPart << std::endl;
+                }
             }
             triangulatePolygon(faceIndices);
         }
@@ -150,18 +186,20 @@ bool OBJ::parseOBJFile()
 
 void OBJ::triangulatePolygon(const std::vector<size_t>& polygonIndices)
 {
+    if (polygonIndices.size() < 3)
+        return;
+
     if (polygonIndices.size() == 3) {
         _faces.emplace_back(polygonIndices[0], polygonIndices[1], polygonIndices[2]);
         return;
     }
-    if (polygonIndices.size() > 3) {
-        for (size_t i = 1; i < polygonIndices.size() - 1; ++i) {
-            _faces.emplace_back(
-                polygonIndices[0],
-                polygonIndices[i],
-                polygonIndices[i + 1]
-            );
-        }
+
+    for (size_t i = 1; i < polygonIndices.size() - 1; ++i) {
+        _faces.emplace_back(
+            polygonIndices[0],
+            polygonIndices[i],
+            polygonIndices[i + 1]
+        );
     }
 }
 
@@ -173,9 +211,14 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     closestHit.hit = false;
     closestHit.distance = std::numeric_limits<double>::infinity();
 
-    for (const auto &triangle : _triangles) {
-        Math::hitdata_t hitData = triangle->intersect(transformedRay);
+    if (!_boundingBox.intersect(transformedRay))
+        return closestHit;
 
+    for (size_t i = 0; i < _triangles.size(); i++) {
+        if (!_triangleBounds[i].intersect(transformedRay))
+            continue;
+
+        Math::hitdata_t hitData = _triangles[i]->intersect(transformedRay);
         if (hitData.hit && hitData.distance < closestHit.distance)
             closestHit = hitData;
     }
