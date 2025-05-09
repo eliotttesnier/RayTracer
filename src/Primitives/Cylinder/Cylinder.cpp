@@ -166,4 +166,11 @@ Math::hitdata_t Cylinder::intersect(const Math::Ray &ray)
     return calculateCylinderIntersection(localRay);
 }
 
+Graphic::color_t Cone::getColor(
+    RayTracer::Materials::infos_t infos
+)
+{
+    return _material->calculateColor(*this, infos);
+}
+
 }
