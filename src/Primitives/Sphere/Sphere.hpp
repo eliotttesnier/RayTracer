@@ -21,6 +21,10 @@ class Sphere : public APrimitive {
         double getRadius() const;
         void setRadius(double radius);
 
+        Graphic::color_t getColor(
+            RayTracer::Materials::infos_t infos
+        ) override;
+
     private:
         double _radius;
 };
