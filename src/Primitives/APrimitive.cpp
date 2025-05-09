@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
 
 const std::string APrimitive::getName() const
 {
