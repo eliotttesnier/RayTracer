@@ -25,6 +25,7 @@
 #include "TanglecubeFactory.hpp"
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
+#include "../MaterialFactory/MaterialFactory.hpp"
 
 namespace RayTracer::Factory {
 

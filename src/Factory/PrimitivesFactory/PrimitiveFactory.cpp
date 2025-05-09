@@ -53,7 +53,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::SphereFactory factory(pos, rota, scale, shear, radius);
+        RayTracer::Factory::SphereFactory factory(pos, rota, scale, shear, radius, materials);
         #ifdef _DEBUG
             std::cout << "Creating a sphere... " << std::endl;
         #endif
@@ -74,7 +74,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, shear, size);
+        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, shear, size, materials);
         #ifdef _DEBUG
             std::cout << "Creating a plane" << std::endl;
         #endif
@@ -96,7 +96,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::CylinderFactory factory(pos, rota, scale, shear, radius, height);
+        RayTracer::Factory::CylinderFactory factory(pos, rota, scale, shear, radius, height, materials);
         #ifdef _DEBUG
             std::cout << "Creating a cylinder" << std::endl;
         #endif
@@ -118,7 +118,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::ConeFactory factory(pos, rota, scale, shear, radius, height);
+        RayTracer::Factory::ConeFactory factory(pos, rota, scale, shear, radius, height, materials);
         #ifdef _DEBUG
             std::cout << "Creating a cone" << std::endl;
         #endif
@@ -140,7 +140,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::TorusFactory factory(pos, rota, scale, shear, majorRadius, minorRadius);
+        RayTracer::Factory::TorusFactory factory(pos, rota, scale, shear, majorRadius, minorRadius, materials);
         #ifdef _DEBUG
             std::cout << "Creating a torus" << std::endl;
         #endif
@@ -162,7 +162,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::TanglecubeFactory factory(pos, rota, scale, shear, size);
+        RayTracer::Factory::TanglecubeFactory factory(pos, rota, scale, shear, size, materials);
         #ifdef _DEBUG
             std::cout << "Creating a tanglecube" << std::endl;
         #endif
@@ -186,7 +186,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3, rota, scale, shear);
+        RayTracer::Factory::TrianglesFactory factory(point1, point2, point3, rota, scale, shear, materials);
         #ifdef _DEBUG
             std::cout << "Creating a triangle" << std::endl;
         #endif
@@ -208,7 +208,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
-        RayTracer::Factory::OBJFactory factory(pos, rota, scale, shear, filepath);
+        RayTracer::Factory::OBJFactory factory(pos, rota, scale, shear, filepath, materials);
         #ifdef _DEBUG
             std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
         #endif
