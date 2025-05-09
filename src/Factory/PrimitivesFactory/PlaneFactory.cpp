@@ -16,9 +16,7 @@ RayTracer::Factory::PlaneFactory::PlaneFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
-            const Math::Vector3D &shear,
-            const std::tuple<double, double> &size):
-    _size(size),
+            const Math::Vector3D &shear):
     _position(position),
     _rotation(rotation),
     _scale(scale),
@@ -35,8 +33,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
     auto obj = plugins["Plane"]->initEntryPointPtr<primitive::Plane>(
         "create",
         this->_position,
-        this->_rotation,
-        this->_size
+        this->_rotation
     );
     obj->setScale(this->_scale);
     obj->setShear(this->_shear);
