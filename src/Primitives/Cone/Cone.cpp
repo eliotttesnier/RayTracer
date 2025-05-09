@@ -187,10 +187,19 @@ Math::hitdata_t Cone::intersect(const Math::Ray &ray)
 }
 
 Graphic::color_t Cone::getColor(
-    RayTracer::Materials::infos_t infos
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _material->calculateColor(*this, infos);
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace RayTracer::primitive
