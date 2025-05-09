@@ -10,19 +10,23 @@
 #include <tuple>
 #include <stdexcept>
 
+#include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Plane/Plane.hpp"
 
 RayTracer::Factory::PlaneFactory::PlaneFactory(
-            const Math::Point3D &position,
-            const Math::Vector3D &rotation,
-            const Math::Vector3D &scale,
-            const Math::Vector3D &shear,
-            const std::tuple<double, double> &size):
+    const Math::Point3D &position,
+    const Math::Vector3D &rotation,
+    const Math::Vector3D &scale,
+    const Math::Vector3D &shear,
+    const std::tuple<double, double> &size,
+    const std::vector<std::string> &materials
+):
     _size(size),
     _position(position),
     _rotation(rotation),
     _scale(scale),
-    _shear(shear)
+    _shear(shear),
+    _materials(materials)
 {
 }
 
@@ -40,5 +44,11 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
     );
     obj->setScale(this->_scale);
     obj->setShear(this->_shear);
+    std::shared_ptr<RayTracer::Materials::IMaterial> material =
+        RayTracer::Factory::MaterialFactory::createMaterial(
+        this->_materials,
+        plugins
+    );
+    obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
