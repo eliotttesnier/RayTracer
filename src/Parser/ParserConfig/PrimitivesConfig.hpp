@@ -21,7 +21,7 @@ typedef std::tuple<int, int, int> color_t;
 typedef std::tuple<quaduple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Position + radius, rotation, scale, shear, Color
 typedef std::tuple<quintuple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Position + radius + height, rotation, scale, shear, Color
 typedef std::tuple<quintuple_t, truple_t, truple_t, truple_t, color_t> cone_t; // Position + radius + height, rotation, scale, shear, Color
-typedef std::tuple<char, truple_t, truple_t, truple_t, truple_t, std::tuple<double, double>, color_t> plane_t; // axis, position, rotation, scale, shear, size, Color
+typedef std::tuple<char, truple_t, truple_t, truple_t, truple_t, color_t> plane_t; // axis, position, rotation, scale, shear, size, Color
 typedef std::tuple<quintuple_t, truple_t, truple_t, truple_t, color_t> torus_t; // Position + major radius + minor radius, rotation, scale, shear, Color
 typedef std::tuple<quaduple_t, truple_t, truple_t, truple_t, color_t> tanglecube_t; // Position + size, rotation, scale, shear, Color
 typedef std::tuple<std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, truple_t, color_t> triangle_t; // Three points (p1, p2, p3), rotation, scale, shear, Color

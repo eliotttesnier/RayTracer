@@ -47,7 +47,7 @@ std::vector<std::shared_ptr<IPrimitive>>
 
     // Planes
     for (const auto& plane : config.getPlanes()) {
-        auto [axis, position, rotation, sc, sh, size, color] = plane;
+        auto [axis, position, rotation, sc, sh, color] = plane;
         Math::Point3D pos;
         Math::Vector3D rota;
         Math::Vector3D scale;
@@ -57,7 +57,7 @@ std::vector<std::shared_ptr<IPrimitive>>
         scale = sc;
         shear = sh;
 
-        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, shear, size);
+        RayTracer::Factory::PlaneFactory factory(pos, rota, scale, shear);
         // TODO(roussierenoa):
         // faire passer dans l'élément dans un design pattern pour ajouter un matériaux
 #ifdef _DEBUG
