@@ -30,6 +30,11 @@ const Math::Vector3D APrimitive::getRotation() const
     return _rotation;
 }
 
+const Math::Vector3D APrimitive::getShear() const
+{
+    return _shear;
+}
+
 void APrimitive::setName(const std::string &name)
 {
     _name = name;
@@ -52,6 +57,11 @@ void APrimitive::setRotation(const Math::Vector3D &rotation)
 
 void APrimitive::setScale(const Math::Vector3D &scale) {
     _scale = scale;
+}
+
+void APrimitive::setShear(const Math::Vector3D &shear)
+{
+    _shear = shear;
 }
 
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
@@ -127,6 +137,9 @@ Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
         ray.origin._z - _position._z
     );
 
+    localOrigin._x -= _shear._x * localOrigin._y + _shear._y * localOrigin._z;
+    localOrigin._y -= _shear._z * localOrigin._z;
+
     rotatePointToLocal(localOrigin, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != 0) localOrigin._x /= _scale._x;
@@ -134,6 +147,10 @@ Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
     if (_scale._z != 0) localOrigin._z /= _scale._z;
 
     Math::Vector3D localDirection = ray.direction;
+
+    localDirection._x -= _shear._x * localDirection._y + _shear._y * localDirection._z;
+    localDirection._y -= _shear._z * localDirection._z;
+
     rotateVectorToLocal(localDirection, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != _scale._y || _scale._y != _scale._z || _scale._x != _scale._z) {
@@ -164,6 +181,9 @@ Math::Point3D APrimitive::transformPointToLocal(const Math::Point3D &point) cons
         point._z - _position._z
     );
 
+    localPoint._x -= _shear._x * localPoint._y + _shear._y * localPoint._z;
+    localPoint._y -= _shear._z * localPoint._z;
+
     rotatePointToLocal(localPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != 0) localPoint._x /= _scale._x;
@@ -192,6 +212,9 @@ Math::Point3D APrimitive::transformPointToWorld(const Math::Point3D &localPoint)
 
     rotatePointToWorld(worldPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
+    worldPoint._x += _shear._x * worldPoint._y + _shear._y * worldPoint._z;
+    worldPoint._y += _shear._z * worldPoint._z;
+
     worldPoint._x += _position._x;
     worldPoint._y += _position._y - _anchorPoint._y;
     worldPoint._z += _position._z;
@@ -215,6 +238,11 @@ Math::Vector3D APrimitive::transformNormalToWorld(const Math::Vector3D &localNor
     scaledNormal._x *= (_scale._x != 0) ? (1.0 / _scale._x) : 1.0;
     scaledNormal._y *= (_scale._y != 0) ? (1.0 / _scale._y) : 1.0;
     scaledNormal._z *= (_scale._z != 0) ? (1.0 / _scale._z) : 1.0;
+
+    if (_shear._x != 0 || _shear._y != 0 || _shear._z != 0) {
+        scaledNormal._y -= _shear._x * scaledNormal._x;
+        scaledNormal._z -= _shear._y * scaledNormal._x + _shear._z * scaledNormal._y;
+    }
 
     Math::Vector3D worldNormal = scaledNormal;
     rotateVectorToWorld(worldNormal, cosX, sinX, cosY, sinY, cosZ, sinZ);
