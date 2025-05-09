@@ -25,7 +25,10 @@ class Plane : public APrimitive {
         void setHeight(double height);
 
         Graphic::color_t getColor(
-            RayTracer::Materials::infos_t infos
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
     private:
