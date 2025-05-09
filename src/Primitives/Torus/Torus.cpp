@@ -127,4 +127,11 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
     return hitData;
 }
 
+Graphic::color_t Cone::getColor(
+    RayTracer::Materials::infos_t infos
+)
+{
+    return _material->calculateColor(*this, infos);
+}
+
 }  // namespace Raytracer::primitive
