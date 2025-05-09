@@ -26,6 +26,10 @@ class Tanglecube : public APrimitive {
         Math::Vector3D normalAt(const Math::Point3D& point) const;
         double SDF(const Math::Point3D& point) const;
 
+        Graphic::color_t getColor(
+            RayTracer::Materials::infos_t infos
+        ) override;
+
     private:
         //attributes
         double _size;
