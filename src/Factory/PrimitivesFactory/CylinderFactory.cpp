@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Cylinder/Cylinder.hpp"
 
@@ -32,7 +33,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Cylinder"))
+    if (plugins.find("Cylinder") == plugins.end())
         throw std::runtime_error("Cylinder plugin not found");
     auto obj = plugins["Cylinder"]->initEntryPointPtr<primitive::Cylinder>(
         "create",

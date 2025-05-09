@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <stdexcept>
 
 #include "Primitives/Plane/Plane.hpp"
 
@@ -29,7 +30,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Plane"))
+    if (plugins.find("Plane") == plugins.end())
         throw std::runtime_error("Plane plugin not found");
     auto obj = plugins["Plane"]->initEntryPointPtr<primitive::Plane>(
         "create",

@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Tanglecube/Tanglecube.hpp"
 
@@ -28,7 +29,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TanglecubeFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Tanglecube"))
+    if (plugins.find("Tanglecube") == plugins.end())
         throw std::runtime_error("Tanglecube plugin not found");
     auto obj = plugins["Tanglecube"]->initEntryPointPtr<primitive::Tanglecube>(
         "create",

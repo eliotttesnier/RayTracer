@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/OBJ/OBJ.hpp"
 
@@ -28,7 +29,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("OBJ"))
+    if (plugins.find("OBJ") == plugins.end())
         throw std::runtime_error("OBJ plugin not found");
     auto obj = plugins["OBJ"]->initEntryPointPtr<primitive::OBJ>(
         "create",

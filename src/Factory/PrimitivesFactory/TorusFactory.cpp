@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Torus/Torus.hpp"
 
@@ -30,7 +31,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TorusFactory::create(
     std::map<std::string,
     std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Torus"))
+    if (plugins.find("Torus") == plugins.end())
         throw std::runtime_error("Torus plugin not found");
     auto obj = plugins["Torus"]->initEntryPointPtr<primitive::Torus>(
         "create",

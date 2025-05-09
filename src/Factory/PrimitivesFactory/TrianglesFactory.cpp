@@ -10,6 +10,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Triangles/Triangles.hpp"
 
@@ -33,7 +34,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Triangles"))
+    if (plugins.find("Triangles") == plugins.end())
         throw std::runtime_error("Triangles plugin not found");
     auto obj = plugins["Triangles"]->initEntryPointPtr<primitive::Triangles>(
         "create",

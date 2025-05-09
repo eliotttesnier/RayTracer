@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 #include "ConeFactory.hpp"
 #include "Primitives/Cone/Cone.hpp"
 
@@ -26,7 +27,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Cone"))
+    if (plugins.find("Cone") == plugins.end())
         throw std::runtime_error("Cone plugin not found");
     auto obj = plugins["Cone"]->initEntryPointPtr<primitive::Cone>("create",
                                                                    this->_position,

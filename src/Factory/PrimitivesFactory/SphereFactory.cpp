@@ -7,6 +7,7 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
 
 #include "Primitives/Sphere/Sphere.hpp"
 
@@ -28,7 +29,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::SphereFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("Sphere"))
+    if (plugins.find("Sphere") == plugins.end())
         throw std::runtime_error("Sphere plugin not found");
     auto obj = plugins["Sphere"]->initEntryPointPtr<primitive::Sphere>(
         "create",
