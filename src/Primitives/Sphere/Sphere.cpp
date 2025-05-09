@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <string>
+#include <vector>
 #include "Sphere.hpp"
 
 namespace RayTracer::primitive {
@@ -104,6 +105,22 @@ Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
 
     hitData.color = {0.0, 0.0, 255.0, 1.0};  // Blue
     return hitData;
+}
+
+Graphic::color_t Sphere::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }

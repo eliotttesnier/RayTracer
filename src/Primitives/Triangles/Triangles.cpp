@@ -6,6 +6,7 @@
 */
 
 #include <cmath>
+#include <vector>
 #include "Triangles.hpp"
 
 namespace RayTracer::primitive {
@@ -126,6 +127,22 @@ Math::hitdata_t Triangles::intersect(const Math::Ray &ray)
     Math::Ray localRay = transformRayToLocal(ray);
 
     return calculateTriangleIntersection(localRay);
+}
+
+Graphic::color_t Triangles::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace Raytracer::primitive

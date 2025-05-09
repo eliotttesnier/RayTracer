@@ -20,6 +20,7 @@ namespace Math {
 
             Point3D();
             Point3D(double x, double y, double z);
+            Point3D(const std::tuple<double, double, double> &tuple);
             ~Point3D() = default;
 
             Point3D operator+(const Point3D &other) const;

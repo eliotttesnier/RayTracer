@@ -179,10 +179,12 @@ void Renderer::renderSegment(int startY, int endY)
             }
 
             if (hit) {
-                pixelColor = closestPrimitive->getColor(closestHitData,
-                                                        ray,
-                                                        _lights,
-                                                        _primitives);
+                pixelColor = closestPrimitive->getColor(
+                    closestHitData,
+                    ray,
+                    _lights,
+                    _primitives
+                );
             }
 
             localBuffer[y - startY][x] = pixelColor;

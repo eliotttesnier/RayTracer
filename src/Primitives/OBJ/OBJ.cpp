@@ -196,6 +196,22 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     return closestHit;
 }
 
+Graphic::color_t OBJ::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+}
+
 Math::Point3D OBJ::transformVertex(const Math::Point3D& vertex)
 {
     Math::Point3D result = vertex;

@@ -28,6 +28,13 @@ class OBJ : public APrimitive {
         const std::string &getFilePath() const;
         void loadFromFile();
 
+        Graphic::color_t getColor(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+
     private:
         std::string _filepath;
         std::vector<Math::Point3D> _vertices;

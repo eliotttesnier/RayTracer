@@ -13,7 +13,6 @@ target_include_directories(DirectionalLight PRIVATE
         ./
 )
 
-
 target_include_directories(Plane PRIVATE
         ./
 )
@@ -37,6 +36,10 @@ target_include_directories(Triangles PRIVATE
         ./
 )
 target_include_directories(Tanglecube PRIVATE
+        ./
+)
+
+target_include_directories(DefaultMaterial PRIVATE
         ./
 )
 

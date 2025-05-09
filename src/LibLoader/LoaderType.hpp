@@ -10,6 +10,7 @@ namespace RayTracer::Loader
     enum ModuleType {
         LIGHT_MODULE,
         PRIMITIVE_MODULE,
+        MATERIAL_MODULE,
         TYPE_COUNT,
     };
 }

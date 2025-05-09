@@ -1,6 +1,7 @@
 add_subdirectory(Math)
 add_subdirectory(Graphic)
 add_subdirectory(Lights)
+add_subdirectory(Materials)
 add_subdirectory(Primitives)
 add_subdirectory(Parser)
 add_subdirectory(GraphicRenderer)

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <limits>
 
+#include "../Materials/IMaterial.hpp"
 #include "IPrimitive.hpp"
 
 namespace RayTracer::primitive {
@@ -35,6 +36,7 @@ class APrimitive : public IPrimitive {
         Math::Vector3D _scale;
         Math::Vector3D _shear;
         Math::Vector3D _anchorPoint;
+        std::shared_ptr<RayTracer::Materials::IMaterial> _material;
         AABB _boundingBox;
 
     public:
@@ -54,6 +56,7 @@ class APrimitive : public IPrimitive {
         void setRotation(const Math::Vector3D &rotation) override;
         void setScale(const Math::Vector3D &scale) override;
         void setShear(const Math::Vector3D &shear) override;
+        void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
