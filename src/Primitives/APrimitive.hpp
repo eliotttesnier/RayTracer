@@ -9,8 +9,22 @@
 #define APRIMITIVE_HPP_
 
 #include <cmath>
+#include <limits>
 
 #include "IPrimitive.hpp"
+
+namespace RayTracer::primitive {
+
+struct AABB {
+    Math::Point3D min;
+    Math::Point3D max;
+
+    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
+             max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
+
+    bool intersect(const Math::Ray &ray) const;
+    void expand(const Math::Point3D &point);
+};
 
 class APrimitive : public IPrimitive {
     protected:
@@ -21,6 +35,7 @@ class APrimitive : public IPrimitive {
         Math::Vector3D _scale;
         Math::Vector3D _shear;
         Math::Vector3D _anchorPoint;
+        AABB _boundingBox;
 
     public:
         virtual ~APrimitive() = default;
@@ -63,5 +78,7 @@ class APrimitive : public IPrimitive {
         void rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
                                 double cosY, double sinY, double cosZ, double sinZ) const;
 };
+
+} // namespace RayTracer::primitive
 
 #endif /* !APRIMITIVE_HPP_ */

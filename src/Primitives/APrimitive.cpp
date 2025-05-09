@@ -10,6 +10,8 @@
 #include <vector>
 #include <algorithm>
 
+namespace RayTracer::primitive {
+
 const std::string APrimitive::getName() const
 {
     return _name;
@@ -313,4 +315,36 @@ void APrimitive::rotateVectorToWorld(Math::Vector3D &vector, double cosX, double
     origX = vector._x;
     vector._x = cosZ * origX - sinZ * vector._y;
     vector._y = sinZ * origX + cosZ * vector._y;
+}
+
+bool AABB::intersect(const Math::Ray &ray) const
+{
+    double tx1 = (min._x - ray.origin._x) / ray.direction._x;
+    double tx2 = (max._x - ray.origin._x) / ray.direction._x;
+    double tmin = std::min(tx1, tx2);
+    double tmax = std::max(tx1, tx2);
+
+    double ty1 = (min._y - ray.origin._y) / ray.direction._y;
+    double ty2 = (max._y - ray.origin._y) / ray.direction._y;
+    tmin = std::max(tmin, std::min(ty1, ty2));
+    tmax = std::min(tmax, std::max(ty1, ty2));
+
+    double tz1 = (min._z - ray.origin._z) / ray.direction._z;
+    double tz2 = (max._z - ray.origin._z) / ray.direction._z;
+    tmin = std::max(tmin, std::min(tz1, tz2));
+    tmax = std::min(tmax, std::max(tz1, tz2));
+
+    return tmax >= tmin && tmax > 0;
+}
+
+void AABB::expand(const Math::Point3D &point)
+{
+    min._x = std::min(min._x, point._x);
+    min._y = std::min(min._y, point._y);
+    min._z = std::min(min._z, point._z);
+
+    max._x = std::max(max._x, point._x);
+    max._y = std::max(max._y, point._y);
+    max._z = std::max(max._z, point._z);
+}
 }
