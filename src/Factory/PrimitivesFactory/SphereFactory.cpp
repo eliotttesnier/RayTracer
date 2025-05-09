@@ -14,11 +14,13 @@ RayTracer::Factory::SphereFactory::SphereFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
+            const Math::Vector3D &shear,
             double radius):
     _radius(radius),
     _position(position),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear)
 {
 }
 
@@ -35,5 +37,6 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::SphereFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
