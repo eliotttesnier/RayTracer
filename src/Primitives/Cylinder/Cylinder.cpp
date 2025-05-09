@@ -9,6 +9,7 @@
 #include <string>
 #include <limits>
 #include <algorithm>
+#include <vector>
 #include "Cylinder.hpp"
 namespace RayTracer::primitive {
 

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <limits>
 #include <algorithm>
+#include <vector>
 
 #include "Cone.hpp"
 

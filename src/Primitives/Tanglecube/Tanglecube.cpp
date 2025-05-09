@@ -11,6 +11,7 @@
 #include <limits>
 #include <iostream>
 #include <utility>
+#include <vector>
 #include "Tanglecube.hpp"
 
 namespace RayTracer::primitive {

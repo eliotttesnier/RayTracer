@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <vector>
 
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Triangles/Triangles.hpp"

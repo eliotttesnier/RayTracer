@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 #include <limits>
+#include <vector>
 #include "Torus.hpp"
 
 namespace RayTracer::primitive {
@@ -162,7 +163,7 @@ Graphic::color_t Torus::getColor(
         hitData,
         ray,
         lights,
-        primitives        
+        primitives
     );
 }
 

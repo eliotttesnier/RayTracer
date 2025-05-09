@@ -6,6 +6,10 @@
 */
 
 #include "MaterialFactory.hpp"
+#include <vector>
+#include <map>
+#include <string>
+#include <memory>
 
 namespace RayTracer::Factory {
 

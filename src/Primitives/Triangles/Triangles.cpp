@@ -6,6 +6,7 @@
 */
 
 #include <cmath>
+#include <vector>
 #include "Triangles.hpp"
 
 namespace RayTracer::primitive {

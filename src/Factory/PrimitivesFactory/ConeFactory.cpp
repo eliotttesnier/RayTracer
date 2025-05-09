@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <stdexcept>
+#include <vector>
 #include "ConeFactory.hpp"
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Cone/Cone.hpp"

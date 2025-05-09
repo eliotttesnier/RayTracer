@@ -8,10 +8,7 @@
 #include <memory>
 #include <map>
 #include <iostream>
-#include <map>
-#include <memory>
 #include <string>
-#include <vector>
 #include "LibLoader/LibLoader.hpp"
 #include "Parser/ParserConfig/PrimitivesConfig.hpp"
 #include "IPrimitiveFactory.hpp"
@@ -38,14 +35,38 @@ class PrimitiveFactory {
         PrimitiveFactory() = default;
         ~PrimitiveFactory() = delete;
     private:
-        static std::vector<std::shared_ptr<IPrimitive>> _addSpheres(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addPlanes(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addCylinders(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addCones(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addToruses(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addTanglecubes(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addTriangles(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
-        static std::vector<std::shared_ptr<IPrimitive>> _addOBJs(const RayTracer::Parser::PrimitivesConfig& config, std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins);
+        static std::vector<std::shared_ptr<IPrimitive>> _addSpheres(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addPlanes(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addCylinders(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addCones(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addToruses(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addTanglecubes(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addTriangles(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addOBJs(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
 };
 } // raytracer
 

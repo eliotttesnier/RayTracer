@@ -9,6 +9,7 @@
 #include <string>
 #include <tuple>
 #include <stdexcept>
+#include <vector>
 
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Plane/Plane.hpp"
