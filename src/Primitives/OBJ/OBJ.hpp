@@ -28,6 +28,10 @@ class OBJ : public APrimitive {
         const std::string &getFilePath() const;
         void loadFromFile();
 
+        Graphic::color_t getColor(
+            RayTracer::Materials::infos_t infos
+        ) override;
+
     private:
         std::string _filepath;
         std::vector<Math::Point3D> _vertices;

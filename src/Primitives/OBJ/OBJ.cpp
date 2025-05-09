@@ -185,4 +185,11 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     return closestHit;
 }
 
+Graphic::color_t Cone::getColor(
+    RayTracer::Materials::infos_t infos
+)
+{
+    return _material->calculateColor(*this, infos);
+}
+
 }  // namespace RayTracer::primitive
