@@ -21,7 +21,7 @@ AMaterial::AMaterial(std::shared_ptr<IMaterial> wrappee)
 {
 }
 
-Graphic::color_t AMaterial::getColor(
+Graphic::color_t AMaterial::_getColor(
     Math::hitdata_t hitData,
     Math::Ray ray,
     std::vector<std::shared_ptr<ILight>> lights,
@@ -64,4 +64,108 @@ Graphic::color_t AMaterial::getColor(
     return finalColor;
 }
 
-}    
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Cone obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Cylinder obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Plane obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Sphere obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Torus obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Tanglecube obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::Triangles obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+Graphic::color_t AMaterial::calculateColor(
+    RayTracer::primitive::OBJ obj,
+    infos_t infos
+)
+{
+    return _getColor(
+        infos.hitData,
+        infos.ray,
+        infos.lights,
+        infos.primitives
+    );
+}
+
+}

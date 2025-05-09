@@ -20,13 +20,13 @@ extern "C" {
     __attribute__((constructor)) void construct()
     {
 #ifdef _DEBUG
-        std::cout << "Loaded dynamic lib: Lib Torus" << std::endl;
+        std::cout << "Loaded dynamic lib: Lib DefaultMaterial" << std::endl;
 #endif
     }
     __attribute__((destructor)) void deconstruct()
     {
 #ifdef _DEBUG
-        std::cout << "Unloaded dynamic lib: Lib Torus" << std::endl;
+        std::cout << "Unloaded dynamic lib: Lib DefaultMaterial" << std::endl;
 #endif
     }
 }

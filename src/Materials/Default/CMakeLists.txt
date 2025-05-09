@@ -1,8 +1,7 @@
 add_library(DefaultMaterial SHARED
-    DefaultMaterial.cpp
-    DefaultMaterial.hpp
-    EntryPoint.cpp
-    ../AMaterial.cpp
+        DefaultMaterial.cpp
+        EntryPoint.cpp
+        ../AMaterial.cpp
 )
 
 add_custom_command(TARGET DefaultMaterial POST_BUILD
