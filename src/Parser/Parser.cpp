@@ -611,7 +611,8 @@ void Parser::_importScene(const std::string &filepath, libconfig::Setting &targe
 {
     if (_importedScenes.find(filepath) != _importedScenes.end()) {
         #ifdef _DEBUG
-            std::cout << "Scene already imported: " << filepath << ". Skipping to avoid cycles." << std::endl;
+            std::cout << "Scene already imported: " << filepath
+                << ". Skipping to avoid cycles." << std::endl;
         #endif
         return;
     }
@@ -635,14 +636,16 @@ void Parser::_importScene(const std::string &filepath, libconfig::Setting &targe
             }
         }
     } catch (const libconfig::FileIOException &e) {
-        std::cerr << "[ERROR] I/O error while reading imported scene file: " << filepath << std::endl;
+        std::cerr << "[ERROR] I/O error while reading imported scene file: "
+            << filepath << std::endl;
     } catch (const libconfig::ParseException &e) {
-        std::cerr << "[ERROR] Parse error in imported scene at " << e.getFile() << ":" << e.getLine()
-                  << " - " << e.getError() << std::endl;
+        std::cerr << "[ERROR] Parse error in imported scene at " << e.getFile()
+            << ":" << e.getLine() << " - " << e.getError() << std::endl;
     }
 }
 
-void Parser::_importPrimitives(const libconfig::Setting &sourceRoot, libconfig::Setting &targetRoot)
+void Parser::_importPrimitives(const libconfig::Setting &sourceRoot,
+    libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("primitives"))
@@ -661,23 +664,28 @@ void Parser::_importPrimitives(const libconfig::Setting &sourceRoot, libconfig::
                 const auto &sourceItems = sourcePrimitives[type];
                 libconfig::Setting &targetItems = targetPrimitives[type];
                 #ifdef _DEBUG
-                    std::cout << "Importing " << sourceItems.getLength() << " " << type << std::endl;
+                    std::cout << "Importing " << sourceItems.getLength()
+                        << " " << type << std::endl;
                 #endif
                 for (int i = 0; i < sourceItems.getLength(); ++i) {
                     const auto &sourceItem = sourceItems[i];
-                    libconfig::Setting &newItem = targetItems.add(libconfig::Setting::TypeGroup);
+                    libconfig::Setting &newItem =
+                        targetItems.add(libconfig::Setting::TypeGroup);
                     _copySettings(sourceItem, newItem);
                 }
             }
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-        std::cerr << "[WARNING] Element not found during primitives import: " << e.getPath() << std::endl;
+        std::cerr << "[WARNING] Element not found during primitives import: "
+            << e.getPath() << std::endl;
     } catch (const libconfig::SettingTypeException &e) {
-        std::cerr << "[WARNING] Setting type error during primitives import: " << e.what() << std::endl;
+        std::cerr << "[WARNING] Setting type error during primitives import: "
+            << e.what() << std::endl;
     }
 }
 
-void Parser::_importLights(const libconfig::Setting &sourceRoot, libconfig::Setting &targetRoot)
+void Parser::_importLights(const libconfig::Setting &sourceRoot,
+    libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("lights"))
@@ -690,18 +698,22 @@ void Parser::_importLights(const libconfig::Setting &sourceRoot, libconfig::Sett
             const auto &sourceLightsItems = sourceLights["directional"];
             libconfig::Setting &targetLightsItems = targetLights["directional"];
             #ifdef _DEBUG
-                std::cout << "Importing " << sourceLightsItems.getLength() << " directional lights" << std::endl;
+                std::cout << "Importing " << sourceLightsItems.getLength() <<
+                    " directional lights" << std::endl;
             #endif
             for (int i = 0; i < sourceLightsItems.getLength(); ++i) {
                 const auto &sourceItem = sourceLightsItems[i];
-                libconfig::Setting &newItem = targetLightsItems.add(libconfig::Setting::TypeGroup);
+                libconfig::Setting &newItem =
+                    targetLightsItems.add(libconfig::Setting::TypeGroup);
                 _copySettings(sourceItem, newItem);
             }
         }
     } catch (const libconfig::SettingNotFoundException &e) {
-        std::cerr << "[WARNING] Element not found during lights import: " << e.getPath() << std::endl;
+        std::cerr << "[WARNING] Element not found during lights import: "
+            << e.getPath() << std::endl;
     } catch (const libconfig::SettingTypeException &e) {
-        std::cerr << "[WARNING] Setting type error during lights import: " << e.what() << std::endl;
+        std::cerr << "[WARNING] Setting type error during lights import: "
+            << e.what() << std::endl;
     }
 }
 
@@ -728,8 +740,7 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
                     group.add(subname, libconfig::Setting::TypeFloat) = value;
                 }
             }
-        }
-        else if (source[field].getType() == libconfig::Setting::TypeInt) {
+        } else if (source[field].getType() == libconfig::Setting::TypeInt) {
             int value = static_cast<int>(source[field]);
             target.add(name, libconfig::Setting::TypeInt) = value;
         } else if (source[field].getType() == libconfig::Setting::TypeFloat) {
