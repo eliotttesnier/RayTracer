@@ -209,4 +209,38 @@ Graphic::color_t DefaultMaterial::calculateColor(
     );
 }
 
+Graphic::color_t DefaultMaterial::calculateColor(
+    const RayTracer::primitive::InfiniteCone &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    (void) obj;
+    return _getColor(
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+}
+
+Graphic::color_t DefaultMaterial::calculateColor(
+    const RayTracer::primitive::InfiniteCylinder &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    (void) obj;
+    return _getColor(
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+}
+
 }
