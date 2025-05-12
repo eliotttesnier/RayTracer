@@ -21,17 +21,27 @@ FractaleCube::FractaleCube()
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _size = 1.0;
-    _maxSteps = 2;
+    _recursion = 3;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
+    double boundSize = _size * 2.5;
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
 }
 
-FractaleCube::FractaleCube(const Math::Point3D &position, double size)
+FractaleCube::FractaleCube(const Math::Point3D &position, double size, int recursion)
 {
     _name = "fractalecube";
     _type = "fractalecube";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _size = size;
-    _maxSteps = 3;
+    _recursion = recursion;
+    _anchorPoint = Math::Vector3D(0, 0, 0);
+    double boundSize = _size * 2.5;
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
 }
 
 double FractaleCube::getSize() const
@@ -42,36 +52,70 @@ double FractaleCube::getSize() const
 void FractaleCube::setSize(double size)
 {
     _size = size;
+    double boundSize = _size * 2.5;
+    _boundingBox.min = Math::Point3D(-boundSize, -boundSize, -boundSize);
+    _boundingBox.max = Math::Point3D(boundSize, boundSize, boundSize);
+}
+
+void FractaleCube::setRecursion(int recursion)
+{
+    _recursion = recursion;
+}
+
+int FractaleCube::getRecursion() const
+{
+    return _recursion;
+}
+
+void FractaleCube::updateBoundingBox()
+{
+    double halfSize = _size / 2.0;
+    _boundingBox.min = Math::Point3D(-halfSize, -halfSize, -halfSize);
+    _boundingBox.max = Math::Point3D(halfSize, halfSize, halfSize);
 }
 
 std::vector<Math::Point3D> FractaleCube::generateFractalPoints() const
 {
+    const size_t estimatedSize = static_cast<size_t>(std::pow(20, _recursion));
     std::vector<Math::Point3D> points;
-    points.reserve(pow(20, _maxSteps));
+    points.reserve(estimatedSize);
     points.push_back(_position);
 
-    for (int step = 0; step < _maxSteps; ++step) {
-        std::vector<Math::Point3D> newPoints;
-        double newSize = _size / pow(3.0, step + 1);
-
-        for (const auto& center : points) {
-            for (int x = -1; x <= 1; ++x) {
-                for (int y = -1; y <= 1; ++y) {
-                    for (int z = -1; z <= 1; ++z) {
-                        if ((abs(x) + abs(y) + abs(z)) <= 1)
-                            continue;
-
-                        newPoints.emplace_back(
-                            center._x + x * newSize,
-                            center._y + y * newSize,
-                            center._z + z * newSize
-                        );
+    static const std::vector<std::pair<int, std::tuple<int, int, int>>> offsets = []() {
+        std::vector<std::pair<int, std::tuple<int, int, int>>> offs;
+        offs.reserve(20);
+        for (int x = -1; x <= 1; ++x) {
+            for (int y = -1; y <= 1; ++y) {
+                for (int z = -1; z <= 1; ++z) {
+                    int sum = std::abs(x) + std::abs(y) + std::abs(z);
+                    if (sum > 1) {
+                        offs.emplace_back(sum, std::make_tuple(x, y, z));
                     }
                 }
             }
         }
-        points = newPoints;
+        return offs;
+    }();
+
+    for (int step = 0; step < _recursion; ++step) {
+        const double newSize = _size / std::pow(3.0, step + 1);
+        const size_t currentSize = points.size();
+        std::vector<Math::Point3D> newPoints;
+        newPoints.reserve(currentSize * 20);
+
+        for (const auto& center : points) {
+            for (const auto& [sum, offset] : offsets) {
+                const auto& [x, y, z] = offset;
+                newPoints.emplace_back(
+                    center._x + x * newSize,
+                    center._y + y * newSize,
+                    center._z + z * newSize
+                );
+            }
+        }
+        points = std::move(newPoints);
     }
+
     return points;
 }
 
@@ -119,9 +163,13 @@ bool FractaleCube::intersectCube(const Math::Ray &ray,
 
 Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
 {
+    Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {255, 255, 255, 1.0};  // Bright magenta color for better contrast
+    hitData.color = {255, 255, 255, 1.0};
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     Math::hitdata_t mainCubeHit;
     if (!intersectCube(ray, _position, _size, mainCubeHit)) {
@@ -129,7 +177,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
     }
 
     auto points = generateFractalPoints();
-    double subCubeSize = _size / pow(3, _maxSteps);
+    double subCubeSize = _size / pow(3, _recursion);
     double minDistance = std::numeric_limits<double>::max();
 
     for (const auto& center : points) {
