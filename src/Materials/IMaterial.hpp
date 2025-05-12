@@ -22,6 +22,8 @@ class IPrimitive;
 namespace RayTracer::primitive {
     class Cone;
     class Cylinder;
+    class InfiniteCone;
+    class InfiniteCylinder;
     class Plane;
     class Sphere;
     class Torus;
@@ -43,6 +45,20 @@ class IMaterial {
         ) = 0;
         virtual Graphic::color_t calculateColor(
             const RayTracer::primitive::Cylinder &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::InfiniteCone &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::InfiniteCylinder &obj,
             Math::hitdata_t hitData,
             Math::Ray ray,
             std::vector<std::shared_ptr<ILight>> lights,
@@ -95,5 +111,5 @@ class IMaterial {
 };
 
 };
-    
+
 #endif /* !IMATERIAL_HPP_ */
