@@ -67,7 +67,7 @@ Math::hitdata_t InfiniteCone::calculateInfiniteConeIntersection(
     if (t1 > t2)
         std::swap(t1, t2);
 
-    double t = t1;  // Added extra space before comment
+    double t = t1;
     if (t < 0.001)
         t = t2;
     if (t < 0.001)
