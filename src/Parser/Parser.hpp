@@ -16,14 +16,6 @@
 
 namespace RayTracer::Parser {
 
-    using fractalecube_t = std::tuple<
-        std::tuple<double, double, double, double>, // position + size
-        std::tuple<double, double, double>,         // rotation
-        std::tuple<double, double, double>,         // scale
-        std::tuple<int, int, int>                   // color
-    >;
-
-
 class Parser {
     private:
         std::unique_ptr<CameraConfig> _camConfig;
