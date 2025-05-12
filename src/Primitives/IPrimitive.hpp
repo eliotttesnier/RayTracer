@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <limits>
 
 #include "../Math/HitData.hpp"
 #include "../Math/Ray.hpp"
@@ -23,7 +24,19 @@ namespace RayTracer::Materials {
 class ILight;
 class IPrimitive;
 
-struct AABB;
+namespace RayTracer::primitive {
+struct AABB {
+    Math::Point3D min;
+    Math::Point3D max;
+
+    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
+                max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
+
+    bool intersect(const Math::Ray &ray) const;
+    void expand(const Math::Point3D &point);
+};
+
+}
 
 class IPrimitive {
     public:

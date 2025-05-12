@@ -16,17 +16,6 @@
 
 namespace RayTracer::primitive {
 
-struct AABB {
-    Math::Point3D min;
-    Math::Point3D max;
-
-    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
-             max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
-
-    bool intersect(const Math::Ray &ray) const;
-    void expand(const Math::Point3D &point);
-};
-
 class APrimitive : public IPrimitive {
     protected:
         std::string _name;
