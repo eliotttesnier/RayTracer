@@ -53,6 +53,11 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
     auto objs = _addOBJs(config, plugins);
     primitives.insert(primitives.end(), objs.begin(), objs.end());
 
+    auto infiniteCones = _addInfiniteCones(config, plugins);
+    primitives.insert(primitives.end(), infiniteCones.begin(), infiniteCones.end());
+
+    auto infiniteCylinders = _addInfiniteCylinders(config, plugins);
+    primitives.insert(primitives.end(), infiniteCylinders.begin(), infiniteCylinders.end());
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
         auto [materials, posSize, rotation, sc, sh, color] = fractalecube;
@@ -310,6 +315,64 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
         );
         #ifdef _DEBUG
             std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
+        #endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+    return primitives;
+}
+
+std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCones(
+    const RayTracer::Parser::PrimitivesConfig& config,
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+)
+{
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
+    for (const auto &cone : config.getInfiniteCones()) {
+        auto [materials, posAng, rotation, sc, sh, color] = cone;
+        auto [x, y, z, angle] = posAng;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
+        RayTracer::Factory::InfiniteConeFactory factory(
+            pos,
+            rota,
+            scale,
+            shear,
+            angle,
+            materials
+        );
+        #ifdef _DEBUG
+            std::cout << "Creating an infinite cone" << std::endl;
+        #endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+    return primitives;
+}
+
+std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders(
+    const RayTracer::Parser::PrimitivesConfig& config,
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+)
+{
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
+    for (const auto &cylinder : config.getInfiniteCylinders()) {
+        auto [materials, posRad, rotation, sc, sh, color] = cylinder;
+        auto [x, y, z, radius] = posRad;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
+        RayTracer::Factory::InfiniteCylinderFactory factory(
+            pos,
+            rota,
+            scale,
+            shear,
+            radius,
+            materials
+        );
+        #ifdef _DEBUG
+            std::cout << "Creating an infinite cylinder" << std::endl;
         #endif
         primitives.emplace_back(factory.create(plugins));
     }

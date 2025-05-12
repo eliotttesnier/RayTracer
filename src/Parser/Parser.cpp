@@ -603,6 +603,126 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
     return objVector;
 }
 
+std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(
+    const libconfig::Setting &root
+)
+{
+    std::vector<infinitecylinder_t> infiniteCylinderVector;
+    try {
+        const auto &infiniteCylinders = root["primitives"]["infiniteCylinders"];
+        for (int i = 0; i < infiniteCylinders.getLength(); ++i) {
+            const auto &c = infiniteCylinders[i];
+            std::vector<std::string> materials;
+            if (c.exists("materials")) {
+                const auto &mats = c["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
+            const auto &position = c["position"];
+            const auto &rotation = c["rotation"];
+            const auto &scale = c["scale"];
+            const auto &shear = c["shear"];
+            const auto &color = c["color"];
+            double px = position["x"];
+            double py = position["y"];
+            double pz = position["z"];
+            double rx = rotation["x"];
+            double ry = rotation["y"];
+            double rz = rotation["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
+            double radius = c["r"];
+            int cr = color["r"];
+            int cg = color["g"];
+            int cb = color["b"];
+            infiniteCylinderVector.emplace_back(
+                materials,
+                std::make_tuple(px, py, pz, radius),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "Infinite Cylinder: "
+                    << "pos(" << px << ", " << py << ", " << pz << "), "
+                    << "r=" << radius << ", "
+                    << "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No infinite cylinders found in config" << std::endl;
+        #endif
+    }
+    return infiniteCylinderVector;
+}
+
+std::vector<infinitecone_t> Parser::_getInfiniteConesData(const libconfig::Setting &root)
+{
+    std::vector<infinitecone_t> infiniteConeVector;
+    try {
+        const auto &infiniteCones = root["primitives"]["infiniteCones"];
+        for (int i = 0; i < infiniteCones.getLength(); ++i) {
+            const auto &c = infiniteCones[i];
+            std::vector<std::string> materials;
+            if (c.exists("materials")) {
+                const auto &mats = c["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
+            const auto &position = c["position"];
+            const auto &rotation = c["rotation"];
+            const auto &scale = c["scale"];
+            const auto &shear = c["shear"];
+            const auto &color = c["color"];
+            double px = position["x"];
+            double py = position["y"];
+            double pz = position["z"];
+            double rx = rotation["x"];
+            double ry = rotation["y"];
+            double rz = rotation["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
+            double angle = c["angle"];
+            int cr = color["r"];
+            int cg = color["g"];
+            int cb = color["b"];
+            infiniteConeVector.emplace_back(
+                materials,
+                std::make_tuple(px, py, pz, angle),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "Infinite Cone: "
+                    << "pos(" << px << ", " << py << ", " << pz << "), "
+                    << "angle=" << angle << ", "
+                    << "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No infinite cones found in config" << std::endl;
+        #endif
+    }
+    return infiniteConeVector;
+}
+
 void Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector = _getSpheresData(root);
@@ -621,6 +741,10 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
 
     std::vector<obj_t> objVector = _getOBJsData(root);
 
+    std::vector<infinitecylinder_t> infiniteCylinders = _getInfiniteCylindersData(root);
+
+    std::vector<infinitecone_t> infiniteCones = _getInfiniteConesData(root);
+
     std::vector<fractalecube_t> fractaleCubeVector = _getFractaleCubesData(root);
 
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
@@ -632,6 +756,8 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
         tangleCubeVector,
         triangleVector,
         objVector,
+        infiniteCylinders,
+        infiniteCones,
         fractaleCubeVector
     );
 }
@@ -824,8 +950,9 @@ libconfig::Setting &targetRoot)
             #endif
             for (int i = 0; i < sourceLightsItems.getLength(); ++i) {
                 const auto &sourceItem = sourceLightsItems[i];
-                libconfig::Setting &newItem =
-                    targetLightsItems.add(libconfig::Setting::TypeGroup);
+                libconfig::Setting &newItem = targetLightsItems.add(
+                    libconfig::Setting::TypeGroup
+                );
                 _copySettings(sourceItem, newItem);
             }
         }
