@@ -16,7 +16,6 @@ namespace RayTracer::primitive {
 Cylinder::Cylinder()
 {
     _name = "cylinder";
-    _type = "cylinder";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
@@ -30,7 +29,6 @@ Cylinder::Cylinder()
 Cylinder::Cylinder(const Math::Point3D &position, double radius, double height)
 {
     _name = "cylinder";
-    _type = "cylinder";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
