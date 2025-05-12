@@ -25,4 +25,7 @@ target_link_libraries(TransparencyMaterial PRIVATE
         Torus
         Triangles
         Tanglecube
+        FractaleCube
+        InfiniteCone
+        InfiniteCylinder
 )
