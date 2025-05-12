@@ -17,9 +17,9 @@ PrimitivesConfig::PrimitivesConfig(
     const std::vector<tanglecube_t> &tanglecubes,
     const std::vector<triangle_t> &triangles,
     const std::vector<obj_t> &objs,
-    const std::vector<fractalecube_t> &fractalecubes,
     const std::vector<infinitecylinder_t> &infiniteCylinders,
-    const std::vector<infinitecone_t> &infiniteCones
+    const std::vector<infinitecone_t> &infiniteCones,
+    const std::vector<fractalecube_t> &fractalecubes
 ) :
     _spheres(spheres),
     _planes(planes),
@@ -29,9 +29,9 @@ PrimitivesConfig::PrimitivesConfig(
     _tanglecubes(tanglecubes),
     _triangles(triangles),
     _objs(objs),
-    _fractalecubes(fractalecubes),
     _infiniteCylinders(infiniteCylinders),
-    _infiniteCones(infiniteCones)
+    _infiniteCones(infiniteCones),
+    _fractalecubes(fractalecubes)
 {
 }
 
@@ -65,6 +65,18 @@ std::vector<triangle_t> PrimitivesConfig::getTriangles() const {
 
 std::vector<obj_t> PrimitivesConfig::getOBJs() const {
     return this->_objs;
+}
+
+std::vector<fractalecube_t> PrimitivesConfig::getFractaleCubes() const {
+    return this->_fractalecubes;
+}
+
+std::vector<infinitecone_t> PrimitivesConfig::getInfiniteCones() const {
+    return this->_infiniteCones;
+}
+
+std::vector<infinitecylinder_t> PrimitivesConfig::getInfiniteCylinders() const {
+    return this->_infiniteCylinders;
 }
 
 }
