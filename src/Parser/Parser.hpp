@@ -14,6 +14,14 @@
 
 namespace RayTracer::Parser {
 
+    using fractalecube_t = std::tuple<
+        std::tuple<double, double, double, double>, // position + size
+        std::tuple<double, double, double>,         // rotation
+        std::tuple<double, double, double>,         // scale
+        std::tuple<int, int, int>                   // color
+    >;
+
+
 class Parser {
     private:
         std::unique_ptr<CameraConfig> _camConfig;
@@ -31,6 +39,7 @@ class Parser {
         std::vector<tanglecube_t> _getTanglecubesData(const libconfig::Setting &root);
         std::vector<triangle_t> _getTrianglesData(const libconfig::Setting &root);
         std::vector<obj_t> _getOBJsData(const libconfig::Setting &root);
+        std::vector<fractalecube_t> _getFractaleCubesData(const libconfig::Setting &root);
 
         ambient_t _getAmbientData(const libconfig::Setting &root);
         std::vector<directional_t> _getDirectionalData(const libconfig::Setting &root);
