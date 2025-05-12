@@ -16,21 +16,9 @@
 
 namespace RayTracer::primitive {
 
-struct AABB {
-    Math::Point3D min;
-    Math::Point3D max;
-
-    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
-             max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
-
-    bool intersect(const Math::Ray &ray) const;
-    void expand(const Math::Point3D &point);
-};
-
 class APrimitive : public IPrimitive {
     protected:
         std::string _name;
-        std::string _type;
         Math::Point3D _position;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
@@ -44,14 +32,13 @@ class APrimitive : public IPrimitive {
 
         // Getters
         const std::string getName() const override;
-        const std::string getType() const override;
         const Math::Point3D getPosition() const override;
         const Math::Vector3D getRotation() const override;
         const Math::Vector3D getShear() const override;
+        const RayTracer::primitive::AABB getBoundingBox() const override;
 
         // Setters
         void setName(const std::string &name) override;
-        void setType(const std::string &type) override;
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
         void setScale(const Math::Vector3D &scale) override;

@@ -19,7 +19,6 @@ namespace RayTracer::primitive {
 Tanglecube::Tanglecube()
 {
     _name = "tanglecube";
-    _type = "tanglecube";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _size = 1.0;
@@ -33,7 +32,6 @@ Tanglecube::Tanglecube()
 Tanglecube::Tanglecube(const Math::Point3D &position, double size)
 {
     _name = "tanglecube";
-    _type = "tanglecube";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _size = size;

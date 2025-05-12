@@ -18,11 +18,6 @@ const std::string APrimitive::getName() const
     return _name;
 }
 
-const std::string APrimitive::getType() const
-{
-    return _type;
-}
-
 const Math::Point3D APrimitive::getPosition() const
 {
     return _position;
@@ -38,14 +33,14 @@ const Math::Vector3D APrimitive::getShear() const
     return _shear;
 }
 
+const RayTracer::primitive::AABB APrimitive::getBoundingBox() const
+{
+    return _boundingBox;
+}
+
 void APrimitive::setName(const std::string &name)
 {
     _name = name;
-}
-
-void APrimitive::setType(const std::string &type)
-{
-    _type = type;
 }
 
 void APrimitive::setPosition(const Math::Point3D &position)
