@@ -13,9 +13,7 @@ namespace RayTracer::primitive {
 
 Triangles::Triangles()
 {
-    _name = "triangles";
-    _type = "triangles";
-    _position = Math::Point3D(0, 0, 0);
+    _name = "triangles";    _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _p1 = Math::Point3D(-1, 0, -1);
     _p2 = Math::Point3D(1, 0, -1);
@@ -26,7 +24,6 @@ Triangles::Triangles()
 Triangles::Triangles(const Math::Point3D &p1, const Math::Point3D &p2, const Math::Point3D &p3)
 {
     _name = "triangles";
-    _type = "triangles";
     setPoints(p1, p2, p3);
 }
 
