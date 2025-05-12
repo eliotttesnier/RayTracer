@@ -42,13 +42,13 @@ class Parser {
             const std::string &fst = "x",
             const std::string &snd = "y",
             const std::string &trd = "z") {
-            return std::make_tuple(static_cast<T>(pos[fst]),
-                static_cast<T>(pos[snd]),
-                static_cast<T>(pos[trd]));
+            return std::make_tuple(static_cast<T>(pos[fst.c_str()]),
+                static_cast<T>(pos[snd.c_str()]),
+                static_cast<T>(pos[trd.c_str()]));
         }
         template<typename T>
         static std::tuple<T, T> getData2D(const libconfig::Setting &pos, const std::string &fst = "x", const std::string &snd = "y") {
-            return std::make_tuple(static_cast<T>(pos[fst]), static_cast<T>(pos[snd]));
+            return std::make_tuple(static_cast<T>(pos[fst.c_str()]), static_cast<T>(pos[snd.c_str()]));
         }
 
         CameraConfig getCameraConfig() const;
