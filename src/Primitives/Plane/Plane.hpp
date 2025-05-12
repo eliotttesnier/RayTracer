@@ -13,7 +13,7 @@ namespace RayTracer::primitive {
 class Plane : public APrimitive {
     public:
         Plane();
-        Plane(const Math::Point3D &position, const Math::Vector3D &rotation, std::tuple<double, double> size);
+        Plane(const Math::Point3D &position, const Math::Vector3D &rotation);
         ~Plane() = default;
 
         Math::hitdata_t intersect(const Math::Ray &ray) override;
@@ -32,8 +32,6 @@ class Plane : public APrimitive {
         ) override;
 
     private:
-        double _width;
-        double _height;
         RayTracer::Rectangle3D _rectangle;
 };
 

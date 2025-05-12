@@ -130,8 +130,6 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
         int cr = color["r"];
         int cg = color["g"];
         int cb = color["b"];
-        double width = p["width"];
-        double height = p["height"];
         planesVector.emplace_back(
             materials,
             axis[0],
@@ -139,7 +137,6 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
             std::make_tuple(rx, ry, rz),
             std::make_tuple(sx, sy, sz),
             std::make_tuple(shx, shy, shz),
-            std::make_tuple(width, height),
             std::make_tuple(cr, cg, cb)
         );
         #ifdef _DEBUG
@@ -705,7 +702,7 @@ void Parser::_importScene(const std::string &filepath, libconfig::Setting &targe
 }
 
 void Parser::_importPrimitives(const libconfig::Setting &sourceRoot,
-    libconfig::Setting &targetRoot)
+libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("primitives"))
@@ -745,7 +742,7 @@ void Parser::_importPrimitives(const libconfig::Setting &sourceRoot,
 }
 
 void Parser::_importLights(const libconfig::Setting &sourceRoot,
-    libconfig::Setting &targetRoot)
+libconfig::Setting &targetRoot)
 {
     try {
         if (!sourceRoot.exists("lights"))
