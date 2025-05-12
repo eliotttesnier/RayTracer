@@ -121,7 +121,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {255, 0, 255, 1.0};  // Bright magenta color for better contrast
+    hitData.color = {255, 255, 255, 1.0};  // Bright magenta color for better contrast
 
     Math::hitdata_t mainCubeHit;
     if (!intersectCube(ray, _position, _size, mainCubeHit)) {
@@ -139,7 +139,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
                 minDistance = currentHit.distance;
                 hitData = currentHit;
                 hitData.hit = true;
-                hitData.color = {255, 0, 255, 1.0};
+                hitData.color = {255, 255, 255, 1.0};
             }
         }
     }
@@ -160,6 +160,22 @@ Math::Vector3D FractaleCube::normalAt(const Math::Point3D& point) const
     );
     normal.normalize();
     return normal;
+}
+
+Graphic::color_t FractaleCube::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace RayTracer::primitive
