@@ -23,6 +23,8 @@ namespace RayTracer::Materials {
 class ILight;
 class IPrimitive;
 
+struct AABB;
+
 class IPrimitive {
     public:
         virtual ~IPrimitive() = default;
@@ -32,6 +34,7 @@ class IPrimitive {
         virtual const Math::Point3D getPosition() const = 0;
         virtual const Math::Vector3D getRotation() const = 0;
         virtual const Math::Vector3D getShear() const = 0;
+        virtual const RayTracer::primitive::AABB getBoundingBox() const = 0;
 
         // Setters
         virtual void setName(const std::string &name) = 0;
