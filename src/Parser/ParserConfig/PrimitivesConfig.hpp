@@ -26,6 +26,7 @@ typedef std::tuple<std::vector<std::string>, quintuple_t, truple_t, truple_t, tr
 typedef std::tuple<std::vector<std::string>, quaduple_t, truple_t, truple_t, truple_t, color_t> tanglecube_t; // Position + size, rotation, scale, shear, Color
 typedef std::tuple<std::vector<std::string>, std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, truple_t, color_t> triangle_t; // Three points (p1, p2, p3), rotation, scale, shear, Color
 typedef std::tuple<std::vector<std::string>, std::tuple<double, double, double, std::string>, truple_t, truple_t, truple_t, color_t> obj_t; // Position + filepath, rotation, scale, shear, Color
+typedef std::tuple<quaduple_t, truple_t, truple_t, color_t> fractalecube_t; // Position + size, rotation, scale, Color
 
 class PrimitivesConfig {
     private:
