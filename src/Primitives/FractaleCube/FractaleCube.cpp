@@ -18,7 +18,6 @@ namespace RayTracer::primitive {
 FractaleCube::FractaleCube()
 {
     _name = "fractalecube";
-    _type = "fractalecube";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _size = 1.0;
@@ -33,7 +32,6 @@ FractaleCube::FractaleCube()
 FractaleCube::FractaleCube(const Math::Point3D &position, double size, int recursion)
 {
     _name = "fractalecube";
-    _type = "fractalecube";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _size = size;
