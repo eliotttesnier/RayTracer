@@ -8,6 +8,7 @@ set(PRIMITIVE_FACTORY_SRC
     TanglecubeFactory.cpp
     TrianglesFactory.cpp
     OBJFactory.cpp
+    FractaleCubeFactory.cpp
 )
 
 set(PRIMITIVE_FACTORY_INC
@@ -21,6 +22,7 @@ set(PRIMITIVE_FACTORY_INC
     TanglecubeFactory.hpp
     TrianglesFactory.hpp
     OBJFactory.hpp
+    FractaleCubeFactory.hpp
 )
 
 add_library(PrimitivesFactory STATIC ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})
