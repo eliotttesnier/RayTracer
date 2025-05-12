@@ -17,7 +17,6 @@ namespace RayTracer::primitive {
 Torus::Torus()
 {
     _name = "torus";
-    _type = "torus";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _majorRadius = 1.0;
@@ -32,7 +31,6 @@ Torus::Torus()
 Torus::Torus(const Math::Point3D &position, double majorRadius, double minorRadius)
 {
     _name = "torus";
-    _type = "torus";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _majorRadius = majorRadius;
