@@ -19,6 +19,8 @@
 #include "../../Primitives/Triangles/Triangles.hpp"
 #include "../../Primitives/OBJ/OBJ.hpp"
 #include "../../Primitives/FractaleCube/FractaleCube.hpp"
+#include "../../Primitives/InfiniteCone/InfiniteCone.hpp"
+#include "../../Primitives/InfiniteCylinder/InfiniteCylinder.hpp"
 
 #include "../AMaterial.hpp"
 
@@ -84,6 +86,20 @@ class TransparencyMaterial : public AMaterial {
         ) override;
         Graphic::color_t calculateColor(
             const RayTracer::primitive::FractaleCube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::InfiniteCone &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::InfiniteCylinder &obj,
             Math::hitdata_t hitData,
             Math::Ray ray,
             std::vector<std::shared_ptr<ILight>> lights,
