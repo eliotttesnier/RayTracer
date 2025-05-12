@@ -18,7 +18,7 @@ typedef std::tuple<double, double, double, double> quaduple_t;
 typedef std::tuple<double, double, double, double, double> quintuple_t;
 typedef std::tuple<int, int, int> color_t;
 
-typedef std::tuple<double, double, double> material_t;
+typedef std::tuple<double, double, double> material_t; // Transparency, Reflection, Refraction
 
 typedef std::tuple<material_t, quaduple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Material, Position + radius, rotation, scale, shear, Color
 typedef std::tuple<material_t, quintuple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Material, Position + radius + height, rotation, scale, shear, Color
