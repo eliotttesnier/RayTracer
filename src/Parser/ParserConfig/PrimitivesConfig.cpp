@@ -9,23 +9,27 @@
 namespace RayTracer::Parser {
 
 PrimitivesConfig::PrimitivesConfig(
-const std::vector<sphere_t> &spheres,
-const std::vector<plane_t> &planes,
-const std::vector<cylinder_t> &cylinders,
-const std::vector<cone_t> &cones,
-const std::vector<torus_t> &toruses,
-const std::vector<tanglecube_t> &tanglecubes,
-const std::vector<triangle_t> &triangles,
-const std::vector<obj_t> &objs
+    const std::vector<sphere_t> &spheres,
+    const std::vector<plane_t> &planes,
+    const std::vector<cylinder_t> &cylinders,
+    const std::vector<cone_t> &cones,
+    const std::vector<torus_t> &toruses,
+    const std::vector<tanglecube_t> &tanglecubes,
+    const std::vector<triangle_t> &triangles,
+    const std::vector<obj_t> &objs,
+    const std::vector<infinitecylinder_t> &infiniteCylinders,
+    const std::vector<infinitecone_t> &infiniteCones
 ) :
-_spheres(spheres),
-_cylinders(cylinders),
-_cones(cones),
-_planes(planes),
-_toruses(toruses),
-_tanglecubes(tanglecubes),
-_triangles(triangles),
-_objs(objs)
+    _spheres(spheres),
+    _planes(planes),
+    _cylinders(cylinders),
+    _cones(cones),
+    _toruses(toruses),
+    _tanglecubes(tanglecubes),
+    _triangles(triangles),
+    _objs(objs),
+    _infiniteCylinders(infiniteCylinders),
+    _infiniteCones(infiniteCones)
 {
 }
 
@@ -59,6 +63,14 @@ std::vector<triangle_t> PrimitivesConfig::getTriangles() const {
 
 std::vector<obj_t> PrimitivesConfig::getOBJs() const {
     return this->_objs;
+}
+
+std::vector<infinitecylinder_t> PrimitivesConfig::getInfiniteCylinders() const {
+    return this->_infiniteCylinders;
+}
+
+std::vector<infinitecone_t> PrimitivesConfig::getInfiniteCones() const {
+    return this->_infiniteCones;
 }
 
 }
