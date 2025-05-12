@@ -10,19 +10,26 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
+#include <vector>
 
+#include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/FractaleCube/FractaleCube.hpp"
 
 RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
-    double size
+    const Math::Vector3D &shear,
+    double size,
+    const std::vector<std::string> &materials
 ):
+    _size(size),
     _position(position),
     _rotation(rotation),
     _scale(scale),
-    _size(size)
+    _shear(shear),
+    _materials(materials)
 {
 }
 
@@ -39,5 +46,12 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::FractaleCubeFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
+    std::shared_ptr<RayTracer::Materials::IMaterial> material =
+        RayTracer::Factory::MaterialFactory::createMaterial(
+        this->_materials,
+        plugins
+    );
+    obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
