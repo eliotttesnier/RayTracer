@@ -16,6 +16,7 @@
 #include "TanglecubeFactory.hpp"
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
+#include "FractaleCubeFactory.hpp"
 
 std::vector<std::shared_ptr<IPrimitive>>
         RayTracer::Factory::PrimitiveFactory::createPrimitives(
@@ -174,6 +175,23 @@ std::vector<std::shared_ptr<IPrimitive>>
         RayTracer::Factory::OBJFactory factory(pos, rota, scale, filepath);
 #ifdef _DEBUG
         std::cout << "Creating an OBJ object from file: " << filepath << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
+
+    // FractaleCubes
+    for (const auto &fractalecube : config.getFractaleCubes()) {
+        auto [posSize, rotation, sc, color] = fractalecube;
+        auto [x, y, z, size] = posSize;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota;
+        Math::Vector3D scale;
+        rota = rotation;
+        scale = sc;
+
+        RayTracer::Factory::FractaleCubeFactory factory(pos, rota, scale, size);
+#ifdef _DEBUG
+        std::cout << "Creating a fractale cube" << std::endl;
 #endif
         primitives.emplace_back(factory.create(plugins));
     }
