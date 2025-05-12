@@ -6,7 +6,10 @@
 */
 
 #include <cmath>
+#include <string>
 #include <limits>
+#include <vector>
+#include <algorithm>
 #include "InfiniteCylinder.hpp"
 
 namespace RayTracer::primitive {
@@ -29,7 +32,8 @@ InfiniteCylinder::InfiniteCylinder(const Math::Point3D &position, double radius)
     _radius = radius;
 }
 
-Math::hitdata_t InfiniteCylinder::calculateInfiniteCylinderIntersection(const Math::Ray &localRay) const
+Math::hitdata_t InfiniteCylinder::calculateInfiniteCylinderIntersection(
+    const Math::Ray &localRay) const
 {
     Math::hitdata_t hitData;
     hitData.hit = false;
@@ -61,7 +65,7 @@ Math::hitdata_t InfiniteCylinder::calculateInfiniteCylinderIntersection(const Ma
 
             hitData.point = transformPointToWorld(localHitPoint);
             hitData.normal = transformNormalToWorld(localNormal);
-            hitData.color = {255.0, 0.0, 0.0, 1.0};
+            hitData.color = {0.0, 255.0, 0.0, 1.0};  // Added extra space before comment
         }
     }
 
@@ -90,4 +94,4 @@ Graphic::color_t InfiniteCylinder::getColor(
     );
 }
 
-} // namespace RayTracer::primitive
+}  // namespace RayTracer::primitive
