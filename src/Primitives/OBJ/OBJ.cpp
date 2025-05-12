@@ -24,7 +24,6 @@ namespace RayTracer::primitive {
 OBJ::OBJ()
 {
     _name = "obj";
-    _type = "obj";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _anchorPoint = Math::Vector3D(0, 0, 0);
@@ -34,7 +33,6 @@ OBJ::OBJ()
 OBJ::OBJ(const Math::Point3D &position, const std::string &filepath)
 {
     _name = "obj";
-    _type = "obj";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _anchorPoint = Math::Vector3D(0, 0, 0);
