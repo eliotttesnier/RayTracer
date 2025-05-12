@@ -3,6 +3,13 @@
 //
 
 #include "PrimitiveFactory.hpp"
+
+#include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "PlaneFactory.hpp"
 #include "SphereFactory.hpp"
 #include "CylinderFactory.hpp"
@@ -12,11 +19,6 @@
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
 #include "FractaleCubeFactory.hpp"
-#include <map>
-#include <string>
-#include <memory>
-#include <vector>
-#include <iostream>
 
 namespace RayTracer::Factory {
 
