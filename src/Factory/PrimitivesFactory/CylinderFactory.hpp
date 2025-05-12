@@ -6,6 +6,7 @@
 #define CYLINDERFACTORY_HPP
 
 #include <memory>
+
 #include "IPrimitiveFactory.hpp"
 #include "Primitives/Sphere/Sphere.hpp"
 
