@@ -86,6 +86,13 @@ class DefaultMaterial : public IMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::FractaleCube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
 
         DefaultMaterial();
         DefaultMaterial(std::shared_ptr<IMaterial> wrappee);
@@ -104,3 +111,5 @@ class DefaultMaterial : public IMaterial {
 };
 
 #endif /* !DEFAULTMATERIAL_HPP_ */
+
+>>>>>>> 11bdeeb8668c0c5df75bf6b2ec142f341d34ffb1
