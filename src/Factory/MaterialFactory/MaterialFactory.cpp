@@ -44,10 +44,12 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(
         //         plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
         //             "create",
-        //             materialStack.at(materialStack.size() - 1),
         //             reflection
         //         )
         //     )
+        // );
+        // materialStack.at(materialStack.size() - 1)->setWrappee(
+        //     materialStack.at(materialStack.size() - 2)
         // );
     }
 
@@ -57,10 +59,12 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(
         //         plugins["RefractionMaterial"]->initEntryPointPtr<RayTracer::Materials::RefractionMaterial>(
         //             "create",
-        //             materialStack.at(materialStack.size() - 1),
         //             refraction
         //         )
         //     )
+        // );
+        // materialStack.at(materialStack.size() - 1)->setWrappee(
+        //     materialStack.at(materialStack.size() - 2)
         // );
     }
 
