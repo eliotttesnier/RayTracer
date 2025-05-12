@@ -53,15 +53,21 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
-        auto [posSize, rotation, sc, color] = fractalecube;
+        auto [materials, posSize, rotation, sc, sh, color] = fractalecube;
         auto [x, y, z, size] = posSize;
         Math::Point3D pos(x, y, z);
-        Math::Vector3D rota;
-        Math::Vector3D scale;
-        rota = rotation;
-        scale = sc;
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
 
-        RayTracer::Factory::FractaleCubeFactory factory(pos, rota, scale, size);
+        RayTracer::Factory::FractaleCubeFactory factory(
+            pos,
+            rota,
+            scale,
+            shear,
+            size,
+            materials
+        );
 #ifdef _DEBUG
         std::cout << "Creating a fractale cube" << std::endl;
 #endif
@@ -305,24 +311,6 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
         #endif
         primitives.emplace_back(factory.create(plugins));
     }
-
-    // FractaleCubes
-    for (const auto &fractalecube : config.getFractaleCubes()) {
-        auto [posSize, rotation, sc, color] = fractalecube;
-        auto [x, y, z, size] = posSize;
-        Math::Point3D pos(x, y, z);
-        Math::Vector3D rota;
-        Math::Vector3D scale;
-        rota = rotation;
-        scale = sc;
-
-        RayTracer::Factory::FractaleCubeFactory factory(pos, rota, scale, size);
-#ifdef _DEBUG
-        std::cout << "Creating a fractale cube" << std::endl;
-#endif
-        primitives.emplace_back(factory.create(plugins));
-    }
-
     return primitives;
 }
 
