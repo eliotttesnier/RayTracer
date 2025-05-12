@@ -542,7 +542,9 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
     return objVector;
 }
 
-std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(const libconfig::Setting &root)
+std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(
+    const libconfig::Setting &root
+)
 {
     std::vector<infinitecylinder_t> infiniteCylinderVector;
     try {
@@ -883,8 +885,9 @@ libconfig::Setting &targetRoot)
             #endif
             for (int i = 0; i < sourceLightsItems.getLength(); ++i) {
                 const auto &sourceItem = sourceLightsItems[i];
-                libconfig::Setting &newItem =
-                    targetLightsItems.add(libconfig::Setting::TypeGroup);
+                libconfig::Setting &newItem = targetLightsItems.add(
+                    libconfig::Setting::TypeGroup
+                );
                 _copySettings(sourceItem, newItem);
             }
         }
