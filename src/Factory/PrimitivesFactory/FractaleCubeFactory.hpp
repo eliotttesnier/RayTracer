@@ -8,31 +8,36 @@
 #ifndef RAYTRACER_FRACTALECUBEFACTORY_HPP
 #define RAYTRACER_FRACTALECUBEFACTORY_HPP
 
+#include <memory>
+#include <map>
+#include <vector>
+#include <string>
 #include "IPrimitiveFactory.hpp"
-#include "../Math/Point3D.hpp"
-#include "../Math/Vector3D.hpp"
+#include "../../Primitives/FractaleCube/FractaleCube.hpp"
+#include "LibLoader/LibLoader.hpp"
 
 namespace RayTracer::Factory {
 
-class FractaleCubeFactory : public IPrimitiveFactory {
+    class FractaleCubeFactory : public IPrimitiveFactory {
     public:
         FractaleCubeFactory(
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
-            double size
+            const Math::Vector3D &shear,
+            double size,
+            const std::vector<std::string> &materials
         );
 
-        std::shared_ptr<IPrimitive> create(
-            std::map<std::string,
-            std::unique_ptr<Loader::LibLoader>> &plugins) const override;
-
+        std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         double _size;
         Math::Point3D _position;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
-};
+        Math::Vector3D _shear;
+        std::vector<std::string> _materials;
+    };
 
 }  // namespace RayTracer::Factory
 
