@@ -91,6 +91,8 @@ class IMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
 
+        virtual void setWrappee(std::shared_ptr<IMaterial> wrappee) = 0;
+
         virtual ~IMaterial() = default;
 };
 
