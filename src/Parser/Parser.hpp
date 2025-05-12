@@ -34,6 +34,7 @@ class Parser {
         std::vector<tanglecube_t> _getTanglecubesData(const libconfig::Setting &root);
         std::vector<triangle_t> _getTrianglesData(const libconfig::Setting &root);
         std::vector<obj_t> _getOBJsData(const libconfig::Setting &root);
+        std::vector<fractalecube_t> _getFractaleCubesData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);

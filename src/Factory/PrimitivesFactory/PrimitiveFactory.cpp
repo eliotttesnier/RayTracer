@@ -3,11 +3,22 @@
 //
 
 #include "PrimitiveFactory.hpp"
-#include <map>
-#include <string>
-#include <memory>
-#include <vector>
+
 #include <iostream>
+#include <map>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "PlaneFactory.hpp"
+#include "SphereFactory.hpp"
+#include "CylinderFactory.hpp"
+#include "ConeFactory.hpp"
+#include "TorusFactory.hpp"
+#include "TanglecubeFactory.hpp"
+#include "TrianglesFactory.hpp"
+#include "OBJFactory.hpp"
+#include "FractaleCubeFactory.hpp"
 
 namespace RayTracer::Factory {
 
@@ -41,6 +52,30 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 
     auto objs = _addOBJs(config, plugins);
     primitives.insert(primitives.end(), objs.begin(), objs.end());
+
+    // FractaleCubes
+    for (const auto &fractalecube : config.getFractaleCubes()) {
+        auto [materials, posSize, rotation, sc, sh, color] = fractalecube;
+        auto [x, y, z, size, recursion] = posSize;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
+
+        RayTracer::Factory::FractaleCubeFactory factory(
+            pos,
+            rota,
+            scale,
+            shear,
+            size,
+            recursion,
+            materials
+        );
+#ifdef _DEBUG
+        std::cout << "Creating a fractale cube" << std::endl;
+#endif
+        primitives.emplace_back(factory.create(plugins));
+    }
 
     return primitives;
 }

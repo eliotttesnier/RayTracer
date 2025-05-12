@@ -26,6 +26,7 @@ typedef std::tuple<std::vector<std::string>, quintuple_t, truple_t, truple_t, tr
 typedef std::tuple<std::vector<std::string>, quaduple_t, truple_t, truple_t, truple_t, color_t> tanglecube_t; // Position + size, rotation, scale, shear, Color
 typedef std::tuple<std::vector<std::string>, std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, truple_t, color_t> triangle_t; // Three points (p1, p2, p3), rotation, scale, shear, Color
 typedef std::tuple<std::vector<std::string>, std::tuple<double, double, double, std::string>, truple_t, truple_t, truple_t, color_t> obj_t; // Position + filepath, rotation, scale, shear, Color
+typedef std::tuple<std::vector<std::string>, quintuple_t, truple_t, truple_t, truple_t, color_t> fractalecube_t; // Position + size + recursion, rotation, scale, shear, Color
 
 class PrimitivesConfig {
     private:
@@ -37,6 +38,7 @@ class PrimitivesConfig {
         std::vector<tanglecube_t> _tanglecubes;
         std::vector<triangle_t> _triangles;
         std::vector<obj_t> _objs;
+        std::vector<fractalecube_t> _fractalecubes;
 
     public:
         std::vector<sphere_t> getSpheres() const;
@@ -47,6 +49,7 @@ class PrimitivesConfig {
         std::vector<tanglecube_t> getTanglecubes() const;
         std::vector<triangle_t> getTriangles() const;
         std::vector<obj_t> getOBJs() const;
+        std::vector<fractalecube_t> getFractaleCubes() const;
 
         PrimitivesConfig() = delete;
         PrimitivesConfig(
@@ -57,7 +60,8 @@ class PrimitivesConfig {
             const std::vector<torus_t> &toruses,
             const std::vector<tanglecube_t> &tanglecubes,
             const std::vector<triangle_t> &triangles,
-            const std::vector<obj_t> &objs
+            const std::vector<obj_t> &objs,
+            const std::vector<fractalecube_t> &fractalecubes
         );
         ~PrimitivesConfig() = default;
 };

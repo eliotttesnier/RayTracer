@@ -28,6 +28,7 @@ namespace RayTracer::primitive {
     class Tanglecube;
     class Triangles;
     class OBJ;
+    class FractaleCube;
 }
 
 namespace RayTracer::Materials {
@@ -91,9 +92,17 @@ class IMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
 
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::FractaleCube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+
         virtual ~IMaterial() = default;
 };
 
 };
-    
+
 #endif /* !IMATERIAL_HPP_ */
