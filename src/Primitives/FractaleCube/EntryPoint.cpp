@@ -14,10 +14,11 @@
 extern "C" {
     RayTracer::primitive::FractaleCube *create(
         const Math::Point3D &position,
-        const double &size
+        const double &size,
+        const int &recursion
     )
     {
-        return new RayTracer::primitive::FractaleCube(position, size);
+        return new RayTracer::primitive::FractaleCube(position, size, recursion);
     }
 
     RayTracer::Loader::ModuleType getType(void)
