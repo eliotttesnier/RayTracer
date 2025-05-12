@@ -447,6 +447,45 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
     return objVector;
 }
 
+std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setting &root)
+{
+    std::vector<fractalecube_t> fractaleCubeVector;
+    try {
+        const auto &fractalecubes = root["primitives"]["fractalecubes"];
+        for (int i = 0; i < fractalecubes.getLength(); ++i) {
+            const auto &s = fractalecubes[i];
+            const auto &pos = s["position"];
+            const auto &rota = s["rotation"];
+            const auto &scale = s["scale"];
+            const auto &color = s["color"];
+            double px = pos["x"];
+            double py = pos["y"];
+            double pz = pos["z"];
+            double size = s["size"];
+            double rx = rota["x"];
+            double ry = rota["y"];
+            double rz = rota["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
+            int cr = color["r"];
+            int cg = color["g"];
+            int cb = color["b"];
+            fractaleCubeVector.emplace_back(
+                std::make_tuple(px, py, pz, size),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(cr, cg, cb)
+            );
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No fractalecubes found in config" << std::endl;
+        #endif
+    }
+    return fractaleCubeVector;
+}
+
 void Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector = _getSpheresData(root);
@@ -465,6 +504,8 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
 
     std::vector<obj_t> objVector = _getOBJsData(root);
 
+    std::vector<fractalecube_t> fractaleCubeVector = _getFractaleCubesData(root);
+
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector,
         planesVector,
@@ -473,7 +514,8 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
         torusVector,
         tangleCubeVector,
         triangleVector,
-        objVector
+        objVector,
+        fractaleCubeVector
     );
 }
 
