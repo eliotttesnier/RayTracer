@@ -22,6 +22,12 @@ class FractaleCube : public APrimitive {
         double getSize() const;
         void setSize(double size);
         Math::hitdata_t intersect(const Math::Ray &ray) override;
+        Graphic::color_t getColor(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
 
     private:
         double _size;
