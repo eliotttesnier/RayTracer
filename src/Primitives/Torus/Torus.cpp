@@ -9,6 +9,7 @@
 #include <string>
 #include <algorithm>
 #include <limits>
+#include <vector>
 #include "Torus.hpp"
 
 namespace RayTracer::primitive {
@@ -22,6 +23,10 @@ Torus::Torus()
     _majorRadius = 1.0;
     _minorRadius = 0.25;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    _boundingBox = AABB();
+    double totalRadius = _majorRadius + _minorRadius;
+    _boundingBox.min = Math::Point3D(-totalRadius, -_minorRadius, -totalRadius);
+    _boundingBox.max = Math::Point3D(totalRadius, _minorRadius, totalRadius);
 }
 
 Torus::Torus(const Math::Point3D &position, double majorRadius, double minorRadius)
@@ -33,6 +38,10 @@ Torus::Torus(const Math::Point3D &position, double majorRadius, double minorRadi
     _majorRadius = majorRadius;
     _minorRadius = minorRadius;
     _anchorPoint = Math::Vector3D(0, 0, 0);
+    _boundingBox = AABB();
+    double totalRadius = _majorRadius + _minorRadius;
+    _boundingBox.min = Math::Point3D(-totalRadius, -_minorRadius, -totalRadius);
+    _boundingBox.max = Math::Point3D(totalRadius, _minorRadius, totalRadius);
 }
 
 double Torus::getMajorRadius() const
@@ -43,6 +52,11 @@ double Torus::getMajorRadius() const
 void Torus::setMajorRadius(double radius)
 {
     _majorRadius = radius;
+    double totalRadius = _majorRadius + _minorRadius;
+    _boundingBox.min._x = -totalRadius;
+    _boundingBox.min._z = -totalRadius;
+    _boundingBox.max._x = totalRadius;
+    _boundingBox.max._z = totalRadius;
 }
 
 double Torus::getMinorRadius() const
@@ -53,6 +67,13 @@ double Torus::getMinorRadius() const
 void Torus::setMinorRadius(double radius)
 {
     _minorRadius = radius;
+    double totalRadius = _majorRadius + _minorRadius;
+    _boundingBox.min._x = -totalRadius;
+    _boundingBox.min._y = -_minorRadius;
+    _boundingBox.min._z = -totalRadius;
+    _boundingBox.max._x = totalRadius;
+    _boundingBox.max._y = _minorRadius;
+    _boundingBox.max._z = totalRadius;
 }
 
 Math::Vector3D Torus::normalAt(const Math::Point3D& point) const
@@ -88,6 +109,9 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
     Math::hitdata_t hitData;
     hitData.hit = false;
     hitData.color = {255.0, 255.0, 0.0, 1.0};  // Yellow
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     const int MAX_STEPS = 128;
     const double EPSILON = 0.0001;
@@ -125,6 +149,22 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
     }
 
     return hitData;
+}
+
+Graphic::color_t Torus::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }  // namespace Raytracer::primitive

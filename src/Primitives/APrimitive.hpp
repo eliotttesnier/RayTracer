@@ -9,8 +9,23 @@
 #define APRIMITIVE_HPP_
 
 #include <cmath>
+#include <limits>
 
+#include "../Materials/IMaterial.hpp"
 #include "IPrimitive.hpp"
+
+namespace RayTracer::primitive {
+
+struct AABB {
+    Math::Point3D min;
+    Math::Point3D max;
+
+    AABB() : min(std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), std::numeric_limits<double>::max()),
+             max(std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest(), std::numeric_limits<double>::lowest()) {}
+
+    bool intersect(const Math::Ray &ray) const;
+    void expand(const Math::Point3D &point);
+};
 
 class APrimitive : public IPrimitive {
     protected:
@@ -19,7 +34,10 @@ class APrimitive : public IPrimitive {
         Math::Point3D _position;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
+        Math::Vector3D _shear;
         Math::Vector3D _anchorPoint;
+        std::shared_ptr<RayTracer::Materials::IMaterial> _material;
+        AABB _boundingBox;
 
     public:
         virtual ~APrimitive() = default;
@@ -29,6 +47,7 @@ class APrimitive : public IPrimitive {
         const std::string getType() const override;
         const Math::Point3D getPosition() const override;
         const Math::Vector3D getRotation() const override;
+        const Math::Vector3D getShear() const override;
 
         // Setters
         void setName(const std::string &name) override;
@@ -36,6 +55,8 @@ class APrimitive : public IPrimitive {
         void setPosition(const Math::Point3D &position) override;
         void setRotation(const Math::Vector3D &rotation) override;
         void setScale(const Math::Vector3D &scale) override;
+        void setShear(const Math::Vector3D &shear) override;
+        void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;
@@ -60,5 +81,7 @@ class APrimitive : public IPrimitive {
         void rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
                                 double cosY, double sinY, double cosZ, double sinZ) const;
 };
+
+} // namespace RayTracer::primitive
 
 #endif /* !APRIMITIVE_HPP_ */

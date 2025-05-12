@@ -24,6 +24,13 @@ class Plane : public APrimitive {
         double getHeight() const;
         void setHeight(double height);
 
+        Graphic::color_t getColor(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+
     private:
         double _width;
         double _height;

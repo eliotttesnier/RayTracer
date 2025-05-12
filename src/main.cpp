@@ -35,6 +35,8 @@ int main(int ac, char **av) {
 
             if (renderThread.joinable())
                 renderThread.join();
+            graphicRenderer.switchToFinalImage();
+            graphicRenderer.exportToPNG("output.png");
         } catch (const std::exception &e) {
             std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
             return 1;

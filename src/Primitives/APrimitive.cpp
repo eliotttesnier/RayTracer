@@ -9,6 +9,9 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <memory>
+
+namespace RayTracer::primitive {
 
 const std::string APrimitive::getName() const
 {
@@ -28,6 +31,11 @@ const Math::Point3D APrimitive::getPosition() const
 const Math::Vector3D APrimitive::getRotation() const
 {
     return _rotation;
+}
+
+const Math::Vector3D APrimitive::getShear() const
+{
+    return _shear;
 }
 
 void APrimitive::setName(const std::string &name)
@@ -54,6 +62,16 @@ void APrimitive::setScale(const Math::Vector3D &scale) {
     _scale = scale;
 }
 
+void APrimitive::setShear(const Math::Vector3D &shear)
+{
+    _shear = shear;
+}
+
+void APrimitive::setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material)
+{
+    _material = material;
+}
+
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;
@@ -72,41 +90,11 @@ Graphic::color_t APrimitive::getColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    if (lights.empty()) {
-        return hitData.color;
-    }
-
-    Graphic::color_t baseColor = hitData.color;
-
-    Graphic::color_t finalColor = {
-        baseColor.r * 0.05,
-        baseColor.g * 0.05,
-        baseColor.b * 0.05,
-        baseColor.a
-    };
-
-    Math::Vector3D viewDir = -ray.direction.normalized();
-
-    for (const auto& light : lights) {
-        if (light->intersect(ray, hitData.point, primitives)) {
-            Graphic::color_t lightContribution =
-                light->calculateLighting(hitData, ray, viewDir);
-
-            finalColor.r += lightContribution.r;
-            finalColor.g += lightContribution.g;
-            finalColor.b += lightContribution.b;
-        }
-    }
-
-    finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
-    finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
-    finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
-
-    finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
-    finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
-    finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
-
-    return finalColor;
+    (void) hitData;
+    (void) ray;
+    (void) lights;
+    (void) primitives;
+    return Graphic::color_t{0.0, 0.0, 0.0, 1.0};
 }
 
 Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
@@ -127,6 +115,9 @@ Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
         ray.origin._z - _position._z
     );
 
+    localOrigin._x -= _shear._x * localOrigin._y + _shear._y * localOrigin._z;
+    localOrigin._y -= _shear._z * localOrigin._z;
+
     rotatePointToLocal(localOrigin, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != 0) localOrigin._x /= _scale._x;
@@ -134,6 +125,10 @@ Math::Ray APrimitive::transformRayToLocal(const Math::Ray &ray) const
     if (_scale._z != 0) localOrigin._z /= _scale._z;
 
     Math::Vector3D localDirection = ray.direction;
+
+    localDirection._x -= _shear._x * localDirection._y + _shear._y * localDirection._z;
+    localDirection._y -= _shear._z * localDirection._z;
+
     rotateVectorToLocal(localDirection, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != _scale._y || _scale._y != _scale._z || _scale._x != _scale._z) {
@@ -164,6 +159,9 @@ Math::Point3D APrimitive::transformPointToLocal(const Math::Point3D &point) cons
         point._z - _position._z
     );
 
+    localPoint._x -= _shear._x * localPoint._y + _shear._y * localPoint._z;
+    localPoint._y -= _shear._z * localPoint._z;
+
     rotatePointToLocal(localPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
     if (_scale._x != 0) localPoint._x /= _scale._x;
@@ -192,6 +190,9 @@ Math::Point3D APrimitive::transformPointToWorld(const Math::Point3D &localPoint)
 
     rotatePointToWorld(worldPoint, cosX, sinX, cosY, sinY, cosZ, sinZ);
 
+    worldPoint._x += _shear._x * worldPoint._y + _shear._y * worldPoint._z;
+    worldPoint._y += _shear._z * worldPoint._z;
+
     worldPoint._x += _position._x;
     worldPoint._y += _position._y - _anchorPoint._y;
     worldPoint._z += _position._z;
@@ -215,6 +216,11 @@ Math::Vector3D APrimitive::transformNormalToWorld(const Math::Vector3D &localNor
     scaledNormal._x *= (_scale._x != 0) ? (1.0 / _scale._x) : 1.0;
     scaledNormal._y *= (_scale._y != 0) ? (1.0 / _scale._y) : 1.0;
     scaledNormal._z *= (_scale._z != 0) ? (1.0 / _scale._z) : 1.0;
+
+    if (_shear._x != 0 || _shear._y != 0 || _shear._z != 0) {
+        scaledNormal._y -= _shear._x * scaledNormal._x;
+        scaledNormal._z -= _shear._y * scaledNormal._x + _shear._z * scaledNormal._y;
+    }
 
     Math::Vector3D worldNormal = scaledNormal;
     rotateVectorToWorld(worldNormal, cosX, sinX, cosY, sinY, cosZ, sinZ);
@@ -285,4 +291,36 @@ void APrimitive::rotateVectorToWorld(Math::Vector3D &vector, double cosX, double
     origX = vector._x;
     vector._x = cosZ * origX - sinZ * vector._y;
     vector._y = sinZ * origX + cosZ * vector._y;
+}
+
+bool AABB::intersect(const Math::Ray &ray) const
+{
+    double tx1 = (min._x - ray.origin._x) / ray.direction._x;
+    double tx2 = (max._x - ray.origin._x) / ray.direction._x;
+    double tmin = std::min(tx1, tx2);
+    double tmax = std::max(tx1, tx2);
+
+    double ty1 = (min._y - ray.origin._y) / ray.direction._y;
+    double ty2 = (max._y - ray.origin._y) / ray.direction._y;
+    tmin = std::max(tmin, std::min(ty1, ty2));
+    tmax = std::min(tmax, std::max(ty1, ty2));
+
+    double tz1 = (min._z - ray.origin._z) / ray.direction._z;
+    double tz2 = (max._z - ray.origin._z) / ray.direction._z;
+    tmin = std::max(tmin, std::min(tz1, tz2));
+    tmax = std::min(tmax, std::max(tz1, tz2));
+
+    return tmax >= tmin && tmax > 0;
+}
+
+void AABB::expand(const Math::Point3D &point)
+{
+    min._x = std::min(min._x, point._x);
+    min._y = std::min(min._y, point._y);
+    min._z = std::min(min._z, point._z);
+
+    max._x = std::max(max._x, point._x);
+    max._y = std::max(max._y, point._y);
+    max._z = std::max(max._z, point._z);
+}
 }

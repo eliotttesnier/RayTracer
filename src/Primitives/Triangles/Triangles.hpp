@@ -26,6 +26,13 @@ class Triangles : public APrimitive {
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
 
+        Graphic::color_t getColor(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+
     private:
         Math::Point3D _p1, _p2, _p3;
         Math::Vector3D _normal;

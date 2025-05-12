@@ -55,7 +55,7 @@ class Renderer {
         double _aspectRatio;
         double _fov;
         std::mutex _mutex;
-        std::atomic<int> _completedLines{0};
+        std::atomic<int> _completedPixels{0};
         bool _showProgress{true};
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         double _pixelsPerSecond{0.0};

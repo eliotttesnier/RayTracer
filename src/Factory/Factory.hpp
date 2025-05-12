@@ -18,15 +18,17 @@
 
 namespace RayTracer::Factory {
 
+typedef std::tuple<std::vector<std::shared_ptr<IPrimitive>>, std::vector<std::shared_ptr<ILight>>, std::shared_ptr<RayTracer::Camera>> scene_t;
 class Factory {
-private:
-public:
-    static std::tuple<std::vector<std::shared_ptr<IPrimitive>>, std::vector<std::shared_ptr<ILight>>, std::shared_ptr<RayTracer::Camera>> createElement(const Parser::CameraConfig &camera,
-                                                      const Parser::PrimitivesConfig &scene,
-                                                      const Parser::LightsConfig &light,
-                                                      std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins);
-    Factory() = default;
-    ~Factory() = default;
+    public:
+        static scene_t createElement(
+            const Parser::CameraConfig &camera,
+            const Parser::PrimitivesConfig &scene,
+            const Parser::LightsConfig &light,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+        );
+        Factory() = default;
+        ~Factory() = default;
 };
 
 } // Raytracer::Factory

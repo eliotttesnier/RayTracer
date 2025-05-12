@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <tuple>
+#include <vector>
 #include "Plane.hpp"
 
 namespace RayTracer::primitive {
@@ -20,6 +21,9 @@ Plane::Plane()
     _rectangle = RayTracer::Rectangle3D(_position,
                                         Math::Vector3D(_width, 0, 0),
                                         Math::Vector3D(0, 0, _height));
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_width/2.0, -0.001, -_height/2.0);
+    _boundingBox.max = Math::Point3D(_width/2.0, 0.001, _height/2.0);
 }
 
 Plane::Plane(const Math::Point3D &position,
@@ -35,6 +39,9 @@ Plane::Plane(const Math::Point3D &position,
     _rectangle = RayTracer::Rectangle3D(_position,
                                         Math::Vector3D(_width, 0, 0),
                                         Math::Vector3D(0, 0, _height));
+    _boundingBox = AABB();
+    _boundingBox.min = Math::Point3D(-_width/2.0, -0.001, -_height/2.0);
+    _boundingBox.max = Math::Point3D(_width/2.0, 0.001, _height/2.0);
 }
 
 double Plane::getWidth() const
@@ -48,6 +55,8 @@ void Plane::setWidth(double width)
     _rectangle = RayTracer::Rectangle3D(_position,
                                         Math::Vector3D(_width, 0, 0),
                                         Math::Vector3D(0, 0, _height));
+    _boundingBox.min._x = -_width/2.0;
+    _boundingBox.max._x = _width/2.0;
 }
 
 double Plane::getHeight() const
@@ -61,6 +70,8 @@ void Plane::setHeight(double height)
     _rectangle = RayTracer::Rectangle3D(_position,
                                         Math::Vector3D(_width, 0, 0),
                                         Math::Vector3D(0, 0, _height));
+    _boundingBox.min._z = -_height/2.0;
+    _boundingBox.max._z = _height/2.0;
 }
 
 Math::Vector3D Plane::normalAt(const Math::Point3D& point) const
@@ -75,6 +86,9 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
     Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
     hitData.hit = false;
+
+    if (!_boundingBox.intersect(localRay))
+        return hitData;
 
     if (std::abs(localRay.direction._y) > 0.001) {
         double t = -localRay.origin._y / localRay.direction._y;
@@ -104,6 +118,22 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
 
     hitData.color = {128.0, 128.0, 128.0, 1.0};  // Gray
     return hitData;
+}
+
+Graphic::color_t Plane::getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    return _material->calculateColor(
+        *this,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
 }
 
 }

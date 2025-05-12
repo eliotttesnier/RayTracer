@@ -19,6 +19,13 @@ Vector3D::Vector3D(double x, double y, double z) : _x(x), _y(y), _z(z)
 {
 }
 
+Vector3D::Vector3D(const std::tuple<double, double, double> &tuple)
+{
+    _x = std::get<0>(tuple);
+    _y = std::get<1>(tuple);
+    _z = std::get<2>(tuple);
+}
+
 double Vector3D::length() const
 {
     return std::sqrt(_x * _x + _y * _y + _z * _z);

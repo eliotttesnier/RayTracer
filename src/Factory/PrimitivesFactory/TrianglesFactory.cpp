@@ -10,28 +10,36 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <stdexcept>
+#include <vector>
 
+#include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Triangles/Triangles.hpp"
 
 RayTracer::Factory::TrianglesFactory::TrianglesFactory(
-            const Math::Point3D &p1,
-            const Math::Point3D &p2,
-            const Math::Point3D &p3,
-            const Math::Vector3D &rotation,
-            const Math::Vector3D &scale):
+    const Math::Point3D &p1,
+    const Math::Point3D &p2,
+    const Math::Point3D &p3,
+    const Math::Vector3D &rotation,
+    const Math::Vector3D &scale,
+    const Math::Vector3D &shear,
+    const std::vector<std::string> &materials
+):
     _p1(p1),
     _p2(p2),
     _p3(p3),
     _rotation(rotation),
-    _scale(scale)
+    _scale(scale),
+    _shear(shear),
+    _materials(materials)
 {
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(
-            std::map<std::string,
-            std::unique_ptr<Loader::LibLoader>> &plugins) const
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+) const
 {
-    if (!plugins.contains("Triangles"))
+    if (plugins.find("Triangles") == plugins.end())
         throw std::runtime_error("Triangles plugin not found");
     auto obj = plugins["Triangles"]->initEntryPointPtr<primitive::Triangles>(
         "create",
@@ -41,5 +49,12 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
+    obj->setShear(this->_shear);
+    std::shared_ptr<RayTracer::Materials::IMaterial> material =
+        RayTracer::Factory::MaterialFactory::createMaterial(
+        this->_materials,
+        plugins
+    );
+    obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }
