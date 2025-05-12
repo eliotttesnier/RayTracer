@@ -31,6 +31,8 @@ namespace RayTracer::primitive {
     class Triangles;
     class OBJ;
     class FractaleCube;
+    class InfiniteCone;
+    class InfiniteCylinder;
 }
 
 namespace RayTracer::Materials {
