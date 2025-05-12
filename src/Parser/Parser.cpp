@@ -576,13 +576,9 @@ std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(
         const auto &infiniteCylinders = root["primitives"]["infiniteCylinders"];
         for (int i = 0; i < infiniteCylinders.getLength(); ++i) {
             const auto &c = infiniteCylinders[i];
-            std::vector<std::string> materials;
-            if (c.exists("materials")) {
-                const auto &mats = c["materials"];
-                for (int j = 0; j < mats.getLength(); ++j) {
-                    materials.push_back(mats[j].c_str());
-                }
-            }
+            double transparency = c["transparency"];
+            double reflection = c["reflection"];
+            double refraction = c["refraction"];
             const auto &position = c["position"];
             const auto &rotation = c["rotation"];
             const auto &scale = c["scale"];
@@ -605,7 +601,7 @@ std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(
             int cg = color["g"];
             int cb = color["b"];
             infiniteCylinderVector.emplace_back(
-                materials,
+                std::make_tuple(transparency, reflection, refraction),
                 std::make_tuple(px, py, pz, radius),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
@@ -635,13 +631,9 @@ std::vector<infinitecone_t> Parser::_getInfiniteConesData(const libconfig::Setti
         const auto &infiniteCones = root["primitives"]["infiniteCones"];
         for (int i = 0; i < infiniteCones.getLength(); ++i) {
             const auto &c = infiniteCones[i];
-            std::vector<std::string> materials;
-            if (c.exists("materials")) {
-                const auto &mats = c["materials"];
-                for (int j = 0; j < mats.getLength(); ++j) {
-                    materials.push_back(mats[j].c_str());
-                }
-            }
+            double transparency = c["transparency"];
+            double reflection = c["reflection"];
+            double refraction = c["refraction"];
             const auto &position = c["position"];
             const auto &rotation = c["rotation"];
             const auto &scale = c["scale"];
@@ -664,7 +656,7 @@ std::vector<infinitecone_t> Parser::_getInfiniteConesData(const libconfig::Setti
             int cg = color["g"];
             int cb = color["b"];
             infiniteConeVector.emplace_back(
-                materials,
+                std::make_tuple(transparency, reflection, refraction),
                 std::make_tuple(px, py, pz, angle),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
