@@ -5,8 +5,13 @@
 ** TransparencyMaterial
 */
 
-#include <memory>
 #include <vector>
+#include <cmath>
+#include <algorithm>
+#include <limits>
+#include <memory>
+
+#include <iostream>
 
 #include "TransparencyMaterial.hpp"
 
@@ -18,9 +23,66 @@ TransparencyMaterial::TransparencyMaterial(
 )
     : _wrappee(wrappee), _transparency(transparency)
 {
+    std::cout << "TransparencyMaterial created with transparency: " << transparency << std::endl;
 }
 
 TransparencyMaterial::~TransparencyMaterial() = default;
+
+Graphic::color_t TransparencyMaterial::_calculateRatioColor(
+    Graphic::color_t origin,
+    Graphic::color_t behind
+)
+{
+    double mult = _transparency / 100.0;
+
+    Graphic::color_t resultColor = {
+        behind.r * mult
+        + origin.r * (1.0 - mult),
+        behind.g * mult
+        + origin.g * (1.0 - mult),
+        behind.b * mult
+        + origin.b * (1.0 - mult),
+        behind.a * mult
+        + origin.a * (1.0 - mult),
+    };
+    return resultColor;
+}
+
+Graphic::color_t TransparencyMaterial::_getBehindColor(
+    const Math::Ray &ray,
+    const Math::Point3D &hitPoint,
+    std::vector<std::shared_ptr<IPrimitive>> primitives,
+    std::vector<std::shared_ptr<ILight>> lights
+)
+{
+    Graphic::color_t behindColor = {0.0, 0.0, 0.0, 1.0};
+
+    double closestDist = std::numeric_limits<double>::max();
+    bool hit = false;
+    Math::hitdata_t closestHitData;
+    std::shared_ptr<IPrimitive> closestPrimitive;
+
+    for (const auto& primitive : primitives) {
+        Math::hitdata_t hitData = primitive->intersect(ray);
+
+        if (hitData.hit && hitData.distance < closestDist) {
+            closestDist = hitData.distance;
+            closestHitData = hitData;
+            closestPrimitive = primitive;
+            hit = true;
+        }
+    }
+
+    if (hit) {
+        behindColor = closestPrimitive->getColor(
+            closestHitData,
+            ray,
+            lights,
+            primitives
+        );
+    }
+    return behindColor;
+}
 
 Graphic::color_t TransparencyMaterial::calculateColor(
     const RayTracer::primitive::Cone &obj,
@@ -30,13 +92,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Cone *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -47,13 +127,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Cylinder *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -64,13 +162,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Plane *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -81,13 +197,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Sphere *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -98,13 +232,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Torus *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -115,13 +267,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Tanglecube *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -132,13 +302,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Triangles *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 Graphic::color_t TransparencyMaterial::calculateColor(
@@ -149,13 +337,31 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
-    return _wrappee->calculateColor(
+    Graphic::color_t originColor = _wrappee->calculateColor(
         obj,
         hitData,
         ray,
         lights,
         primitives
     );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::OBJ *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
 }
 
 }

@@ -10,11 +10,20 @@
 
 #include <memory>
 
-#include "../IMaterial.hpp"
+#include "../../Primitives/Cone/Cone.hpp"
+#include "../../Primitives/Cylinder/Cylinder.hpp"
+#include "../../Primitives/Plane/Plane.hpp"
+#include "../../Primitives/Sphere/Sphere.hpp"
+#include "../../Primitives/Torus/Torus.hpp"
+#include "../../Primitives/Tanglecube/Tanglecube.hpp"
+#include "../../Primitives/Triangles/Triangles.hpp"
+#include "../../Primitives/OBJ/OBJ.hpp"
+
+#include "../AMaterial.hpp"
 
 namespace RayTracer::Materials {
 
-class TransparencyMaterial : public IMaterial {
+class TransparencyMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
@@ -80,6 +89,16 @@ class TransparencyMaterial : public IMaterial {
     private:
         std::shared_ptr<IMaterial> _wrappee;
         double _transparency;
+        Graphic::color_t _calculateRatioColor(
+            Graphic::color_t origin,
+            Graphic::color_t behind
+        );
+        Graphic::color_t _getBehindColor(
+            const Math::Ray &ray,
+            const Math::Point3D &hitPoint,
+            std::vector<std::shared_ptr<IPrimitive>> primitives,
+            std::vector<std::shared_ptr<ILight>> lights
+        );
 };
 
 }
