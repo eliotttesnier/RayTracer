@@ -11,6 +11,7 @@
 #include <limits>
 #include <vector>
 #include <utility>
+#include <tuple>
 
 namespace RayTracer::primitive {
 
