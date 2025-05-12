@@ -16,7 +16,8 @@ PrimitivesConfig::PrimitivesConfig(
     const std::vector<torus_t> &toruses,
     const std::vector<tanglecube_t> &tanglecubes,
     const std::vector<triangle_t> &triangles,
-    const std::vector<obj_t> &objs
+    const std::vector<obj_t> &objs,
+    const std::vector<fractalecube_t> &fractalecubes
 ) :
 _spheres(spheres),
 _cylinders(cylinders),
@@ -25,7 +26,8 @@ _planes(planes),
 _toruses(toruses),
 _tanglecubes(tanglecubes),
 _triangles(triangles),
-_objs(objs)
+_objs(objs),
+_fractalecubes(fractalecubes)
 {
 }
 
@@ -59,6 +61,10 @@ std::vector<triangle_t> PrimitivesConfig::getTriangles() const {
 
 std::vector<obj_t> PrimitivesConfig::getOBJs() const {
     return this->_objs;
+}
+
+std::vector<fractalecube_t> PrimitivesConfig::getFractaleCubes() const {
+    return this->_fractalecubes;
 }
 
 }
