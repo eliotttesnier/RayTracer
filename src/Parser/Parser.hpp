@@ -18,6 +18,19 @@ namespace RayTracer::Parser {
 
 class Parser {
     private:
+        template<typename T>
+        static std::tuple<T, T, T> _getData3D(const libconfig::Setting &pos,
+                                              const std::string &fst = "x",
+                                              const std::string &snd = "y",
+                                              const std::string &trd = "z") {
+            return std::make_tuple(static_cast<T>(pos[fst]),
+                                   static_cast<T>(pos[snd]),
+                                   static_cast<T>(pos[trd]));
+        }
+        template<typename T>
+        static std::tuple<T, T> _getData2D(const libconfig::Setting &pos, const std::string &fst = "x", const std::string &snd = "y") {
+            return std::make_tuple(static_cast<T>(pos[fst]), static_cast<T>(pos[snd]));
+        }
         std::unique_ptr<CameraConfig> _camConfig;
         std::unique_ptr<LightsConfig> _lightConfig;
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;

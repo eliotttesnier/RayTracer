@@ -15,30 +15,20 @@ namespace RayTracer::Parser {
 void Parser::_getCameraData(const libconfig::Setting &root)
 {
     const auto &camera = root["camera"];
-    const auto &res = camera["resolution"];
-    const auto &pos = camera["position"];
-    const auto &rot = camera["rotation"];
-
-    int width = res.lookup("width");
-    int height = res.lookup("height");
-    double x = pos.lookup("x");
-    double y = pos.lookup("y");
-    double z = pos.lookup("z");
-
-    double rx = rot.lookup("x");
-    double ry = rot.lookup("y");
-    double rz = rot.lookup("z");
+    auto resolution = this->_getData2D<int>(camera["resolution"], "width", "height");
+    auto position = this->_getData3D<double>(camera["position"]);
+    auto rotation = this->_getData3D<double>(camera["rotation"]);
     double fov = camera["fieldOfView"];
     #ifdef _DEBUG
-        std::cout << "Camera: " << width << "x" << height << ", "
-            << "pos(" << x << ", " << y << ", " << z << "), "
-            << "rota(" << rx << ", " << ry << ", " << rz << "), "
+        std::cout << "Camera: " << std::get<0>(resolution) << "x" << std::get<1>(resolution) << ", "
+            << "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
+            << "rota(" <<  std::get<0>(rotation) << ", " << std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), "
             << "fov(" << fov << ")" << std::endl;
     #endif
     this->_camConfig = std::make_unique<CameraConfig>(
-        std::make_tuple(width, height),
-        std::make_tuple(x, y, z),
-        std::make_tuple(rx, ry, rz),
+        resolution,
+        position,
+        rotation,
         fov
     );
 }
@@ -49,43 +39,27 @@ std::vector<sphere_t> Parser::_getSpheresData(const libconfig::Setting &root)
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
-        double transparency = s["transparency"];
-        double reflection = s["reflection"];
-        double refraction = s["refraction"];
-        const auto &position = s["position"];
-        const auto &rotation = s["rotation"];
-        const auto &scale = s["scale"];
-        const auto &shear = s["shear"];
-        const auto &color = s["color"];
-        double px = position["x"];
-        double py = position["y"];
-        double pz = position["z"];
-        double rx = rotation["x"];
-        double ry = rotation["y"];
-        double rz = rotation["z"];
-        double sx = scale["x"];
-        double sy = scale["y"];
-        double sz = scale["z"];
-        double shx = shear["x"];
-        double shy = shear["y"];
-        double shz = shear["z"];
+        material_t material = this->_getData3D<double>(s,"transparency", "reflection", "refraction");
+        auto position = this->_getData3D<double>(s["position"]);
+        auto rotation = this->_getData3D<double>(s["rotation"]);
+        auto scl = this->_getData3D<double>(s["scale"]);
+        auto shear = this->_getData3D<double>(s["shear"]);
+        auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
         double radius = s["r"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
         spheresVector.emplace_back(
-            std::make_tuple(transparency, reflection, refraction),
-            std::make_tuple(px, py, pz, radius),
-            std::make_tuple(rx, ry, rz),
-            std::make_tuple(sx, sy, sz),
-            std::make_tuple(shx, shy, shz),
-            std::make_tuple(cr, cg, cb)
+            material,
+            radius,
+            position,
+            rotation,
+            scl,
+            shear,
+            color
         );
         #ifdef _DEBUG
-            std::cout << "Sphere: pos(" << px << ", " << py << ", " << pz << "), "
+            std::cout << "Sphere: pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
                 << "r=" << radius << ", "
-                << "rota(" << rx << ", " << ry << ", " << rz << "), "
-                << "color(" << cr << ", " << cg << ", " << cb << ")\n";
+                << "rota(" <<  std::get<0>(rotation) << ", " << std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), "
+                << "color(" <<  std::get<0>(color) << ", " << std::get<1>(color) << ", " <<  std::get<2>(color) <<  ")\n";
         #endif
     }
 
@@ -98,44 +72,28 @@ std::vector<plane_t> Parser::_getPlanesData(const libconfig::Setting &root)
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
-        double transparency = p["transparency"];
-        double reflection = p["reflection"];
-        double refraction = p["refraction"];
+        material_t material = this->_getData3D<double>(p, "transparency", "reflection", "refraction");
+        auto position = this->_getData3D<double>(p["position"]);
+        auto rotation = this->_getData3D<double>(p["rotation"]);
+        auto scale = this->_getData3D<double>(p["scale"]);
+        auto shear = this->_getData3D<double>(p["shear"]);
+        auto color = this->_getData3D<int>(p["color"], "r", "g", "b");
         std::string axis = p["axis"];
-        const auto &position = p["position"];
-        const auto &rotation = p["rotation"];
-        const auto &scale = p["scale"];
-        const auto &shear = p["shear"];
-        const auto &color = p["color"];
-        double x = position["x"];
-        double y = position["y"];
-        double z = position["z"];
-        double rx = rotation["x"];
-        double ry = rotation["y"];
-        double rz = rotation["z"];
-        double sx = scale["x"];
-        double sy = scale["y"];
-        double sz = scale["z"];
-        double shx = shear["x"];
-        double shy = shear["y"];
-        double shz = shear["z"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
         planesVector.emplace_back(
-            std::make_tuple(transparency, reflection, refraction),
+            material,
             axis[0],
-            std::make_tuple(x, y, z),
-            std::make_tuple(rx, ry, rz),
-            std::make_tuple(sx, sy, sz),
-            std::make_tuple(shx, shy, shz),
-            std::make_tuple(cr, cg, cb)
+            position,
+            rotation,
+            scale,
+            shear,
+            color
         );
         #ifdef _DEBUG
             std::cout << "Plane: "
                 "axis=" << axis << ", "
-                "position(" << x << ", " << y << ", " << z << "), "
-                "color(" << cr << ", " << cg << ", " << cb << ")"
+                "position("  << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
+                "rotation("  << std::get<0>(rotation) << ", " <<  std::get<1>(rotation) << ", " << std::get<2>(rotation) << "), "
+                "color("  << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                 << std::endl;
         #endif
     }
@@ -151,45 +109,28 @@ std::vector<cylinder_t> Parser::_getCylindersData(const libconfig::Setting &root
 
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
-        double transparency = s["transparency"];
-        double reflection = s["reflection"];
-        double refraction = s["refraction"];
-        const auto &position = s["position"];
-        const auto &rotation = s["rotation"];
-        const auto &scale = s["scale"];
-        const auto &shear = s["shear"];
-        const auto &color = s["color"];
-        double px = position["x"];
-        double py = position["y"];
-        double pz = position["z"];
-        double rx = rotation["x"];
-        double ry = rotation["y"];
-        double rz = rotation["z"];
-        double sx = scale["x"];
-        double sy = scale["y"];
-        double sz = scale["z"];
-        double shx = shear["x"];
-        double shy = shear["y"];
-        double shz = shear["z"];
-        double radius = s["r"];
-        double height = s["h"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
+        material_t material = this->_getData3D<double>(s, "transparency", "reflection", "refraction");
+        auto position = this->_getData3D<double>(s["position"]);
+        auto rotation = this->_getData3D<double>(s["rotation"]);
+        auto scale = this->_getData3D<double>(s["scale"]);
+        auto shear = this->_getData3D<double>(s["shear"]);
+        auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
+        auto size = this->_getData2D<double>(s, "r", "h");
         cylinderVector.emplace_back(
-            std::make_tuple(transparency, reflection, refraction),
-            std::make_tuple(px, py, pz, radius, height),
-            std::make_tuple(rx, ry, rz),
-            std::make_tuple(sx, sy, sz),
-            std::make_tuple(shx, shy, shz),
-            std::make_tuple(cr, cg, cb)
+            material,
+            size,
+            position,
+            rotation,
+            scale,
+            shear,
+            color
         );
         #ifdef _DEBUG
             std::cout << "Cylinder: "
-                "pos(" << px << ", " << py << ", " << pz << "), "
-                "r=" << radius << ", "
-                "h=" << height << ", "
-                "color(" << cr << ", " << cg << ", " << cb << ")"
+                "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
+                "r=" << std::get<0>(size) << ", "
+                "h=" << std::get<1>(size) << ", "
+                "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                 << std::endl;
         #endif
     }
@@ -206,45 +147,28 @@ std::vector<cone_t> Parser::_getConesData(const libconfig::Setting &root)
 
         for (int i = 0; i < cone.getLength(); ++i) {
             const auto &s = cone[i];
-            double transparency = s["transparency"];
-            double reflection = s["reflection"];
-            double refraction = s["refraction"];
-            const auto &position = s["position"];
-            const auto &rotation = s["rotation"];
-            const auto &scale = s["scale"];
-            const auto &shear = s["shear"];
-            const auto &color = s["color"];
-            double px = position["x"];
-            double py = position["y"];
-            double pz = position["z"];
-            double rx = rotation["x"];
-            double ry = rotation["y"];
-            double rz = rotation["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            double radius = s["r"];
-            double height = s["h"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
+            material_t material = this->_getData3D<double>(s, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(s["position"]);
+            auto rotation = this->_getData3D<double>(s["rotation"]);
+            auto scale = this->_getData3D<double>(s["scale"]);
+            auto shear = this->_getData3D<double>(s["shear"]);
+            auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
+            auto size = this->_getData2D<double>(s, "r", "h");
             coneVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, radius, height),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                size,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Cone: "
-                    "pos(" << px << ", " << py << ", " << pz << "), "
-                    "r=" << radius << ", "
-                    "h=" << height << ", "
-                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
+                    "r=" << std::get<0>(size) << ", "
+                    "h=" << std::get<1>(size) << ", "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -268,43 +192,28 @@ std::vector<torus_t> Parser::_getTorusData(const libconfig::Setting &root)
 
         for (int i = 0; i < torus.getLength(); ++i) {
             const auto &s = torus[i];
-            double transparency = s["transparency"];
-            double reflection = s["reflection"];
-            double refraction = s["refraction"];
-            const auto &pos = s["position"];
-            const auto &rota = s["rotation"];
-            const auto &scale = s["scale"];
-            const auto &shear = s["shear"];
-            const auto &color = s["color"];
-            double px = pos["x"];
-            double py = pos["y"];
-            double pz = pos["z"];
-            double rx = rota["x"];
-            double ry = rota["y"];
-            double rz = rota["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            double majorRadius = s["R"];
-            double minorRadius = s["r"];
-            int cr = color["r"], cg = color["g"], cb = color["b"];
+            material_t material = this->_getData3D<double>(s, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(s["position"]);
+            auto rotation = this->_getData3D<double>(s["rotation"]);
+            auto scale = this->_getData3D<double>(s["scale"]);
+            auto shear = this->_getData3D<double>(s["shear"]);
+            auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
+            auto size = this->_getData2D<double>(s, "R", "r");
             torusVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, majorRadius, minorRadius),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                size,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Torus: "
-                    "pos(" << px << ", " << py << ", " << pz << "), "
-                    "R=" << majorRadius << ", "
-                    "r=" << minorRadius << ", "
-                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
+                    "R=" << std::get<0>(size) << ", "
+                    "r=" << std::get<1>(size) << ", "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -327,43 +236,27 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
 
         for (int i = 0; i < tanglecube.getLength(); ++i) {
             const auto &s = tanglecube[i];
-            double transparency = s["transparency"];
-            double reflection = s["reflection"];
-            double refraction = s["refraction"];
-            const auto &pos = s["position"];
-            const auto &rota = s["rotation"];
-            const auto &scale = s["scale"];
-            const auto &shear = s["shear"];
-            const auto &color = s["color"];
+            material_t material = this->_getData3D<double>(s, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>( s["position"]);
+            auto rotation = this->_getData3D<double>(s["rotation"]);
+            auto scale = this->_getData3D<double>(s["scale"]);
+            auto shear = this->_getData3D<double>(s["shear"]);
+            auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
             double size = s["size"];
-            double px = pos["x"];
-            double py = pos["y"];
-            double pz = pos["z"];
-            double rx = rota["x"];
-            double ry = rota["y"];
-            double rz = rota["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
             tangleCubeVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, size),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                size,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Tanglecube: "
-                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) <<  "), "
                     "size=" << size << ", "
-                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -385,45 +278,30 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
         const auto &fractalecubes = root["primitives"]["fractalecubes"];
         for (int i = 0; i < fractalecubes.getLength(); ++i) {
             const auto &s = fractalecubes[i];
-            double transparency = s["transparency"];
-            double reflection = s["reflection"];
-            double refraction = s["refraction"];
-            const auto &pos = s["position"];
-            const auto &rota = s["rotation"];
-            const auto &scale = s["scale"];
-            const auto &shear = s["shear"];
-            const auto &color = s["color"];
-            double px = pos["x"];
-            double py = pos["y"];
-            double pz = pos["z"];
+            material_t material = this->_getData3D<double>(s, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(s["position"]);
+            auto rotation = this->_getData3D<double>(s["rotation"]);
+            auto scale = this->_getData3D<double>(s["scale"]);
+            auto shear = this->_getData3D<double>(s["shear"]);
+            auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
             double size = s["size"];
             int recursion = s["recursion"];
-            double rx = rota["x"];
-            double ry = rota["y"];
-            double rz = rota["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
             fractaleCubeVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, size, recursion),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                size,
+                recursion,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "FractaleCube: "
-                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
                     "size=" << size << ", "
                     "recursion=" << recursion << ", "
-                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -444,55 +322,32 @@ std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root
 
         for (int i = 0; i < triangles.getLength(); ++i) {
             const auto &t = triangles[i];
-            double transparency = t["transparency"];
-            double reflection = t["reflection"];
-            double refraction = t["refraction"];
-            const auto &p1 = t["p1"];
-            const auto &p2 = t["p2"];
-            const auto &p3 = t["p3"];
-            const auto &rotation = t["rotation"];
-            const auto &scale = t["scale"];
-            const auto &shear = t["shear"];
-            const auto &color = t["color"];
-            double p1x = p1["x"];
-            double p1y = p1["y"];
-            double p1z = p1["z"];
-            double p2x = p2["x"];
-            double p2y = p2["y"];
-            double p2z = p2["z"];
-            double p3x = p3["x"];
-            double p3y = p3["y"];
-            double p3z = p3["z"];
-            double rx = rotation["x"];
-            double ry = rotation["y"];
-            double rz = rotation["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
+            material_t material = this->_getData3D<double>(t, "transparency", "reflection", "refraction");
+            auto p1 = this->_getData3D<double>(t["p1"]);
+            auto p2 = this->_getData3D<double>(t["p2"]);
+            auto p3 = this->_getData3D<double>(t["p3"]);
+            auto rotation = this->_getData3D<double>(t["rotation"]);
+            auto scale = this->_getData3D<double>(t["scale"]);
+            auto shear = this->_getData3D<double>(t["shear"]);
+            auto color = this->_getData3D<int>(t["color"], "r", "g", "b");
             triangleVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
+                material,
                 std::make_tuple(
-                    std::make_tuple(p1x, p1y, p1z),
-                    std::make_tuple(p2x, p2y, p2z),
-                    std::make_tuple(p3x, p3y, p3z)
+                    p1,
+                    p2,
+                    p3
                 ),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Triangle: "
-                    "p1(" << p1x << "," << p1y << "," << p1z << "), "
-                    "p2(" << p2x << "," << p2y << "," << p2z << "), "
-                    "p3(" << p3x << "," << p3y << "," << p3z << "), "
-                    "color(" << cr << "," << cg << "," << cb << ")"
+                    "p1(" << std::get<0>(p1) << "," << std::get<1>(p1) << "," << std::get<2>(p1) << "), "
+                    "p2(" << std::get<0>(p2) << "," << std::get<1>(p2) << "," << std::get<2>(p2) << "), "
+                    "p3(" << std::get<0>(p3) << "," << std::get<1>(p3) << "," << std::get<2>(p3) << "), "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -516,43 +371,28 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
 
         for (int i = 0; i < objs.getLength(); ++i) {
             const auto &o = objs[i];
-            double transparency = o["transparency"];
-            double reflection = o["reflection"];
-            double refraction = o["refraction"];
-            const auto &pos = o["position"];
-            const auto &rota = o["rotation"];
-            const auto &scale = o["scale"];
-            const auto &shear = o["shear"];
-            const auto &color = o["color"];
+            material_t material = this->_getData3D<double>(o, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(o["position"]);
+            auto rotation = this->_getData3D<double>(o["rotation"]);
+            auto scale = this->_getData3D<double>(o["scale"]);
+            auto shear = this->_getData3D<double>(o["shear"]);
+            auto color = this->_getData3D<int>(o["color"], "r", "g", "b");
             std::string filepath = o["filepath"].c_str();
-            double px = pos["x"];
-            double py = pos["y"];
-            double pz = pos["z"];
-            double rx = rota["x"];
-            double ry = rota["y"];
-            double rz = rota["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
+
             objVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, filepath),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                filepath,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "OBJ: "
-                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
                     "filepath=" << filepath << ", "
-                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -576,43 +416,27 @@ std::vector<infinitecylinder_t> Parser::_getInfiniteCylindersData(
         const auto &infiniteCylinders = root["primitives"]["infiniteCylinders"];
         for (int i = 0; i < infiniteCylinders.getLength(); ++i) {
             const auto &c = infiniteCylinders[i];
-            double transparency = c["transparency"];
-            double reflection = c["reflection"];
-            double refraction = c["refraction"];
-            const auto &position = c["position"];
-            const auto &rotation = c["rotation"];
-            const auto &scale = c["scale"];
-            const auto &shear = c["shear"];
-            const auto &color = c["color"];
-            double px = position["x"];
-            double py = position["y"];
-            double pz = position["z"];
-            double rx = rotation["x"];
-            double ry = rotation["y"];
-            double rz = rotation["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
+            material_t material = this->_getData3D<double>(c, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(c["position"]);
+            auto rotation = this->_getData3D<double>(c["rotation"]);
+            auto scale = this->_getData3D<double>(c["scale"]);
+            auto shear = this->_getData3D<double>(c["shear"]);
+            auto color = this->_getData3D<int>(c["color"], "r", "g", "b");
             double radius = c["r"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
             infiniteCylinderVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, radius),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                radius,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Infinite Cylinder: "
-                    << "pos(" << px << ", " << py << ", " << pz << "), "
+                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
                     << "r=" << radius << ", "
-                    << "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -631,43 +455,27 @@ std::vector<infinitecone_t> Parser::_getInfiniteConesData(const libconfig::Setti
         const auto &infiniteCones = root["primitives"]["infiniteCones"];
         for (int i = 0; i < infiniteCones.getLength(); ++i) {
             const auto &c = infiniteCones[i];
-            double transparency = c["transparency"];
-            double reflection = c["reflection"];
-            double refraction = c["refraction"];
-            const auto &position = c["position"];
-            const auto &rotation = c["rotation"];
-            const auto &scale = c["scale"];
-            const auto &shear = c["shear"];
-            const auto &color = c["color"];
-            double px = position["x"];
-            double py = position["y"];
-            double pz = position["z"];
-            double rx = rotation["x"];
-            double ry = rotation["y"];
-            double rz = rotation["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            double shx = shear["x"];
-            double shy = shear["y"];
-            double shz = shear["z"];
+            material_t material = this->_getData3D<double>(c, "transparency", "reflection", "refraction");
+            auto position = this->_getData3D<double>(c["position"]);
+            auto rotation = this->_getData3D<double>(c["rotation"]);
+            auto scale = this->_getData3D<double>(c["scale"]);
+            auto shear = this->_getData3D<double>(c["shear"]);
+            auto color = this->_getData3D<int>(c["color"], "r", "g", "b");
             double angle = c["angle"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
             infiniteConeVector.emplace_back(
-                std::make_tuple(transparency, reflection, refraction),
-                std::make_tuple(px, py, pz, angle),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(shx, shy, shz),
-                std::make_tuple(cr, cg, cb)
+                material,
+                angle,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
             );
             #ifdef _DEBUG
                 std::cout << "Infinite Cone: "
-                    << "pos(" << px << ", " << py << ", " << pz << "), "
+                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
                     << "angle=" << angle << ", "
-                    << "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
                     << std::endl;
             #endif
         }
@@ -723,17 +531,13 @@ ambient_t Parser::_getAmbientData(const libconfig::Setting &root)
     ambient_t ambientData;
 
     try {
-        const auto &ambient = root["lights"]["ambient"];
-        const auto &s = ambient[0];
-        const auto &color = s["color"];
+        const auto &s = root["lights"]["ambient"];
+        auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
         double intensity = s["intensity"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
-        ambientData = std::make_tuple(intensity, std::make_tuple(cr, cg, cb));
+        ambientData = std::make_tuple(intensity, color);
         #ifdef _DEBUG
             std::cout << "Ambient Light: intensity= "<< intensity
-                      << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+                      << ", color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
         #endif
     } catch (const libconfig::SettingNotFoundException &e) {
         std::cerr << "[WARNING] Ambient light not found in config" << std::endl;
@@ -752,30 +556,21 @@ std::vector<directional_t> Parser::_getDirectionalData(const libconfig::Setting 
 
     for (int i = 0; i < directional.getLength(); ++i) {
         const auto &s = directional[i];
+        auto direction = this->_getData3D<double>(s["direction"]);
+        auto position = this->_getData3D<double>(s["position"]);
+        auto color = this->_getData3D<int>(s["color"], "r", "g", "b");
         double intensity = s["intensity"];
-        const auto &direction = s["direction"];
-        const auto &position = s["position"];
-        const auto &color = s["color"];
-        double dx = direction["x"];
-        double dy = direction["y"];
-        double dz = direction["z"];
-        double px = position["x"];
-        double py = position["y"];
-        double pz = position["z"];
-        int cr = color["r"];
-        int cg = color["g"];
-        int cb = color["b"];
         directionalData.emplace_back(
             intensity,
-            std::make_tuple(px, py, pz),
-            std::make_tuple(dx, dy, dz),
-            std::make_tuple(cr, cg, cb)
+            position,
+            direction,
+            color
         );
         #ifdef _DEBUG
             std::cout << "Directional Light " << i << ": intensity= "<< intensity
-                    << ", direction(" << dx << ", " << dy << ", " << dz << ")"
-                    << ", position(" << px << ", " << py << ", " << pz << ")"
-                    << ", color(" << cr << ", " << cg << ", " << cb << ")" << std::endl;
+                    << ", direction(" << std::get<0>(direction) << ", " << std::get<1>(direction) << ", " << std::get<2>(direction) << ")"
+                    << ", position(" << std::get<0>(position) << ", " << std::get<1>(position) << ", " << std::get<2>(position) << ")"
+                    << ", color(" << std::get<0>(color) << ", " << std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
         #endif
     }
     return directionalData;
