@@ -6,6 +6,10 @@
 */
 
 #include <cmath>
+#include <string>
+#include <utility>
+#include <vector>
+#include <algorithm>
 #include <limits>
 #include "InfiniteCone.hpp"
 
@@ -29,7 +33,8 @@ InfiniteCone::InfiniteCone(const Math::Point3D &position, double angle)
     _angle = angle;
 }
 
-Math::hitdata_t InfiniteCone::calculateInfiniteConeIntersection(const Math::Ray &localRay) const
+Math::hitdata_t InfiniteCone::calculateInfiniteConeIntersection(
+    const Math::Ray &localRay) const
 {
     Math::hitdata_t hitData;
     hitData.hit = false;
@@ -62,7 +67,7 @@ Math::hitdata_t InfiniteCone::calculateInfiniteConeIntersection(const Math::Ray 
     if (t1 > t2)
         std::swap(t1, t2);
 
-    double t = t1;
+    double t = t1;  // Added extra space before comment
     if (t < 0.001)
         t = t2;
     if (t < 0.001)
@@ -116,4 +121,4 @@ Graphic::color_t InfiniteCone::getColor(
     );
 }
 
-} // namespace RayTracer::primitive
+}  // namespace RayTracer::primitive
