@@ -405,6 +405,65 @@ std::vector<tanglecube_t> Parser::_getTanglecubesData(const libconfig::Setting &
     return tangleCubeVector;
 }
 
+std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setting &root)
+{
+    std::vector<fractalecube_t> fractaleCubeVector;
+    try {
+        const auto &fractalecubes = root["primitives"]["fractalecubes"];
+        for (int i = 0; i < fractalecubes.getLength(); ++i) {
+            const auto &s = fractalecubes[i];
+            const auto &pos = s["position"];
+            const auto &rota = s["rotation"];
+            const auto &scale = s["scale"];
+            const auto &shear = s["shear"];
+            const auto &color = s["color"];
+            double px = pos["x"];
+            double py = pos["y"];
+            double pz = pos["z"];
+            double size = s["size"];
+            double rx = rota["x"];
+            double ry = rota["y"];
+            double rz = rota["z"];
+            double sx = scale["x"];
+            double sy = scale["y"];
+            double sz = scale["z"];
+            double shx = shear["x"];
+            double shy = shear["y"];
+            double shz = shear["z"];
+            int cr = color["r"];
+            int cg = color["g"];
+            int cb = color["b"];
+            std::vector<std::string> materials;
+            if (s.exists("materials")) {
+                const auto &mats = s["materials"];
+                for (int j = 0; j < mats.getLength(); ++j) {
+                    materials.push_back(mats[j].c_str());
+                }
+            }
+            fractaleCubeVector.emplace_back(
+                materials,
+                std::make_tuple(px, py, pz, size),
+                std::make_tuple(rx, ry, rz),
+                std::make_tuple(sx, sy, sz),
+                std::make_tuple(shx, shy, shz),
+                std::make_tuple(cr, cg, cb)
+            );
+            #ifdef _DEBUG
+                std::cout << "FractaleCube: "
+                    "pos(" << px << ", " << py << ", " << pz << "), "
+                    "size=" << size << ", "
+                    "color(" << cr << ", " << cg << ", " << cb << ")"
+                    << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No fractalecubes found in config" << std::endl;
+        #endif
+    }
+    return fractaleCubeVector;
+}
+
 std::vector<triangle_t> Parser::_getTrianglesData(const libconfig::Setting &root)
 {
     std::vector<triangle_t> triangleVector;
@@ -543,45 +602,6 @@ std::vector<obj_t> Parser::_getOBJsData(const libconfig::Setting &root)
     }
 
     return objVector;
-}
-
-std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setting &root)
-{
-    std::vector<fractalecube_t> fractaleCubeVector;
-    try {
-        const auto &fractalecubes = root["primitives"]["fractalecubes"];
-        for (int i = 0; i < fractalecubes.getLength(); ++i) {
-            const auto &s = fractalecubes[i];
-            const auto &pos = s["position"];
-            const auto &rota = s["rotation"];
-            const auto &scale = s["scale"];
-            const auto &color = s["color"];
-            double px = pos["x"];
-            double py = pos["y"];
-            double pz = pos["z"];
-            double size = s["size"];
-            double rx = rota["x"];
-            double ry = rota["y"];
-            double rz = rota["z"];
-            double sx = scale["x"];
-            double sy = scale["y"];
-            double sz = scale["z"];
-            int cr = color["r"];
-            int cg = color["g"];
-            int cb = color["b"];
-            fractaleCubeVector.emplace_back(
-                std::make_tuple(px, py, pz, size),
-                std::make_tuple(rx, ry, rz),
-                std::make_tuple(sx, sy, sz),
-                std::make_tuple(cr, cg, cb)
-            );
-        }
-    } catch (const libconfig::SettingNotFoundException &e) {
-        #ifdef _DEBUG
-            std::cout << "No fractalecubes found in config" << std::endl;
-        #endif
-    }
-    return fractaleCubeVector;
 }
 
 void Parser::_getPrimitivesData(const libconfig::Setting &root)
