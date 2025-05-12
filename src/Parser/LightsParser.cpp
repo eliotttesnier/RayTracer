@@ -2,12 +2,13 @@
 // Created by roussierenoa on 5/12/25.
 //
 
+#include <vector>
+#include <iostream>
 #include "LightsParser.hpp"
-
 #include "Parser.hpp"
 
-
-RayTracer::Parser::ambient_t RayTracer::Parser::LightsParser::getAmbientData(const libconfig::Setting &root)
+RayTracer::Parser::ambient_t
+    RayTracer::Parser::LightsParser::getAmbientData(const libconfig::Setting &root)
 {
     ambient_t ambientData;
 
@@ -18,7 +19,8 @@ RayTracer::Parser::ambient_t RayTracer::Parser::LightsParser::getAmbientData(con
         ambientData = std::make_tuple(intensity, color);
         #ifdef _DEBUG
             std::cout << "Ambient Light: intensity= "<< intensity
-                      << ", color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
+                      << ", color(" << std::get<0>(color) << ", " <<  std::get<1>(color) <<
+                          ", " << std::get<2>(color) << ")" << std::endl;
         #endif
     } catch (const libconfig::SettingNotFoundException &e) {
         std::cerr << "[WARNING] Ambient light not found in config" << std::endl;
@@ -30,7 +32,8 @@ RayTracer::Parser::ambient_t RayTracer::Parser::LightsParser::getAmbientData(con
     return ambientData;
 }
 
-std::vector<RayTracer::Parser::directional_t> RayTracer::Parser::LightsParser::getDirectionalData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::directional_t>
+    RayTracer::Parser::LightsParser::getDirectionalData(const libconfig::Setting &root)
 {
     std::vector<RayTracer::Parser::directional_t> directionalData;
     const auto &directional = root["lights"]["directional"];
@@ -49,9 +52,12 @@ std::vector<RayTracer::Parser::directional_t> RayTracer::Parser::LightsParser::g
         );
         #ifdef _DEBUG
             std::cout << "Directional Light " << i << ": intensity= "<< intensity
-                    << ", direction(" << std::get<0>(direction) << ", " << std::get<1>(direction) << ", " << std::get<2>(direction) << ")"
-                    << ", position(" << std::get<0>(position) << ", " << std::get<1>(position) << ", " << std::get<2>(position) << ")"
-                    << ", color(" << std::get<0>(color) << ", " << std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
+                    << ", direction(" << std::get<0>(direction) << ", " <<
+                        std::get<1>(direction) << ", " << std::get<2>(direction) << ")"
+                    << ", position(" << std::get<0>(position) << ", " <<
+                        std::get<1>(position) << ", " << std::get<2>(position) << ")"
+                    << ", color(" << std::get<0>(color) << ", " <<
+                        std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
         #endif
     }
     return directionalData;

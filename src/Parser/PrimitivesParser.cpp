@@ -2,17 +2,22 @@
 // Created by roussierenoa on 5/12/25.
 //
 
+#include <string>
+#include <vector>
+#include <iostream>
 #include "PrimitivesParser.hpp"
 
 #include "Parser.hpp"
 
-std::vector<RayTracer::Parser::sphere_t>RayTracer::Parser::PrimitivesParser::getSpheresData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::sphere_t>
+    RayTracer::Parser::PrimitivesParser::getSpheresData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(s,"transparency", "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getData3D<double>(
+            s, "transparency", "reflection", "refraction");
         auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
         auto scl = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -29,22 +34,26 @@ std::vector<RayTracer::Parser::sphere_t>RayTracer::Parser::PrimitivesParser::get
             color
         );
         #ifdef _DEBUG
-            std::cout << "Sphere: pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                << "r=" << radius << ", "
-                << "rota(" <<  std::get<0>(rotation) << ", " << std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), "
-                << "color(" <<  std::get<0>(color) << ", " << std::get<1>(color) << ", " <<  std::get<2>(color) <<  ")\n";
+            std::cout << "Sphere: pos(" << std::get<0>(position) << ", " <<
+                std::get<1>(position) << ", " << std::get<2>(position) << "), " << "r=" <<
+                radius << ", " << "rota(" <<  std::get<0>(rotation) << ", " <<
+                std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), " << "color("
+                <<  std::get<0>(color) << ", " << std::get<1>(color) << ", " <<
+                std::get<2>(color) <<  ")" << std::endl;
         #endif
     }
-
     return spheresVector;
 }
 
-std::vector<RayTracer::Parser::plane_t> RayTracer::Parser::PrimitivesParser::getPlanesData(const libconfig::Setting &root) {
+std::vector<RayTracer::Parser::plane_t>
+    RayTracer::Parser::PrimitivesParser::getPlanesData(const libconfig::Setting &root)
+{
     std::vector<plane_t> planesVector;
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(p, "transparency", "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getData3D<double>(p, "transparency",
+            "reflection", "refraction");
         auto position = RayTracer::Parser::Parser::getData3D<double>(p["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(p["rotation"]);
         auto scale = RayTracer::Parser::Parser::getData3D<double>(p["scale"]);
@@ -63,17 +72,18 @@ std::vector<RayTracer::Parser::plane_t> RayTracer::Parser::PrimitivesParser::get
         #ifdef _DEBUG
             std::cout << "Plane: "
                 "axis=" << axis << ", "
-                "position("  << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                "rotation("  << std::get<0>(rotation) << ", " <<  std::get<1>(rotation) << ", " << std::get<2>(rotation) << "), "
-                "color("  << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                << std::endl;
+                "position("  << std::get<0>(position) << ", " <<  std::get<1>(position) <<
+                ", " << std::get<2>(position) << "), rotation("  << std::get<0>(rotation)
+                << ", " <<  std::get<1>(rotation) << ", " << std::get<2>(rotation) << "), "
+                "color("  << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                << std::get<2>(color) << ")" << std::endl;
         #endif
     }
-
     return planesVector;
 }
 
-std::vector<RayTracer::Parser::cylinder_t>RayTracer::Parser::PrimitivesParser::getCylindersData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::cylinder_t>
+    RayTracer::Parser::PrimitivesParser::getCylindersData(const libconfig::Setting &root)
 {
     std::vector<cylinder_t> cylinderVector;
 
@@ -81,7 +91,8 @@ std::vector<RayTracer::Parser::cylinder_t>RayTracer::Parser::PrimitivesParser::g
 
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency", "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency",
+            "reflection", "refraction");
         auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
         auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -99,18 +110,20 @@ std::vector<RayTracer::Parser::cylinder_t>RayTracer::Parser::PrimitivesParser::g
         );
         #ifdef _DEBUG
             std::cout << "Cylinder: "
-                "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                "r=" << std::get<0>(size) << ", "
+                "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " <<
+                std::get<2>(position) << "), r=" << std::get<0>(size) << ", "
                 "h=" << std::get<1>(size) << ", "
-                "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                << std::endl;
+                "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " <<
+                std::get<2>(color) << ")"<< std::endl;
         #endif
     }
 
     return cylinderVector;
 }
 
-std::vector<RayTracer::Parser::cone_t> RayTracer::Parser::PrimitivesParser::getConesData(const libconfig::Setting &root) {
+std::vector<RayTracer::Parser::cone_t>
+    RayTracer::Parser::PrimitivesParser::getConesData(const libconfig::Setting &root)
+{
     std::vector<cone_t> coneVector;
 
     try {
@@ -118,7 +131,8 @@ std::vector<RayTracer::Parser::cone_t> RayTracer::Parser::PrimitivesParser::getC
 
         for (int i = 0; i < cone.getLength(); ++i) {
             const auto &s = cone[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -136,11 +150,11 @@ std::vector<RayTracer::Parser::cone_t> RayTracer::Parser::PrimitivesParser::getC
             );
             #ifdef _DEBUG
                 std::cout << "Cone: "
-                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                    "r=" << std::get<0>(size) << ", "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) <<
+                    ", " << std::get<2>(position) << "), r=" << std::get<0>(size) << ", "
                     "h=" << std::get<1>(size) << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                    << std::get<2>(color) << ")"<< std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -154,7 +168,9 @@ std::vector<RayTracer::Parser::cone_t> RayTracer::Parser::PrimitivesParser::getC
     return coneVector;
 }
 
-std::vector<RayTracer::Parser::torus_t> RayTracer::Parser::PrimitivesParser::getTorusData(const libconfig::Setting &root) {
+std::vector<RayTracer::Parser::torus_t>
+    RayTracer::Parser::PrimitivesParser::getTorusData(const libconfig::Setting &root)
+{
     std::vector<torus_t> torusVector;
 
     try {
@@ -162,7 +178,8 @@ std::vector<RayTracer::Parser::torus_t> RayTracer::Parser::PrimitivesParser::get
 
         for (int i = 0; i < torus.getLength(); ++i) {
             const auto &s = torus[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -180,11 +197,11 @@ std::vector<RayTracer::Parser::torus_t> RayTracer::Parser::PrimitivesParser::get
             );
             #ifdef _DEBUG
                 std::cout << "Torus: "
-                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                    "R=" << std::get<0>(size) << ", "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", "
+                    << std::get<2>(position) << "), R=" << std::get<0>(size) << ", "
                     "r=" << std::get<1>(size) << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                    << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -198,7 +215,8 @@ std::vector<RayTracer::Parser::torus_t> RayTracer::Parser::PrimitivesParser::get
     return torusVector;
 }
 
-std::vector<RayTracer::Parser::tanglecube_t>RayTracer::Parser::PrimitivesParser::getTangleCubesData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::tanglecube_t>
+    RayTracer::Parser::PrimitivesParser::getTangleCubesData(const libconfig::Setting &root)
 {
     std::vector<tanglecube_t> tangleCubeVector;
     try {
@@ -206,7 +224,8 @@ std::vector<RayTracer::Parser::tanglecube_t>RayTracer::Parser::PrimitivesParser:
 
         for (int i = 0; i < tanglecube.getLength(); ++i) {
             const auto &s = tanglecube[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>( s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -224,10 +243,11 @@ std::vector<RayTracer::Parser::tanglecube_t>RayTracer::Parser::PrimitivesParser:
             );
             #ifdef _DEBUG
                 std::cout << "Tanglecube: "
-                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) <<  "), "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) <<
+                        ", " << std::get<2>(position) <<  "), "
                     "size=" << size << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " <<
+                    std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -241,14 +261,16 @@ std::vector<RayTracer::Parser::tanglecube_t>RayTracer::Parser::PrimitivesParser:
     return tangleCubeVector;
 }
 
-std::vector<RayTracer::Parser::fractalecube_t>RayTracer::Parser::PrimitivesParser::getFractaleCubesData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::fractalecube_t>
+    RayTracer::Parser::PrimitivesParser::getFractaleCubesData(const libconfig::Setting &root)
 {
     std::vector<fractalecube_t> fractaleCubeVector;
     try {
         const auto &fractalecubes = root["primitives"]["fractalecubes"];
         for (int i = 0; i < fractalecubes.getLength(); ++i) {
             const auto &s = fractalecubes[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -268,11 +290,11 @@ std::vector<RayTracer::Parser::fractalecube_t>RayTracer::Parser::PrimitivesParse
             );
             #ifdef _DEBUG
                 std::cout << "FractaleCube: "
-                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-                    "size=" << size << ", "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position)
+                    << ", " << std::get<2>(position) << "), size=" << size << ", "
                     "recursion=" << recursion << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " <<
+                    std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -283,7 +305,8 @@ std::vector<RayTracer::Parser::fractalecube_t>RayTracer::Parser::PrimitivesParse
     return fractaleCubeVector;
 }
 
-std::vector<RayTracer::Parser::triangle_t>RayTracer::Parser::PrimitivesParser::getTrianglesData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::triangle_t>
+    RayTracer::Parser::PrimitivesParser::getTrianglesData(const libconfig::Setting &root)
 {
     std::vector<triangle_t> triangleVector;
 
@@ -292,7 +315,8 @@ std::vector<RayTracer::Parser::triangle_t>RayTracer::Parser::PrimitivesParser::g
 
         for (int i = 0; i < triangles.getLength(); ++i) {
             const auto &t = triangles[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(t, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(t,
+                "transparency", "reflection", "refraction");
             auto p1 = RayTracer::Parser::Parser::getData3D<double>(t["p1"]);
             auto p2 = RayTracer::Parser::Parser::getData3D<double>(t["p2"]);
             auto p3 = RayTracer::Parser::Parser::getData3D<double>(t["p3"]);
@@ -314,11 +338,14 @@ std::vector<RayTracer::Parser::triangle_t>RayTracer::Parser::PrimitivesParser::g
             );
             #ifdef _DEBUG
                 std::cout << "Triangle: "
-                    "p1(" << std::get<0>(p1) << "," << std::get<1>(p1) << "," << std::get<2>(p1) << "), "
-                    "p2(" << std::get<0>(p2) << "," << std::get<1>(p2) << "," << std::get<2>(p2) << "), "
-                    "p3(" << std::get<0>(p3) << "," << std::get<1>(p3) << "," << std::get<2>(p3) << "), "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "p1(" << std::get<0>(p1) << "," << std::get<1>(p1) << ","
+                        << std::get<2>(p1) << "), "
+                    "p2(" << std::get<0>(p2) << "," << std::get<1>(p2) << ","
+                        << std::get<2>(p2) << "), "
+                    "p3(" << std::get<0>(p3) << "," << std::get<1>(p3) << ","
+                        << std::get<2>(p3) << "), "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                        << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -332,7 +359,9 @@ std::vector<RayTracer::Parser::triangle_t>RayTracer::Parser::PrimitivesParser::g
     return triangleVector;
 }
 
-std::vector<RayTracer::Parser::obj_t> RayTracer::Parser::PrimitivesParser::getOBJsData(const libconfig::Setting &root) {
+std::vector<RayTracer::Parser::obj_t>
+    RayTracer::Parser::PrimitivesParser::getOBJsData(const libconfig::Setting &root)
+{
     std::vector<obj_t> objVector;
 
     try {
@@ -340,7 +369,8 @@ std::vector<RayTracer::Parser::obj_t> RayTracer::Parser::PrimitivesParser::getOB
 
         for (int i = 0; i < objs.getLength(); ++i) {
             const auto &o = objs[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(o, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(o,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(o["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(o["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(o["scale"]);
@@ -359,10 +389,10 @@ std::vector<RayTracer::Parser::obj_t> RayTracer::Parser::PrimitivesParser::getOB
             );
             #ifdef _DEBUG
                 std::cout << "OBJ: "
-                    "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
-                    "filepath=" << filepath << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    "pos(" << std::get<0>(position) << "," << std::get<1>(position) <<
+                        "," << std::get<2>(position) << "), filepath=" << filepath << ", "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                        << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -376,16 +406,17 @@ std::vector<RayTracer::Parser::obj_t> RayTracer::Parser::PrimitivesParser::getOB
     return objVector;
 }
 
-std::vector<RayTracer::Parser::infinitecylinder_t>RayTracer::Parser::PrimitivesParser::getInfiniteCylindersData(
-    const libconfig::Setting &root
-)
+std::vector<RayTracer::Parser::infinitecylinder_t>
+    RayTracer::Parser::PrimitivesParser::getInfiniteCylindersData
+    (const libconfig::Setting &root)
 {
     std::vector<infinitecylinder_t> infiniteCylinderVector;
     try {
         const auto &infiniteCylinders = root["primitives"]["infiniteCylinders"];
         for (int i = 0; i < infiniteCylinders.getLength(); ++i) {
             const auto &c = infiniteCylinders[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(c, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(c,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(c["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(c["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(c["scale"]);
@@ -403,10 +434,10 @@ std::vector<RayTracer::Parser::infinitecylinder_t>RayTracer::Parser::PrimitivesP
             );
             #ifdef _DEBUG
                 std::cout << "Infinite Cylinder: "
-                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
-                    << "r=" << radius << ", "
-                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position)
+                        << "," << std::get<2>(position) << "), " << "r=" << radius << ", "
+                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                        << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -417,14 +448,17 @@ std::vector<RayTracer::Parser::infinitecylinder_t>RayTracer::Parser::PrimitivesP
     return infiniteCylinderVector;
 }
 
-std::vector<RayTracer::Parser::infinitecone_t>RayTracer::Parser::PrimitivesParser::getInfiniteConesData(const libconfig::Setting &root)
+std::vector<RayTracer::Parser::infinitecone_t>
+        RayTracer::Parser::PrimitivesParser::getInfiniteConesData
+        (const libconfig::Setting &root)
 {
     std::vector<infinitecone_t> infiniteConeVector;
     try {
         const auto &infiniteCones = root["primitives"]["infiniteCones"];
         for (int i = 0; i < infiniteCones.getLength(); ++i) {
             const auto &c = infiniteCones[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(c, "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getData3D<double>(c,
+                "transparency", "reflection", "refraction");
             auto position = RayTracer::Parser::Parser::getData3D<double>(c["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(c["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(c["scale"]);
@@ -442,10 +476,10 @@ std::vector<RayTracer::Parser::infinitecone_t>RayTracer::Parser::PrimitivesParse
             );
             #ifdef _DEBUG
                 std::cout << "Infinite Cone: "
-                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position) << "," << std::get<2>(position) << "), "
-                    << "angle=" << angle << ", "
-                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " << std::get<2>(color) << ")"
-                    << std::endl;
+                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position)
+                        << "," << std::get<2>(position) << "), " << "angle=" << angle << ", "
+                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) <<
+                        ", " << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {

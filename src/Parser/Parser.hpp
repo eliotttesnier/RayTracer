@@ -27,6 +27,7 @@ class Parser {
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
+        void _getLightsData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
@@ -34,7 +35,6 @@ class Parser {
         void _importLights(const libconfig::Setting &sourceRoot, libconfig::Setting &targetRoot);
         void _copySettings(const libconfig::Setting &source, libconfig::Setting &target);
 
-        void _getLightsData(const libconfig::Setting &root);
 
     public:
         template<typename T>

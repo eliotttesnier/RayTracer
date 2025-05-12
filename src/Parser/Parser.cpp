@@ -20,10 +20,11 @@ void Parser::_getCameraData(const libconfig::Setting &root)
     auto rotation = this->getData3D<double>(camera["rotation"]);
     double fov = camera["fieldOfView"];
     #ifdef _DEBUG
-        std::cout << "Camera: " << std::get<0>(resolution) << "x" << std::get<1>(resolution) << ", "
-            << "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", " << std::get<2>(position) << "), "
-            << "rota(" <<  std::get<0>(rotation) << ", " << std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), "
-            << "fov(" << fov << ")" << std::endl;
+        std::cout << "Camera: " << std::get<0>(resolution) << "x" << std::get<1>(resolution)
+            << ", " << "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) <<
+            ", " << std::get<2>(position) << "), " << "rota(" <<  std::get<0>(rotation) <<
+            ", " << std::get<1>(rotation) << ", " <<  std::get<2>(rotation) << "), " <<
+            "fov(" << fov << ")" << std::endl;
     #endif
     this->_camConfig = std::make_unique<CameraConfig>(
         resolution,
@@ -51,11 +52,13 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
 
     std::vector<obj_t> objVector = PrimitivesParser::getOBJsData(root);
 
-    std::vector<infinitecylinder_t> infiniteCylinders = PrimitivesParser::getInfiniteCylindersData(root);
+    std::vector<infinitecylinder_t> infiniteCylinders =
+        PrimitivesParser::getInfiniteCylindersData(root);
 
     std::vector<infinitecone_t> infiniteCones = PrimitivesParser::getInfiniteConesData(root);
 
-    std::vector<fractalecube_t> fractaleCubeVector = PrimitivesParser::getFractaleCubesData(root);
+    std::vector<fractalecube_t> fractaleCubeVector =
+        PrimitivesParser::getFractaleCubesData(root);
 
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector,
@@ -103,7 +106,7 @@ void Parser::_importScenes(const libconfig::Setting &root)
 
 void Parser::_importScene(const std::string &filepath, libconfig::Setting &targetRoot)
 {
-    if (_importedScenes.find(filepath) != _importedScenes.end()) {
+    if (this->_importedScenes.find(filepath) != this->_importedScenes.end()) {
         #ifdef _DEBUG
             std::cout << "Scene already imported: " << filepath
                 << ". Skipping to avoid cycles." << std::endl;
@@ -113,7 +116,7 @@ void Parser::_importScene(const std::string &filepath, libconfig::Setting &targe
     #ifdef _DEBUG
         std::cout << "Importing scene: " << filepath << std::endl;
     #endif
-    _importedScenes.insert(filepath);
+    this->_importedScenes.insert(filepath);
     libconfig::Config import_cfg;
     try {
         import_cfg.readFile(filepath.c_str());
