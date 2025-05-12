@@ -116,7 +116,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto& plane : config.getPlanes()) {
-        auto [materials, axis, position, rotation, sc, sh, size, color] = plane;
+        auto [materials, axis, position, rotation, sc, sh, color] = plane;
         Math::Point3D pos = position;
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
@@ -126,7 +126,6 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
             rota,
             scale,
             shear,
-            size,
             materials
         );
         #ifdef _DEBUG

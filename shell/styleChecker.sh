@@ -7,7 +7,7 @@ LOG_FILE="coding-style-cpp-reports.log"
 # Define the cpplint filter to only check specific errors
 FILTERS="+whitespace/line_length,+whitespace/operators,+whitespace/tab,+whitespace/empty_if_body,-readability/braces,+readability/casting,+build/include_order"
 
-NOFILTERS="-readability/namespace,-legal/copyright,-build/include_subdir,-whitespace/braces,-runtime/string,-whitespace/parens"
+NOFILTERS="-readability/namespace,-legal/copyright,-build/include_subdir,-whitespace/braces,-runtime/string,-whitespace/parens,-whitespace/indent_namespace"
 
 LINELENGTH=95
 

@@ -13,10 +13,9 @@
 
 extern "C" {
     RayTracer::primitive::Plane *create(const Math::Point3D &position,
-                                        const Math::Vector3D &rotation,
-                                        std::tuple<double, double> size)
+                                        const Math::Vector3D &rotation)
     {
-        return new RayTracer::primitive::Plane(position, rotation, size);
+        return new RayTracer::primitive::Plane(position, rotation);
     }
     RayTracer::Loader::ModuleType getType(void)
     {
