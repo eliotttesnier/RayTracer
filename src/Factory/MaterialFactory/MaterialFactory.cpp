@@ -14,25 +14,60 @@
 namespace RayTracer::Factory {
 
 std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial(
-    const std::vector<std::string> &config,
+    const Math::Vector3D &config,
     std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
 )
 {
-    std::shared_ptr<RayTracer::Materials::IMaterial> material(
-        plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
-            "create"
+    std::vector<std::shared_ptr<RayTracer::Materials::IMaterial>> materialStack;
+
+    materialStack.emplace_back(
+        std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
+                "create"
+            )
         )
     );
 
-    for (const auto &mat : config) {
-        // Add more material types here as needed with this pattern
-        // (the objective is to have a recursion of materials):
-
-        // if (mat == "...") {
-        //     material = std::shared_ptr<RayTracer::Materials::...Material("create", config);
-        // }
+    double transparency = config._x;
+    if (transparency > 0.0) {
+        materialStack.emplace_back(
+            std::shared_ptr<RayTracer::Materials::IMaterial>(
+                plugins["TransparencyMaterial"]->initEntryPointPtr<RayTracer::Materials::TransparencyMaterial>(
+                    "create",
+                    materialStack.at(materialStack.size() - 1),
+                    transparency
+                )
+            )
+        );
     }
-    return material;
+
+    double reflection = config._y;
+    if (reflection > 0.0) {
+        // materialStack.emplace_back(
+        //     std::shared_ptr<RayTracer::Materials::IMaterial>(
+        //         plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
+        //             "create",
+        //             materialStack.at(materialStack.size() - 1),
+        //             reflection
+        //         )
+        //     )
+        // );
+    }
+
+    double refraction = config._z;
+    if (refraction > 0.0) {
+        // materialStack.emplace_back(
+        //     std::shared_ptr<RayTracer::Materials::IMaterial>(
+        //         plugins["RefractionMaterial"]->initEntryPointPtr<RayTracer::Materials::RefractionMaterial>(
+        //             "create",
+        //             materialStack.at(materialStack.size() - 1),
+        //             refraction
+        //         )
+        //     )
+        // );
+    }
+
+    return materialStack.at(materialStack.size() - 1);
 }
 
 }
