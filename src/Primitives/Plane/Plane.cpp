@@ -17,8 +17,8 @@ Plane::Plane()
     _rotation = Math::Vector3D(0, 0, 0);
 
     _boundingBox = AABB();
-    _boundingBox.min = Math::Point3D(-1e6, -0.001, -1e6);
-    _boundingBox.max = Math::Point3D(1e6, 0.001, 1e6);
+    _boundingBox.min = Math::Point3D(-1e6, -1.0, -1e6);
+    _boundingBox.max = Math::Point3D(1e6, 1.0, 1e6);
 }
 
 Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation)
@@ -28,8 +28,8 @@ Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation)
     _rotation = rotation;
 
     _boundingBox = AABB();
-    _boundingBox.min = Math::Point3D(-1e6, -0.001, -1e6);
-    _boundingBox.max = Math::Point3D(1e6, 0.001, 1e6);
+    _boundingBox.min = Math::Point3D(-1e6, -1.0, -1e6);
+    _boundingBox.max = Math::Point3D(1e6, 1.0, 1e6);
 }
 
 Math::Vector3D Plane::normalAt(const Math::Point3D& point) const
