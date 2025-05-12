@@ -8,6 +8,7 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <memory>
 
 #include "LoaderType.hpp"
 #include "TransparencyMaterial.hpp"

@@ -5,6 +5,9 @@
 ** TransparencyMaterial
 */
 
+#include <memory>
+#include <vector>
+
 #include "TransparencyMaterial.hpp"
 
 namespace RayTracer::Materials {

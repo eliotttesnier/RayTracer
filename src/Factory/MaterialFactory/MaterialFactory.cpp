@@ -20,25 +20,22 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
 {
     std::vector<std::shared_ptr<RayTracer::Materials::IMaterial>> materialStack;
 
-    materialStack.emplace_back(
-        std::shared_ptr<RayTracer::Materials::IMaterial>(
-            plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
-                "create"
-            )
+    materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+        plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
+            "create"
         )
-    );
+    ));
 
     double transparency = config._x;
     if (transparency > 0.0) {
-        materialStack.emplace_back(
-            std::shared_ptr<RayTracer::Materials::IMaterial>(
-                plugins["TransparencyMaterial"]->initEntryPointPtr<RayTracer::Materials::TransparencyMaterial>(
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["TransparencyMaterial"]->
+                initEntryPointPtr<RayTracer::Materials::TransparencyMaterial>(
                     "create",
                     materialStack.at(materialStack.size() - 1),
                     transparency
                 )
-            )
-        );
+        ));
     }
 
     double reflection = config._y;
