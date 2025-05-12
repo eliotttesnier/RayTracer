@@ -2,42 +2,20 @@
 ** EPITECH PROJECT, 2025
 ** rayTracer
 ** File description:
-** IMaterial
+** AMaterial
 */
 
-#ifndef IMATERIAL_HPP_
-#define IMATERIAL_HPP_
+#ifndef AMATERIAL_HPP_
+#define AMATERIAL_HPP_
 
-#include <memory>
-#include <vector>
-
-#include "../Graphic/Color.hpp"
-#include "../Math/HitData.hpp"
-#include "../Math/Ray.hpp"
-#include "../Lights/ILight.hpp"
-
-class ILight;
-class IPrimitive;
-
-namespace RayTracer::primitive {
-    class Cone;
-    class Cylinder;
-    class InfiniteCone;
-    class InfiniteCylinder;
-    class Plane;
-    class Sphere;
-    class Torus;
-    class Tanglecube;
-    class Triangles;
-    class OBJ;
-    class FractaleCube;
-    class InfiniteCone;
-    class InfiniteCylinder;
-}
+#include "IMaterial.hpp"
 
 namespace RayTracer::Materials {
 
-class IMaterial {
+class AMaterial : public IMaterial {
+    protected:
+        std::shared_ptr<IMaterial> _wrappee;
+
     public:
         virtual Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
@@ -117,11 +95,12 @@ class IMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
 
-        virtual void setWrappee(std::shared_ptr<IMaterial> wrappee) = 0;
+        void setWrappee(std::shared_ptr<IMaterial> wrappee) override;
 
-        virtual ~IMaterial() = default;
+        AMaterial() = default;
+        virtual ~AMaterial();
 };
 
 };
 
-#endif /* !IMATERIAL_HPP_ */
+#endif /* !AMATERIAL_HPP_ */

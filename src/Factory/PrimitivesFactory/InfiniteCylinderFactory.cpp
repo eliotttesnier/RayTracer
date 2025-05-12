@@ -21,7 +21,7 @@ RayTracer::Factory::InfiniteCylinderFactory::InfiniteCylinderFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double radius,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _radius(radius),
     _position(position),

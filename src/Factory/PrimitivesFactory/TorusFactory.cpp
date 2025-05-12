@@ -20,7 +20,7 @@ RayTracer::Factory::TorusFactory::TorusFactory(
     const Math::Vector3D &shear,
     double majorRadius,
     double minorRadius,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _majorRadius(majorRadius),
     _minorRadius(minorRadius),

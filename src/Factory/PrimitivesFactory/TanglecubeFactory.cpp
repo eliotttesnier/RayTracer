@@ -19,7 +19,7 @@ RayTracer::Factory::TanglecubeFactory::TanglecubeFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double size,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _size(size),
     _position(position),

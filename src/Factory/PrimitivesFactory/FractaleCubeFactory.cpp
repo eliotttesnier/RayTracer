@@ -23,7 +23,7 @@ RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
     const Math::Vector3D &shear,
     double size,
     int recursion,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _size(size),
     _recursion(recursion),
@@ -39,7 +39,7 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::FractaleCubeFactory::create(
     std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
 ) const
 {
-    if (!plugins.contains("FractaleCube"))
+    if (plugins.find("FractaleCube") == plugins.end())
         throw std::runtime_error("FractaleCube plugin not found");
     auto obj = plugins["FractaleCube"]->initEntryPointPtr<primitive::FractaleCube>(
         "create",

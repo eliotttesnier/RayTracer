@@ -2,19 +2,31 @@
 ** EPITECH PROJECT, 2025
 ** rayTracer
 ** File description:
-** DefaultMaterial
+** TransparencyMaterial
 */
 
-#ifndef DEFAULTMATERIAL_HPP_
-#define DEFAULTMATERIAL_HPP_
+#ifndef TRANSPARENCYMATERIAL_HPP_
+#define TRANSPARENCYMATERIAL_HPP_
 
-#include <cmath>
+#include <memory>
+
+#include "../../Primitives/Cone/Cone.hpp"
+#include "../../Primitives/Cylinder/Cylinder.hpp"
+#include "../../Primitives/Plane/Plane.hpp"
+#include "../../Primitives/Sphere/Sphere.hpp"
+#include "../../Primitives/Torus/Torus.hpp"
+#include "../../Primitives/Tanglecube/Tanglecube.hpp"
+#include "../../Primitives/Triangles/Triangles.hpp"
+#include "../../Primitives/OBJ/OBJ.hpp"
+#include "../../Primitives/FractaleCube/FractaleCube.hpp"
+#include "../../Primitives/InfiniteCone/InfiniteCone.hpp"
+#include "../../Primitives/InfiniteCylinder/InfiniteCylinder.hpp"
 
 #include "../AMaterial.hpp"
 
 namespace RayTracer::Materials {
 
-class DefaultMaterial : public AMaterial {
+class TransparencyMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
@@ -73,6 +85,13 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
         Graphic::color_t calculateColor(
+            const RayTracer::primitive::FractaleCube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+        Graphic::color_t calculateColor(
             const RayTracer::primitive::InfiniteCone &obj,
             Math::hitdata_t hitData,
             Math::Ray ray,
@@ -86,28 +105,26 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
-        Graphic::color_t calculateColor(
-            const RayTracer::primitive::FractaleCube &obj,
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
-        ) override;
 
-        DefaultMaterial();
-        DefaultMaterial(std::shared_ptr<IMaterial> wrappee);
-        virtual ~DefaultMaterial();
+        TransparencyMaterial() = delete;
+        TransparencyMaterial(std::shared_ptr<IMaterial> wrappee, double transparency);
+        virtual ~TransparencyMaterial();
 
     private:
         std::shared_ptr<IMaterial> _wrappee;
-        Graphic::color_t _getColor(
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
+        double _transparency;
+        Graphic::color_t _calculateRatioColor(
+            Graphic::color_t origin,
+            Graphic::color_t behind
+        );
+        Graphic::color_t _getBehindColor(
+            const Math::Ray &ray,
+            const Math::Point3D &hitPoint,
+            std::vector<std::shared_ptr<IPrimitive>> primitives,
+            std::vector<std::shared_ptr<ILight>> lights
         );
 };
 
-};
+}
 
-#endif /* !DEFAULTMATERIAL_HPP_ */
+#endif /* !TRANSPARENCYMATERIAL_HPP_ */
