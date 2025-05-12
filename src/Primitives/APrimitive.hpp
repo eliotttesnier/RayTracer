@@ -46,6 +46,7 @@ class APrimitive : public IPrimitive {
         const Math::Point3D getPosition() const override;
         const Math::Vector3D getRotation() const override;
         const Math::Vector3D getShear() const override;
+        const RayTracer::primitive::AABB getBoundingBox() const override;
 
         // Setters
         void setName(const std::string &name) override;

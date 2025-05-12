@@ -33,6 +33,11 @@ const Math::Vector3D APrimitive::getShear() const
     return _shear;
 }
 
+const RayTracer::primitive::AABB APrimitive::getBoundingBox() const
+{
+    return _boundingBox;
+}
+
 void APrimitive::setName(const std::string &name)
 {
     _name = name;
