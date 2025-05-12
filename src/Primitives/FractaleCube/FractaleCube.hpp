@@ -16,11 +16,13 @@ namespace RayTracer::primitive {
 class FractaleCube : public APrimitive {
     public:
         FractaleCube();
-        FractaleCube(const Math::Point3D &position, double size = 1.0);
+        FractaleCube(const Math::Point3D &position, double size = 1.0, int recursion = 3);
         ~FractaleCube() = default;
 
         double getSize() const;
         void setSize(double size);
+        void setRecursion(int recursion);
+        int getRecursion() const;
         Math::hitdata_t intersect(const Math::Ray &ray) override;
         Graphic::color_t getColor(
             Math::hitdata_t hitData,
@@ -31,13 +33,14 @@ class FractaleCube : public APrimitive {
 
     private:
         double _size;
-        int _maxSteps;
+        int _recursion;
+        void updateBoundingBox();
         std::vector<Math::Point3D> generateFractalPoints() const;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
         bool intersectCube(const Math::Ray &ray, const Math::Point3D &center,
                          double size, Math::hitdata_t &hitData) const;
 };
 
-}  // namespace RayTracer::primitiveh
+}  // namespace RayTracer::primitive
 
 #endif //RAYTRACER_FRACTALECUBE_HPP
