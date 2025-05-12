@@ -421,6 +421,7 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
             double py = pos["y"];
             double pz = pos["z"];
             double size = s["size"];
+            int recursion = s["recursion"];
             double rx = rota["x"];
             double ry = rota["y"];
             double rz = rota["z"];
@@ -442,7 +443,7 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
             }
             fractaleCubeVector.emplace_back(
                 materials,
-                std::make_tuple(px, py, pz, size),
+                std::make_tuple(px, py, pz, size, recursion),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
                 std::make_tuple(shx, shy, shz),
@@ -452,6 +453,7 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
                 std::cout << "FractaleCube: "
                     "pos(" << px << ", " << py << ", " << pz << "), "
                     "size=" << size << ", "
+                    "recursion=" << recursion << ", "
                     "color(" << cr << ", " << cg << ", " << cb << ")"
                     << std::endl;
             #endif
