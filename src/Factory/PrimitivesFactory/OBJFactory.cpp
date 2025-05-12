@@ -19,7 +19,7 @@ RayTracer::Factory::OBJFactory::OBJFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     const std::string &filepath,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _filepath(filepath),
     _position(position),

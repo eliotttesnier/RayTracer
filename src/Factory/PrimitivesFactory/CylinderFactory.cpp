@@ -22,7 +22,7 @@ RayTracer::Factory::CylinderFactory::CylinderFactory(
     const Math::Vector3D &shear,
     double radius,
     double height,
-    const std::vector<std::string> &materials
+    const Math::Vector3D &materials
 ):
     _radius(radius),
     _height(height),
