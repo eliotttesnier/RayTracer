@@ -111,5 +111,3 @@ class DefaultMaterial : public IMaterial {
 };
 
 #endif /* !DEFAULTMATERIAL_HPP_ */
-
->>>>>>> 11bdeeb8668c0c5df75bf6b2ec142f341d34ffb1
