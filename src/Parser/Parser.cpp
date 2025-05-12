@@ -385,6 +385,9 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
         const auto &fractalecubes = root["primitives"]["fractalecubes"];
         for (int i = 0; i < fractalecubes.getLength(); ++i) {
             const auto &s = fractalecubes[i];
+            double transparency = s["transparency"];
+            double reflection = s["reflection"];
+            double refraction = s["refraction"];
             const auto &pos = s["position"];
             const auto &rota = s["rotation"];
             const auto &scale = s["scale"];
@@ -407,15 +410,8 @@ std::vector<fractalecube_t> Parser::_getFractaleCubesData(const libconfig::Setti
             int cr = color["r"];
             int cg = color["g"];
             int cb = color["b"];
-            std::vector<std::string> materials;
-            if (s.exists("materials")) {
-                const auto &mats = s["materials"];
-                for (int j = 0; j < mats.getLength(); ++j) {
-                    materials.push_back(mats[j].c_str());
-                }
-            }
             fractaleCubeVector.emplace_back(
-                materials,
+                std::make_tuple(transparency, reflection, refraction),
                 std::make_tuple(px, py, pz, size, recursion),
                 std::make_tuple(rx, ry, rz),
                 std::make_tuple(sx, sy, sz),
