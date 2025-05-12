@@ -17,7 +17,6 @@ namespace RayTracer::primitive {
 InfiniteCylinder::InfiniteCylinder()
 {
     _name = "infinite_cylinder";
-    _type = "infinite_cylinder";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
@@ -26,7 +25,6 @@ InfiniteCylinder::InfiniteCylinder()
 InfiniteCylinder::InfiniteCylinder(const Math::Point3D &position, double radius)
 {
     _name = "infinite_cylinder";
-    _type = "infinite_cylinder";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
