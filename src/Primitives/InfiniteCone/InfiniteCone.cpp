@@ -18,7 +18,6 @@ namespace RayTracer::primitive {
 InfiniteCone::InfiniteCone()
 {
     _name = "infinite_cone";
-    _type = "infinite_cone";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _angle = 45.0;
@@ -27,7 +26,6 @@ InfiniteCone::InfiniteCone()
 InfiniteCone::InfiniteCone(const Math::Point3D &position, double angle)
 {
     _name = "infinite_cone";
-    _type = "infinite_cone";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _angle = angle;
