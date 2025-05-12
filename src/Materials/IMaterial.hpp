@@ -91,9 +91,6 @@ class IMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
-
-        virtual void setWrappee(std::shared_ptr<IMaterial> wrappee) = 0;
-
         virtual Graphic::color_t calculateColor(
             const RayTracer::primitive::FractaleCube &obj,
             Math::hitdata_t hitData,
@@ -101,6 +98,8 @@ class IMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
+
+        virtual void setWrappee(std::shared_ptr<IMaterial> wrappee) = 0;
 
         virtual ~IMaterial() = default;
 };
