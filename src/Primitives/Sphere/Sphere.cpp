@@ -12,7 +12,6 @@ namespace RayTracer::primitive {
 
 Sphere::Sphere() {
     _name = "sphere";
-    _type = "sphere";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
@@ -24,7 +23,6 @@ Sphere::Sphere() {
 
 Sphere::Sphere(const Math::Point3D &position, double radius) {
     _name = "sphere";
-    _type = "sphere";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
