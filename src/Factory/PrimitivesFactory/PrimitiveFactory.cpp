@@ -56,7 +56,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
         auto [materials, posSize, rotation, sc, sh, color] = fractalecube;
-        auto [x, y, z, size] = posSize;
+        auto [x, y, z, size, recursion] = posSize;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
@@ -68,6 +68,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
             scale,
             shear,
             size,
+            recursion,
             materials
         );
 #ifdef _DEBUG
