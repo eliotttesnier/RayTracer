@@ -15,8 +15,8 @@
 
 extern "C" {
     RayTracer::Materials::TransparencyMaterial *create(
-        std::shared_ptr<RayTracer::Materials::IMaterial> wrappee,
-        double transparency
+        const std::shared_ptr<RayTracer::Materials::IMaterial> &wrappee,
+        const double &transparency
     ) {
         return new RayTracer::Materials::TransparencyMaterial(wrappee, transparency);
     }
