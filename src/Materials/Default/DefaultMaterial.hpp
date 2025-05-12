@@ -10,11 +10,11 @@
 
 #include <cmath>
 
-#include "../IMaterial.hpp"
+#include "../AMaterial.hpp"
 
 namespace RayTracer::Materials {
 
-class DefaultMaterial : public IMaterial {
+class DefaultMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
