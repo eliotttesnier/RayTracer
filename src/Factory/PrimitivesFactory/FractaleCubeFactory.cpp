@@ -22,9 +22,11 @@ RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double size,
+    int recursion,
     const std::vector<std::string> &materials
 ):
     _size(size),
+    _recursion(recursion),
     _position(position),
     _rotation(rotation),
     _scale(scale),
@@ -42,7 +44,8 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::FractaleCubeFactory::create(
     auto obj = plugins["FractaleCube"]->initEntryPointPtr<primitive::FractaleCube>(
         "create",
         this->_position,
-        this->_size
+        this->_size,
+        this->_recursion
     );
     obj->setRotation(this->_rotation);
     obj->setScale(this->_scale);
