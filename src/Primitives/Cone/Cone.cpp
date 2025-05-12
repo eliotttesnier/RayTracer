@@ -19,7 +19,6 @@ namespace RayTracer::primitive {
 Cone::Cone()
 {
     _name = "cone";
-    _type = "cone";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = 1.0;
@@ -33,7 +32,6 @@ Cone::Cone()
 Cone::Cone(const Math::Point3D &position, double radius, double height)
 {
     _name = "cone";
-    _type = "cone";
     _position = position;
     _rotation = Math::Vector3D(0, 0, 0);
     _radius = radius;
