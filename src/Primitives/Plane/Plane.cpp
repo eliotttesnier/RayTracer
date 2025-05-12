@@ -13,7 +13,6 @@ namespace RayTracer::primitive {
 Plane::Plane()
 {
     _name = "plane";
-    _type = "plane";
     _position = Math::Point3D(0, 0, 0);
     _rotation = Math::Vector3D(0, 0, 0);
 
@@ -25,7 +24,6 @@ Plane::Plane()
 Plane::Plane(const Math::Point3D &position, const Math::Vector3D &rotation)
 {
     _name = "plane";
-    _type = "plane";
     _position = position;
     _rotation = rotation;
 
