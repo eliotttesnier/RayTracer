@@ -11,8 +11,6 @@
 #include <limits>
 #include <memory>
 
-#include <iostream>
-
 #include "TransparencyMaterial.hpp"
 
 namespace RayTracer::Materials {
@@ -23,7 +21,6 @@ TransparencyMaterial::TransparencyMaterial(
 )
     : _wrappee(wrappee), _transparency(transparency)
 {
-    std::cout << "TransparencyMaterial created with transparency: " << transparency << std::endl;
 }
 
 TransparencyMaterial::~TransparencyMaterial() = default;
