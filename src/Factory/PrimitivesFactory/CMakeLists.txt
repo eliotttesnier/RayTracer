@@ -8,6 +8,8 @@ set(PRIMITIVE_FACTORY_SRC
     TanglecubeFactory.cpp
     TrianglesFactory.cpp
     OBJFactory.cpp
+    InfiniteConeFactory.cpp
+    InfiniteCylinderFactory.cpp
     FractaleCubeFactory.cpp
 )
 
@@ -22,6 +24,8 @@ set(PRIMITIVE_FACTORY_INC
     TanglecubeFactory.hpp
     TrianglesFactory.hpp
     OBJFactory.hpp
+    InfiniteConeFactory.hpp
+    InfiniteCylinderFactory.hpp
     FractaleCubeFactory.hpp
 )
 

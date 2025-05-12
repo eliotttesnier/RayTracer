@@ -23,6 +23,10 @@
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
 #include "../MaterialFactory/MaterialFactory.hpp"
+#include "InfiniteConeFactory.hpp"
+#include "InfiniteCylinderFactory.hpp"
+#include "../../Primitives/InfiniteCone/InfiniteCone.hpp"
+#include "../../Primitives/InfiniteCylinder/InfiniteCylinder.hpp"
 
 namespace RayTracer::Factory {
 
@@ -64,6 +68,14 @@ class PrimitiveFactory {
             std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
         );
         static std::vector<std::shared_ptr<IPrimitive>> _addOBJs(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addInfiniteCones(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addInfiniteCylinders(
             const RayTracer::Parser::PrimitivesConfig& config,
             std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
         );
