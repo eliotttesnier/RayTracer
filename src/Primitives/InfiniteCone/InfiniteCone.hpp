@@ -32,7 +32,7 @@ class InfiniteCone : public APrimitive {
         ) override;
 
     private:
-        double _angle; // Angle in degrees from vertical axis
+        double _angle;
         Math::hitdata_t calculateInfiniteConeIntersection(const Math::Ray &localRay) const;
 };
 
