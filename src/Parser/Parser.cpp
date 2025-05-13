@@ -236,7 +236,8 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
                 } else if (sourceGroup[subfield].isNumber()) {
                     double value = static_cast<double>(sourceGroup[subfield]);
                     group.add(subname, libconfig::Setting::TypeFloat) = value;
-                } else if (sourceGroup[subfield].getType() == libconfig::Setting::TypeBoolean) {
+                } else if (sourceGroup[subfield].getType() ==
+                    libconfig::Setting::TypeBoolean) {
                     bool value = static_cast<bool>(sourceGroup[subfield]);
                     group.add(subname, libconfig::Setting::TypeBoolean) = value;
                 }
