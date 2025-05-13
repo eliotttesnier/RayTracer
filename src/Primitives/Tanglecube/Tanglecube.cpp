@@ -98,7 +98,7 @@ Math::hitdata_t Tanglecube::intersect(const Math::Ray &ray)
     Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {0, 255, 255, 1.0};  // Cyan
+    hitData.color = _color;
 
     if (!_boundingBox.intersect(localRay))
         return hitData;
