@@ -112,12 +112,17 @@ class ChessPatternMaterial : public AMaterial {
 
     private:
         std::shared_ptr<IMaterial> _wrappee;
-        double _scale;  // Scale of the chess pattern
+        double _scale;
         Graphic::color_t _colorWhite;
         Graphic::color_t _colorBlack;
 
         Graphic::color_t _applyChessPattern(
             const Math::Point3D &hitPoint,
+            Graphic::color_t baseColor
+        );
+
+        Graphic::color_t _applyChessPatternUV(
+            float u, float v,
             Graphic::color_t baseColor
         );
 
