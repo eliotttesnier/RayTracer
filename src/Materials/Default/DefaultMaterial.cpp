@@ -50,9 +50,9 @@ Graphic::color_t DefaultMaterial::_getColor(
     };
 
     double ka = 0.3;
-    double kd = 0.5;
+    double kd = 0.7;
     double ks = 1.0;
-    double shininess = 10.0;
+    double shininess = 20.0;
 
     double ambientIntensity = 0.0;
     double diffuseIntensity = 0.0;
@@ -60,12 +60,12 @@ Graphic::color_t DefaultMaterial::_getColor(
 
     for (const auto& light : lights) {
         if (light->getType() == "AmbientLight") {
-            float i;
-            float r, g, b;
-            light->getIntensity(i);
-            light->getColor(r, g, b);
+            float ia;
+            float ar, ag, ab;
+            light->getIntensity(ia);
+            light->getColor(ar, ag, ab);
 
-            ambientIntensity = i * ka;
+            ambientIntensity = ia * ka;
             continue;
         }
 
