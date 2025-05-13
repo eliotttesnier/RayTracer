@@ -47,6 +47,10 @@ target_include_directories(TransparencyMaterial PRIVATE
         ./
 )
 
+target_include_directories(ChessPatternMaterial PRIVATE
+        ./
+)
+
 target_include_directories(OBJ PRIVATE
         ./
 )
