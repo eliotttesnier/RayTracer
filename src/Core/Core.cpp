@@ -71,3 +71,18 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Core::getCamera() const
 {
     return std::get<2>(this->_sceneElements);
 }
+
+void RayTracer::Core::applyAntialiasing(Renderer& renderer) const
+{
+    auto antialiasingConfig = _parser.getAntialiasingConfig();
+
+    if (antialiasingConfig.getType() == "supersampling") {
+        renderer.setAntialiasingMode(Renderer::SUPERSAMPLING);
+        renderer.setSupersamplingLevel(antialiasingConfig.getSamples());
+    } else if (antialiasingConfig.getType() == "adaptive") {
+        renderer.setAntialiasingMode(Renderer::ADAPTIVE_SUPERSAMPLING);
+        renderer.setAdaptiveThreshold(antialiasingConfig.getThreshold());
+    } else {
+        renderer.setAntialiasingMode(Renderer::NONE);
+    }
+}
