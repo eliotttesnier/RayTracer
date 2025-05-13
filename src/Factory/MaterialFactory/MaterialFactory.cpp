@@ -89,7 +89,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         double refraction = std::any_cast<double>(refractionIt->second);
         materialStack.emplace_back(
             std::shared_ptr<RayTracer::Materials::IMaterial>(
-                plugins["RefractionMaterial"]->initEntryPointPtr<RayTracer::Materials::RefractionMaterial>(
+                plugins["RefractionMaterial"]->initEntryPointPtr<
+                    RayTracer::Materials::RefractionMaterial>(
                     "create",
                     materialStack.at(materialStack.size() - 1),
                     refraction
