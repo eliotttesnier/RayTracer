@@ -8,6 +8,9 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <numeric>
+
+#include <iostream>
 
 #include "DefaultMaterial.hpp"
 
@@ -40,27 +43,55 @@ Graphic::color_t DefaultMaterial::_getColor(
     Graphic::color_t baseColor = hitData.color;
 
     Graphic::color_t finalColor = {
-        baseColor.r * 0.05,
-        baseColor.g * 0.05,
-        baseColor.b * 0.05,
+        baseColor.r,
+        baseColor.g,
+        baseColor.b,
         baseColor.a
     };
 
-    Math::Vector3D viewDir = -ray.direction.normalized();
+    double ka = 0.3;
+    double kd = 0.5;
+    double ks = 1.0;
+    double shininess = 10.0;
+
+    double ambientIntensity = 0.0;
+    double diffuseIntensity = 0.0;
+    double specularIntensity = 0.0;
 
     for (const auto& light : lights) {
-        if (light->intersect(ray, hitData.point, primitives)) {
-            Graphic::color_t lightContribution = light->calculateLighting(
-                hitData,
-                ray,
-                viewDir
-            );
+        if (light->getType() == "AmbientLight") {
+            float i;
+            float r, g, b;
+            light->getIntensity(i);
+            light->getColor(r, g, b);
 
-            finalColor.r += lightContribution.r;
-            finalColor.g += lightContribution.g;
-            finalColor.b += lightContribution.b;
+            ambientIntensity = i * ka;
+            continue;
+        }
+
+        if (light->intersect(ray, hitData.point, primitives)) {
+            Math::Vector3D lightDir = light->getDirection().normalized();
+            float i;
+            float lr, lg, lb;
+            light->getIntensity(i);
+            light->getColor(lr, lg, lb);
+
+            Math::Vector3D L = -light->getDirection().normalized();
+            Math::Vector3D N = hitData.normal.normalized();
+            Math::Vector3D V = -ray.direction.normalized();
+            Math::Vector3D R = N * N.dot(L) * 2.0 - L;
+
+            diffuseIntensity += i * kd * L.dot(N);
+
+            specularIntensity += i * ks * std::pow(R.dot(V), shininess);
         }
     }
+
+    double intensity = ambientIntensity + diffuseIntensity + specularIntensity;
+
+    finalColor.r *= intensity;
+    finalColor.g *= intensity;
+    finalColor.b *= intensity;
 
     finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
     finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
