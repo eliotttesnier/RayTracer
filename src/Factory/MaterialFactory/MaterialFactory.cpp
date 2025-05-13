@@ -74,7 +74,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         std::any_cast<double>(reflectionIt->second) > 0.0) {
         double reflection = std::any_cast<double>(reflectionIt->second);
         materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
-            plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
+            plugins["ReflectionMaterial"]->
+                initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
                 "create",
                 materialStack.at(materialStack.size() - 1),
                 reflection

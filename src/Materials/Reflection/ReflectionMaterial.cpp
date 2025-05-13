@@ -466,7 +466,8 @@ Graphic::color_t ReflectionMaterial::calculateColor(
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
         [&obj](const std::shared_ptr<IPrimitive>& primitive) {
-            return dynamic_cast<RayTracer::primitive::InfiniteCylinder *>(primitive.get()) == &obj;
+            return
+            dynamic_cast<RayTracer::primitive::InfiniteCylinder *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
     );
