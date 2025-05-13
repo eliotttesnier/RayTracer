@@ -13,6 +13,7 @@
 namespace RayTracer {
 namespace Parser {
 
+typedef std::tuple<double, double> duotuple_t;
 typedef std::tuple<double, double, double> truple_t;
 typedef std::tuple<double, double, double, double> quaduple_t;
 typedef std::tuple<double, double, double, double, double> quintuple_t;
@@ -20,17 +21,17 @@ typedef std::tuple<int, int, int> color_t;
 
 typedef std::tuple<double, double, double> material_t; // Transparency, Reflection, Refraction
 
-typedef std::tuple<material_t, quaduple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Material, Position + radius, rotation, scale, shear, Color
-typedef std::tuple<material_t, quintuple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Material, Position + radius + height, rotation, scale, shear, Color
-typedef std::tuple<material_t, quintuple_t, truple_t, truple_t, truple_t, color_t> cone_t; // Material, Position + radius + height, rotation, scale, shear, Color
+typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Material, radius, Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, duotuple_t, truple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Material, radius + height, Position , rotation, scale, shear, Color
+typedef std::tuple<material_t, duotuple_t, truple_t, truple_t, truple_t, truple_t, color_t> cone_t; // Material, radius + height, Position, rotation, scale, shear, Color
 typedef std::tuple<material_t, char, truple_t, truple_t, truple_t, truple_t, color_t> plane_t; // Material, axis, position, rotation, scale, shear, size, Color
-typedef std::tuple<material_t, quintuple_t, truple_t, truple_t, truple_t, color_t> torus_t; // Material, Position + major radius + minor radius, rotation, scale, shear, Color
-typedef std::tuple<material_t, quaduple_t, truple_t, truple_t, truple_t, color_t> tanglecube_t; // Material, Position + size, rotation, scale, shear, Color
+typedef std::tuple<material_t, duotuple_t, truple_t, truple_t, truple_t, truple_t, color_t> torus_t; // Material,  major radius + minor radius, Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> tanglecube_t; // Material, size, Position , rotation, scale, shear, Color
 typedef std::tuple<material_t, std::tuple<truple_t, truple_t, truple_t>, truple_t, truple_t, truple_t, color_t> triangle_t; // Material, Three points (p1, p2, p3), rotation, scale, shear, Color
-typedef std::tuple<material_t, std::tuple<double, double, double, std::string>, truple_t, truple_t, truple_t, color_t> obj_t; // Material, Position + filepath, rotation, scale, shear, Color
-typedef std::tuple<material_t, quintuple_t, truple_t, truple_t, truple_t, color_t> fractalecube_t; // Material, Position + size + recursion, rotation, scale, shear, Color
-typedef std::tuple<material_t, quaduple_t, truple_t, truple_t, truple_t, color_t> infinitecone_t; // Material, Position + radius + height, rotation, scale, shear, Color
-typedef std::tuple<material_t, quaduple_t, truple_t, truple_t, truple_t, color_t> infinitecylinder_t; // Material, Position + radius + height, rotation, scale, shear, Color
+typedef std::tuple<material_t, std::string, truple_t, truple_t, truple_t, truple_t, color_t> obj_t; // Material, filepath, Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, double, int, truple_t, truple_t, truple_t, truple_t, color_t> fractalecube_t; // Material, size, recursion, Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> infinitecone_t; // Material, radius, Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> infinitecylinder_t; // Material, radius , Position, rotation, scale, shear, Color
 
 class PrimitivesConfig {
     private:

@@ -1,9 +1,13 @@
 set(PARSER_SRC
     Parser.cpp
+    PrimitivesParser.cpp
+    LightsParser.cpp
 )
 
 set(PARSER_HPP
     Parser.hpp
+    PrimitivesParser.hpp
+    LightsParser.hpp
 )
 
 add_subdirectory(ParserConfig)
