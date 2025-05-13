@@ -5,6 +5,8 @@
 ** AntialiasingConfig
 */
 
+#include <string>
+
 #include "AntialiasingConfig.hpp"
 
 namespace RayTracer::Parser
