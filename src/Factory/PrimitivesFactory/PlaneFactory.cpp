@@ -19,7 +19,7 @@ RayTracer::Factory::PlaneFactory::PlaneFactory(
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
-    const std::map<std::string, double> &materials
+    const std::map<std::string, std::any> &materials
 ):
     _position(position),
     _rotation(rotation),

@@ -106,7 +106,7 @@ Math::hitdata_t Torus::intersect(const Math::Ray &ray)
 
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {255.0, 255.0, 0.0, 1.0};  // Yellow
+    hitData.color = _color;
 
     if (!_boundingBox.intersect(localRay))
         return hitData;

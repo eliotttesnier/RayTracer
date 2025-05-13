@@ -20,6 +20,7 @@ class APrimitive : public IPrimitive {
     protected:
         std::string _name;
         Math::Point3D _position;
+        Graphic::color_t _color;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
         Math::Vector3D _shear;
@@ -44,6 +45,7 @@ class APrimitive : public IPrimitive {
         void setScale(const Math::Vector3D &scale) override;
         void setShear(const Math::Vector3D &shear) override;
         void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) override;
+        void setColor(const Graphic::color_t &color) override;
 
         // Methods
         Math::hitdata_t intersect(const Math::Ray &ray) override;

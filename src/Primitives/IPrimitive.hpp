@@ -56,6 +56,7 @@ class IPrimitive {
         virtual void setScale(const Math::Vector3D &scale) = 0;
         virtual void setShear(const Math::Vector3D &shear) = 0;
         virtual void setMaterial(const std::shared_ptr<RayTracer::Materials::IMaterial> &material) = 0;
+        virtual void setColor(const Graphic::color_t &color) = 0;
 
         // Methods
         virtual Math::hitdata_t intersect(const Math::Ray &ray) = 0;

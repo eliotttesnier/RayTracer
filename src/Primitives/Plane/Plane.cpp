@@ -59,7 +59,7 @@ Math::hitdata_t Plane::intersect(const Math::Ray &ray)
                 hitData.normal = -hitData.normal;
             }
 
-            hitData.color = {128.0, 128.0, 128.0, 1.0};  // Gris
+            hitData.color = _color;
         }
     }
 

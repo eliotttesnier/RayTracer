@@ -66,8 +66,12 @@ class Parser {
                     materialProps["refraction"] = static_cast<double>(setting["refraction"]);
                 }
                 if (setting.exists("chess")) {
-                    materialProps["chess"] = static_cast<bool>(setting["chess"]) ? 1.0 : 0.0;
+                    materialProps["chess"] = static_cast<bool>(setting["chess"]);
                 }
+                // if (setting.exists("fileTexture")) {
+                //     materialProps["fileTexture"] = setting["fileTexture"].c_str();
+                //     std::cout << "File texture: " << materialProps["fileTexture"] << std::endl;
+                // }
             } catch (const libconfig::SettingTypeException &e) {
                 std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
             }

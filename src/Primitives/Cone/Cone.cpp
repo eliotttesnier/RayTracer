@@ -159,7 +159,7 @@ Math::hitdata_t Cone::calculateConeIntersection(const Math::Ray &localRay) const
         hitData.normal = transformNormalToWorld(localNormal);
     }
 
-    hitData.color = {0.0, 255.0, 0.0, 1.0};
+    hitData.color = _color;
     return hitData;
 }
 
