@@ -159,32 +159,20 @@ void Renderer::renderSegment(int startY, int endY)
             double u = (2.0 * static_cast<double>(x) / (_width - 1)) - 1.0;
             double v = 1.0 - (2.0 * static_cast<double>(y) / (_height - 1));
 
-            Math::Ray ray = _camera->ray(u, v);
+            Graphic::color_t pixelColor;
 
-            double closestDist = std::numeric_limits<double>::max();
-            bool hit = false;
-            Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};
-            Math::hitdata_t closestHitData;
-            std::shared_ptr<IPrimitive> closestPrimitive;
-
-            for (const auto& primitive : _primitives) {
-                Math::hitdata_t hitData = primitive->intersect(ray);
-
-                if (hitData.hit && hitData.distance < closestDist) {
-                    closestDist = hitData.distance;
-                    closestHitData = hitData;
-                    closestPrimitive = primitive;
-                    hit = true;
-                }
-            }
-
-            if (hit) {
-                pixelColor = closestPrimitive->getColor(
-                    closestHitData,
-                    ray,
-                    _lights,
-                    _primitives
-                );
+            switch (_antialiasingMode) {
+                case SUPERSAMPLING:
+                    pixelColor = supersample(u, v, _supersamplingLevel);
+                    break;
+                case ADAPTIVE_SUPERSAMPLING:
+                    pixelColor = adaptiveSupersample(u, v, _adaptiveThreshold);
+                    break;
+                case NONE:
+                default:
+                    Math::Ray ray = _camera->ray(u, v);
+                    pixelColor = traceRay(ray);
+                    break;
             }
 
             localBuffer[y - startY][x] = pixelColor;
@@ -390,4 +378,159 @@ void Renderer::saveToFile()
     }
 
     file.close();
+}
+
+void Renderer::setAntialiasingMode(AntialiasingMode mode)
+{
+    _antialiasingMode = mode;
+}
+
+void Renderer::setSupersamplingLevel(int level)
+{
+    if (level >= 1) {
+        _supersamplingLevel = level;
+    }
+}
+
+void Renderer::setAdaptiveThreshold(double threshold)
+{
+    if (threshold > 0.0 && threshold <= 1.0) {
+        _adaptiveThreshold = threshold;
+    }
+}
+
+Graphic::color_t Renderer::traceRay(const Math::Ray& ray) const
+{
+    double closestDist = std::numeric_limits<double>::max();
+    bool hit = false;
+    Graphic::color_t pixelColor = {0.0, 0.0, 0.0, 1.0};
+    Math::hitdata_t closestHitData;
+    std::shared_ptr<IPrimitive> closestPrimitive;
+
+    for (const auto& primitive : _primitives) {
+        Math::hitdata_t hitData = primitive->intersect(ray);
+
+        if (hitData.hit && hitData.distance < closestDist) {
+            closestDist = hitData.distance;
+            closestHitData = hitData;
+            closestPrimitive = primitive;
+            hit = true;
+        }
+    }
+
+    if (hit) {
+        return closestPrimitive->getColor(
+            closestHitData,
+            ray,
+            _lights,
+            _primitives
+        );
+    }
+
+    return pixelColor;
+}
+
+double Renderer::colorDifference(const Graphic::color_t& c1, const Graphic::color_t& c2) const
+{
+    double dr = c1.r - c2.r;
+    double dg = c1.g - c2.g;
+    double db = c1.b - c2.b;
+
+    return std::sqrt(dr*dr + dg*dg + db*db) / (std::sqrt(3.0) * 255.0);
+}
+
+Graphic::color_t Renderer::averageColors(const std::vector<Graphic::color_t>& colors) const
+{
+    if (colors.empty())
+        return {0.0, 0.0, 0.0, 1.0};
+
+    double r = 0.0, g = 0.0, b = 0.0, a = 0.0;
+
+    for (const auto& color : colors) {
+        r += color.r;
+        g += color.g;
+        b += color.b;
+        a += color.a;
+    }
+
+    int size = colors.size();
+    return {
+        r / size,
+        g / size,
+        b / size,
+        a / size
+    };
+}
+
+Graphic::color_t Renderer::supersample(double u, double v, int samples) const
+{
+    std::vector<Graphic::color_t> colors;
+    colors.reserve(samples * samples);
+
+    const double step = 1.0 / (_width * samples);
+    const double startU = u - step * (samples - 1) / 2.0;
+    const double startV = v - step * (samples - 1) / 2.0;
+
+    for (int sy = 0; sy < samples; sy++) {
+        for (int sx = 0; sx < samples; sx++) {
+            double sampleU = startU + sx * step;
+            double sampleV = startV + sy * step;
+
+            Math::Ray ray = _camera->ray(sampleU, sampleV);
+            colors.push_back(traceRay(ray));
+        }
+    }
+
+    return averageColors(colors);
+}
+
+bool Renderer::needsFurtherSampling(const Graphic::color_t& tl, const Graphic::color_t& tr,
+                               const Graphic::color_t& bl, const Graphic::color_t& br,
+                               double threshold) const
+{
+    double diff1 = colorDifference(tl, tr);
+    double diff2 = colorDifference(tl, bl);
+    double diff3 = colorDifference(tr, br);
+    double diff4 = colorDifference(bl, br);
+    double diff5 = colorDifference(tl, br);
+    double diff6 = colorDifference(tr, bl);
+
+    return (diff1 > threshold || diff2 > threshold || diff3 > threshold ||
+            diff4 > threshold || diff5 > threshold || diff6 > threshold);
+}
+
+Graphic::color_t Renderer::adaptiveSupersample(double u, double v, double threshold) const
+{
+    const double pixelWidth = 2.0 / _width;
+    const double pixelHeight = 2.0 / _height;
+    const double halfPixelW = pixelWidth * 0.5;
+    const double halfPixelH = pixelHeight * 0.5;
+
+    Math::Ray rayTL = _camera->ray(u - halfPixelW, v + halfPixelH);
+    Math::Ray rayTR = _camera->ray(u + halfPixelW, v + halfPixelH);
+    Math::Ray rayBL = _camera->ray(u - halfPixelW, v - halfPixelH);
+    Math::Ray rayBR = _camera->ray(u + halfPixelW, v - halfPixelH);
+
+    Graphic::color_t colorTL = traceRay(rayTL);
+    Graphic::color_t colorTR = traceRay(rayTR);
+    Graphic::color_t colorBL = traceRay(rayBL);
+    Graphic::color_t colorBR = traceRay(rayBR);
+
+    std::vector<Graphic::color_t> colors = {colorTL, colorTR, colorBL, colorBR};
+
+    if (needsFurtherSampling(colorTL, colorTR, colorBL, colorBR, threshold)) {
+        Math::Ray rayCenter = _camera->ray(u, v);
+        Math::Ray rayTop = _camera->ray(u, v + halfPixelH);
+        Math::Ray rayRight = _camera->ray(u + halfPixelW, v);
+        Math::Ray rayBottom = _camera->ray(u, v - halfPixelH);
+        Math::Ray rayLeft = _camera->ray(u - halfPixelW, v);
+
+        colors.push_back(traceRay(rayCenter));
+        colors.push_back(traceRay(rayTop));
+        colors.push_back(traceRay(rayRight));
+        colors.push_back(traceRay(rayBottom));
+        colors.push_back(traceRay(rayLeft));
+    }
+
+    return averageColors(colors);
 }
