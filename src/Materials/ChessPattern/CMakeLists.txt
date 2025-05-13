@@ -2,6 +2,14 @@ add_library(ChessPatternMaterial SHARED
         ChessPatternMaterial.cpp
         EntryPoint.cpp
         ../AMaterial.cpp
+        ../../Primitives/APrimitive.cpp
+        ../../Math/Point3D.cpp
+        ../../Primitives/Plane/Plane.cpp
+        ../../Primitives/InfiniteCone/InfiniteCone.cpp
+        ../../Primitives/InfiniteCylinder/InfiniteCylinder.cpp
+        ../../Primitives/Sphere/Sphere.cpp
+        ../../Primitives/Cone/Cone.cpp
+        ../../Primitives/Cylinder/Cylinder.cpp
 )
 
 add_custom_command(TARGET ChessPatternMaterial POST_BUILD

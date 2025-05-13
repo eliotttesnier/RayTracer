@@ -236,6 +236,10 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
                 } else if (sourceGroup[subfield].isNumber()) {
                     double value = static_cast<double>(sourceGroup[subfield]);
                     group.add(subname, libconfig::Setting::TypeFloat) = value;
+                } else if (sourceGroup[subfield].getType() ==
+                    libconfig::Setting::TypeBoolean) {
+                    bool value = static_cast<bool>(sourceGroup[subfield]);
+                    group.add(subname, libconfig::Setting::TypeBoolean) = value;
                 }
             }
         } else if (source[field].getType() == libconfig::Setting::TypeInt) {
@@ -250,6 +254,9 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
         } else if (source[field].getType() == libconfig::Setting::TypeString) {
             std::string value = static_cast<const char*>(source[field].c_str());
             target.add(name, libconfig::Setting::TypeString) = value;
+        } else if (source[field].getType() == libconfig::Setting::TypeBoolean) {
+            bool value = static_cast<bool>(source[field]);
+            target.add(name, libconfig::Setting::TypeBoolean) = value;
         }
     }
 }
