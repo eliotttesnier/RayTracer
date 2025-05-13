@@ -18,6 +18,7 @@
 #include "../../Materials/Default/DefaultMaterial.hpp"
 #include "../../Materials/Transparency/TransparencyMaterial.hpp"
 #include "../../Materials/ChessPattern/ChessPatternMaterial.hpp"
+#include "../../Materials/FileTexture/FileTextureMaterial.hpp"
 #include "../../LibLoader/LibLoader.hpp"
 #include "../../Math/Vector3D.hpp"
 

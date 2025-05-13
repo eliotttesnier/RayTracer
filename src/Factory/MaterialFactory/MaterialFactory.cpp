@@ -21,6 +21,7 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
 )
 {
     std::vector<std::shared_ptr<RayTracer::Materials::IMaterial>> materialStack;
+    bool hasChess = false;
 
     materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
         plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
@@ -35,6 +36,21 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
                 initEntryPointPtr<RayTracer::Materials::ChessPatternMaterial>(
                     "create",
                     materialStack.at(materialStack.size() - 1)
+                )
+        ));
+        hasChess = true;
+    }
+
+    auto fileTextureIt = materialProps.find("fileTexture");
+    if (fileTextureIt != materialProps.end() && std::any_cast<std::string>(fileTextureIt->second) != ""
+        && !hasChess) {
+        std::string filePath = std::any_cast<std::string>(fileTextureIt->second);
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["FileTextureMaterial"]->
+                initEntryPointPtr<RayTracer::Materials::FileTextureMaterial>(
+                    "create",
+                    materialStack.at(materialStack.size() - 1),
+                    filePath
                 )
         ));
     }
