@@ -21,7 +21,7 @@ RayTracer::Factory::InfiniteConeFactory::InfiniteConeFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double angle,
-    const Math::Vector3D &materials
+    const std::map<std::string, double> &materials
 ):
     _angle(angle),
     _position(position),
@@ -48,9 +48,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::InfiniteConeFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-            this->_materials,
-            plugins
-        );
+        this->_materials,
+        plugins
+    );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });
 }

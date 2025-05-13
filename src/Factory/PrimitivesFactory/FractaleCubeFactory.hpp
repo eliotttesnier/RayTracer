@@ -27,7 +27,7 @@ namespace RayTracer::Factory {
             const Math::Vector3D &shear,
             double size,
             int recursion,
-            const Math::Vector3D &materials
+            const std::map<std::string, double> &materials
         );
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
@@ -38,7 +38,7 @@ namespace RayTracer::Factory {
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
         Math::Vector3D _shear;
-        Math::Vector3D _materials;
+        std::map<std::string, double> _materials;
     };
 
 }  // namespace RayTracer::Factory

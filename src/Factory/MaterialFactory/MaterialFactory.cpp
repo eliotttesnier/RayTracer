@@ -10,11 +10,12 @@
 #include <map>
 #include <string>
 #include <memory>
+#include <iostream>
 
 namespace RayTracer::Factory {
 
 std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial(
-    const Math::Vector3D &config,
+    const std::map<std::string, double> &materialProps,
     std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
 )
 {
@@ -26,25 +27,36 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         )
     ));
 
-    double transparency = config._x;
-    if (transparency > 0.0) {
+    auto chessIt = materialProps.find("chess");
+    if (chessIt != materialProps.end() && chessIt->second > 0.0) {
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["ChessPatternMaterial"]->
+                initEntryPointPtr<RayTracer::Materials::ChessPatternMaterial>(
+                    "create",
+                    materialStack.at(materialStack.size() - 1)
+                )
+        ));
+    }
+
+    auto transparencyIt = materialProps.find("transparency");
+    if (transparencyIt != materialProps.end() && transparencyIt->second > 0.0) {
         materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
             plugins["TransparencyMaterial"]->
                 initEntryPointPtr<RayTracer::Materials::TransparencyMaterial>(
                     "create",
                     materialStack.at(materialStack.size() - 1),
-                    transparency
+                    transparencyIt->second
                 )
         ));
     }
 
-    double reflection = config._y;
-    if (reflection > 0.0) {
+    auto reflectionIt = materialProps.find("reflection");
+    if (reflectionIt != materialProps.end() && reflectionIt->second > 0.0) {
         // materialStack.emplace_back(
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(
         //         plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
         //             "create",
-        //             reflection
+        //             reflectionIt->second
         //         )
         //     )
         // );
@@ -53,13 +65,13 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         // );
     }
 
-    double refraction = config._z;
-    if (refraction > 0.0) {
+    auto refractionIt = materialProps.find("refraction");
+    if (refractionIt != materialProps.end() && refractionIt->second > 0.0) {
         // materialStack.emplace_back(
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(
         //         plugins["RefractionMaterial"]->initEntryPointPtr<RayTracer::Materials::RefractionMaterial>(
         //             "create",
-        //             refraction
+        //             refractionIt->second
         //         )
         //     )
         // );

@@ -1,4 +1,4 @@
-//
+// je
 // Created by roussierenoa on 5/12/25.
 //
 
@@ -16,8 +16,7 @@ std::vector<RayTracer::Parser::sphere_t>
     const auto &spheres = root["primitives"]["spheres"];
     for (int i = 0; i < spheres.getLength(); ++i) {
         const auto &s = spheres[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(
-            s, "transparency", "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
         auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
         auto scl = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -52,8 +51,7 @@ std::vector<RayTracer::Parser::plane_t>
     const auto &planes = root["primitives"]["planes"];
     for (int i = 0; i < planes.getLength(); ++i) {
         const auto &p = planes[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(p, "transparency",
-            "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getMaterialData<double>(p);
         auto position = RayTracer::Parser::Parser::getData3D<double>(p["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(p["rotation"]);
         auto scale = RayTracer::Parser::Parser::getData3D<double>(p["scale"]);
@@ -91,8 +89,7 @@ std::vector<RayTracer::Parser::cylinder_t>
 
     for (int i = 0; i < cylinder.getLength(); ++i) {
         const auto &s = cylinder[i];
-        material_t material = RayTracer::Parser::Parser::getData3D<double>(s, "transparency",
-            "reflection", "refraction");
+        material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
         auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
         auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
         auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -131,8 +128,7 @@ std::vector<RayTracer::Parser::cone_t>
 
         for (int i = 0; i < cone.getLength(); ++i) {
             const auto &s = cone[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -178,8 +174,7 @@ std::vector<RayTracer::Parser::torus_t>
 
         for (int i = 0; i < torus.getLength(); ++i) {
             const auto &s = torus[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -224,8 +219,7 @@ std::vector<RayTracer::Parser::tanglecube_t>
 
         for (int i = 0; i < tanglecube.getLength(); ++i) {
             const auto &s = tanglecube[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
             auto position = RayTracer::Parser::Parser::getData3D<double>( s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -269,8 +263,7 @@ std::vector<RayTracer::Parser::fractalecube_t>
         const auto &fractalecubes = root["primitives"]["fractalecubes"];
         for (int i = 0; i < fractalecubes.getLength(); ++i) {
             const auto &s = fractalecubes[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(s,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(s);
             auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(s["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(s["scale"]);
@@ -293,8 +286,8 @@ std::vector<RayTracer::Parser::fractalecube_t>
                     "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position)
                     << ", " << std::get<2>(position) << "), size=" << size << ", "
                     "recursion=" << recursion << ", "
-                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", " <<
-                    std::get<2>(color) << ")" << std::endl;
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                    << std::get<2>(color) << ")" << std::endl;
             #endif
         }
     } catch (const libconfig::SettingNotFoundException &e) {
@@ -315,8 +308,7 @@ std::vector<RayTracer::Parser::triangle_t>
 
         for (int i = 0; i < triangles.getLength(); ++i) {
             const auto &t = triangles[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(t,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(t);
             auto p1 = RayTracer::Parser::Parser::getData3D<double>(t["p1"]);
             auto p2 = RayTracer::Parser::Parser::getData3D<double>(t["p2"]);
             auto p3 = RayTracer::Parser::Parser::getData3D<double>(t["p3"]);
@@ -369,8 +361,7 @@ std::vector<RayTracer::Parser::obj_t>
 
         for (int i = 0; i < objs.getLength(); ++i) {
             const auto &o = objs[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(o,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(o);
             auto position = RayTracer::Parser::Parser::getData3D<double>(o["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(o["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(o["scale"]);
@@ -415,8 +406,7 @@ std::vector<RayTracer::Parser::infinitecylinder_t>
         const auto &infiniteCylinders = root["primitives"]["infiniteCylinders"];
         for (int i = 0; i < infiniteCylinders.getLength(); ++i) {
             const auto &c = infiniteCylinders[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(c,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(c);
             auto position = RayTracer::Parser::Parser::getData3D<double>(c["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(c["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(c["scale"]);
@@ -449,16 +439,15 @@ std::vector<RayTracer::Parser::infinitecylinder_t>
 }
 
 std::vector<RayTracer::Parser::infinitecone_t>
-        RayTracer::Parser::PrimitivesParser::getInfiniteConesData
-        (const libconfig::Setting &root)
+    RayTracer::Parser::PrimitivesParser::getInfiniteConesData
+    (const libconfig::Setting &root)
 {
     std::vector<infinitecone_t> infiniteConeVector;
     try {
         const auto &infiniteCones = root["primitives"]["infiniteCones"];
         for (int i = 0; i < infiniteCones.getLength(); ++i) {
             const auto &c = infiniteCones[i];
-            material_t material = RayTracer::Parser::Parser::getData3D<double>(c,
-                "transparency", "reflection", "refraction");
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(c);
             auto position = RayTracer::Parser::Parser::getData3D<double>(c["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(c["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(c["scale"]);

@@ -23,7 +23,7 @@ RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
     const Math::Vector3D &shear,
     double size,
     int recursion,
-    const Math::Vector3D &materials
+    const std::map<std::string, double> &materials
 ):
     _size(size),
     _recursion(recursion),

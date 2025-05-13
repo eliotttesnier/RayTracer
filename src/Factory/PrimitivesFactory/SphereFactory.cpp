@@ -19,7 +19,7 @@ RayTracer::Factory::SphereFactory::SphereFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double radius,
-    const Math::Vector3D &materials
+    const std::map<std::string, double> &materials
 ):
     _radius(radius),
     _position(position),

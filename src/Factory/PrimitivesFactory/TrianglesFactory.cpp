@@ -23,7 +23,7 @@ RayTracer::Factory::TrianglesFactory::TrianglesFactory(
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
-    const Math::Vector3D &materials
+    const std::map<std::string, double> &materials
 ):
     _p1(p1),
     _p2(p2),
