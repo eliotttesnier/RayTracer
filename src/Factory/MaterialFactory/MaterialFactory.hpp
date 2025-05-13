@@ -17,6 +17,7 @@
 #include "../../Materials/IMaterial.hpp"
 #include "../../Materials/Default/DefaultMaterial.hpp"
 #include "../../Materials/Transparency/TransparencyMaterial.hpp"
+#include "../../Materials/Reflection/ReflectionMaterial.hpp"
 #include "../../Materials/ChessPattern/ChessPatternMaterial.hpp"
 #include "../../Materials/FileTexture/FileTextureMaterial.hpp"
 #include "../../LibLoader/LibLoader.hpp"
