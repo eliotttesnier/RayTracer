@@ -72,18 +72,14 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     auto reflectionIt = materialProps.find("reflection");
     if (reflectionIt != materialProps.end() &&
         std::any_cast<double>(reflectionIt->second) > 0.0) {
-        // double reflection = std::any_cast<double>(reflectionIt->second);
-        // materialStack.emplace_back(
-        //     std::shared_ptr<RayTracer::Materials::IMaterial>(
-        //         plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
-        //             "create",
-        //             reflection
-        //         )
-        //     )
-        // );
-        // materialStack.at(materialStack.size() - 1)->setWrappee(
-        //     materialStack.at(materialStack.size() - 2)
-        // );
+        double reflection = std::any_cast<double>(reflectionIt->second);
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["ReflectionMaterial"]->initEntryPointPtr<RayTracer::Materials::ReflectionMaterial>(
+                "create",
+                materialStack.at(materialStack.size() - 1),
+                reflection
+            )
+        ));
     }
 
     auto refractionIt = materialProps.find("refraction");
