@@ -165,7 +165,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
     Math::Ray localRay = transformRayToLocal(ray);
     Math::hitdata_t hitData;
     hitData.hit = false;
-    hitData.color = {255, 255, 255, 1.0};
+    hitData.color = {0.0, 0.0, 0.0, 1.0};
 
     if (!_boundingBox.intersect(localRay))
         return hitData;
@@ -186,7 +186,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
                 minDistance = currentHit.distance;
                 hitData = currentHit;
                 hitData.hit = true;
-                hitData.color = {255, 255, 255, 1.0};
+                hitData.color = _color;
             }
         }
     }

@@ -21,7 +21,7 @@ RayTracer::Factory::InfiniteConeFactory::InfiniteConeFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double angle,
-    const std::map<std::string, double> &materials
+    const std::map<std::string, std::any> &materials
 ):
     _angle(angle),
     _position(position),

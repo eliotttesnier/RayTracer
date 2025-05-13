@@ -18,7 +18,7 @@ RayTracer::Factory::ConeFactory::ConeFactory(
     const Math::Vector3D &shear,
     double radius,
     double height,
-    const std::map<std::string, double> &materials
+    const std::map<std::string, std::any> &materials
 ):
     _radius(radius),
     _height(height),

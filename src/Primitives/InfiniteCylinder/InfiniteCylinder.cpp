@@ -63,7 +63,7 @@ Math::hitdata_t InfiniteCylinder::calculateInfiniteCylinderIntersection(
 
             hitData.point = transformPointToWorld(localHitPoint);
             hitData.normal = transformNormalToWorld(localNormal);
-            hitData.color = {0.0, 255.0, 0.0, 1.0};
+            hitData.color = _color;
         }
     }
 

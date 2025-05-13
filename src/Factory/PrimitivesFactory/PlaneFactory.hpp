@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <map>
+#include <any>
 #include "IPrimitiveFactory.hpp"
 
 namespace RayTracer::Factory {
@@ -18,7 +19,7 @@ class PlaneFactory : public IPrimitiveFactory {
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
             const Math::Vector3D &shear,
-            const std::map<std::string, double> &materials
+            const std::map<std::string, std::any> &materials
         );
 
         std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
@@ -27,7 +28,7 @@ class PlaneFactory : public IPrimitiveFactory {
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
         Math::Vector3D _shear;
-        std::map<std::string, double> _materials;
+        std::map<std::string, std::any> _materials;
     };
 
 } // namespace RayTracer::Factory

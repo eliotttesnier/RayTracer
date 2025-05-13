@@ -12,11 +12,13 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <any>
 
 #include "../../Materials/IMaterial.hpp"
 #include "../../Materials/Default/DefaultMaterial.hpp"
 #include "../../Materials/Transparency/TransparencyMaterial.hpp"
 #include "../../Materials/ChessPattern/ChessPatternMaterial.hpp"
+#include "../../Materials/FileTexture/FileTextureMaterial.hpp"
 #include "../../LibLoader/LibLoader.hpp"
 #include "../../Math/Vector3D.hpp"
 
@@ -25,7 +27,7 @@ namespace RayTracer::Factory {
 class MaterialFactory {
     public:
         static std::shared_ptr<RayTracer::Materials::IMaterial> createMaterial(
-            const std::map<std::string, double> &materialProps,
+            const std::map<std::string, std::any> &materialProps,
             std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
         );
         MaterialFactory() = default;
