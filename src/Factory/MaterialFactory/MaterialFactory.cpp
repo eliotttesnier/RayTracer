@@ -42,8 +42,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     }
 
     auto fileTextureIt = materialProps.find("fileTexture");
-    if (fileTextureIt != materialProps.end() && std::any_cast<std::string>(fileTextureIt->second) != ""
-        && !hasChess) {
+    if (fileTextureIt != materialProps.end() &&
+        std::any_cast<std::string>(fileTextureIt->second) != "" && !hasChess) {
         std::string filePath = std::any_cast<std::string>(fileTextureIt->second);
         materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
             plugins["FileTextureMaterial"]->
@@ -56,7 +56,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     }
 
     auto transparencyIt = materialProps.find("transparency");
-    if (transparencyIt != materialProps.end() && std::any_cast<double>(transparencyIt->second) > 0.0) {
+    if (transparencyIt != materialProps.end() &&
+        std::any_cast<double>(transparencyIt->second) > 0.0) {
         double transparency = std::any_cast<double>(transparencyIt->second);
         materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
             plugins["TransparencyMaterial"]->
@@ -69,7 +70,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     }
 
     auto reflectionIt = materialProps.find("reflection");
-    if (reflectionIt != materialProps.end() && std::any_cast<double>(reflectionIt->second) > 0.0) {
+    if (reflectionIt != materialProps.end() &&
+        std::any_cast<double>(reflectionIt->second) > 0.0) {
         // double reflection = std::any_cast<double>(reflectionIt->second);
         // materialStack.emplace_back(
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(
@@ -85,7 +87,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     }
 
     auto refractionIt = materialProps.find("refraction");
-    if (refractionIt != materialProps.end() && std::any_cast<double>(refractionIt->second) > 0.0) {
+    if (refractionIt != materialProps.end() &&
+        std::any_cast<double>(refractionIt->second) > 0.0) {
         // double refraction = std::any_cast<double>(refractionIt->second);
         // materialStack.emplace_back(
         //     std::shared_ptr<RayTracer::Materials::IMaterial>(

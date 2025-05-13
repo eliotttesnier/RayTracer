@@ -81,7 +81,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
 
@@ -115,7 +116,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -146,7 +148,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -181,7 +184,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -216,7 +220,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -251,7 +256,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -284,7 +290,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -320,7 +327,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -353,7 +361,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -385,7 +394,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCones(
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
@@ -417,7 +427,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
-        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g), static_cast<double>(b), 1.0});
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
         primitives.emplace_back(primitive);
     }
     return primitives;
