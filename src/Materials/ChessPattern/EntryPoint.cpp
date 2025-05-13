@@ -6,16 +6,16 @@
 */
 
 #include <unistd.h>
-
 #include <iostream>
+#include <memory>
 
 #include "LoaderType.hpp"
 #include "ChessPatternMaterial.hpp"
 
 extern "C" {
     RayTracer::Materials::ChessPatternMaterial *create(
-        const std::shared_ptr<RayTracer::Materials::IMaterial> &wrappee
-    ) {
+        const std::shared_ptr<RayTracer::Materials::IMaterial> &wrappee)
+    {
         return new RayTracer::Materials::ChessPatternMaterial(wrappee);
     }
 
