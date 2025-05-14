@@ -10,24 +10,28 @@
 #include <string>
 #include <vector>
 
-void ALight::setPosition(float x, float y, float z) {
-    _x = x; _y = y; _z = z;
+void ALight::setPosition(const Math::Point3D &point) {
+    this->_x = point._x;
+    this->_y = point._y;
+    this->_z = point._z;
 }
 
-void ALight::setColor(float r, float g, float b) {
-    _r = r; _g = g; _b = b;
+void ALight::setColor(int r, int g, int b) {
+    this->_r = r;
+    this->_g = g;
+    this->_b = b;
 }
 
 void ALight::setIntensity(float intensity) {
-    _intensity = intensity;
+    this->_intensity = intensity;
 }
 
-void ALight::getPosition(float &x, float &y, float &z) const {
-    x = _x; y = _y; z = _z;
+Math::Vector3D ALight::getPosition() const {
+    return {this->_x, this->_y, this->_z};
 }
 
-void ALight::getColor(float &r, float &g, float &b) const {
-    r = _r; g = _g; b = _b;
+std::tuple<int, int, int> ALight::getColor() const {
+    return {this->_r, this->_g, this->_b};
 }
 
 void ALight::getIntensity(float &intensity) const {

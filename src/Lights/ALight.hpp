@@ -16,13 +16,13 @@ class ALight : public ILight {
         ~ALight() = default;
 
         // Implementation of basic setters and getters
-        void setPosition(float x, float y, float z) override;
-        void setColor(float r, float g, float b) override;
+        void setPosition(const Math::Point3D &pos) override;
+        void setColor(int r, int g, int b) override;
         void setIntensity(float intensity) override;
         void setDirection(const Math::Vector3D &direction) override;
 
-        void getPosition(float &x, float &y, float &z) const override;
-        void getColor(float &r, float &g, float &b) const override;
+        Math::Vector3D getPosition() const override;
+        std::tuple<int, int, int> getColor() const override;
         void getIntensity(float &intensity) const override;
         std::string getLightName() const override;
         Math::Vector3D getDirection() const override;
