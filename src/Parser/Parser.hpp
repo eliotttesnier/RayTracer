@@ -54,31 +54,7 @@ class Parser {
             return std::make_tuple(static_cast<T>(pos[fst.c_str()]), static_cast<T>(pos[snd.c_str()]));
         }
 
-        template<typename T>
-        static material_t getMaterialData(const libconfig::Setting &setting) {
-            material_t materialProps;
-
-            try {
-                if (setting.exists("transparency")) {
-                    materialProps["transparency"] = static_cast<double>(setting["transparency"]);
-                }
-                if (setting.exists("reflection")) {
-                    materialProps["reflection"] = static_cast<double>(setting["reflection"]);
-                }
-                if (setting.exists("refraction")) {
-                    materialProps["refraction"] = static_cast<double>(setting["refraction"]);
-                }
-                if (setting.exists("chess")) {
-                    materialProps["chess"] = static_cast<bool>(setting["chess"]);
-                }
-                if (setting.exists("fileTexture")) {
-                    materialProps["fileTexture"] = static_cast<std::string>(setting["fileTexture"]);
-                }
-            } catch (const libconfig::SettingTypeException &e) {
-                std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
-            }
-            return materialProps;
-        }
+        static material_t getMaterialData(const libconfig::Setting &setting);
 
         CameraConfig getCameraConfig() const;
         LightsConfig getLightConfig() const;
