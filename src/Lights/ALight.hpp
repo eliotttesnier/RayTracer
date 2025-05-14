@@ -43,12 +43,6 @@ class ALight : public ILight {
             const Math::Point3D &hitPoint,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) const override = 0;
-        
-        virtual Graphic::color_t calculateLighting(
-            const Math::hitdata_t& hitData,
-            const Math::Ray& ray,
-            const Math::Vector3D& viewDir
-        ) const override = 0;
 };
 
 #endif // ALIGHT_HPP

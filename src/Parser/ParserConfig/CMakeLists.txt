@@ -2,6 +2,7 @@ set(CLASSCONFIG_SRC
     LightsConfig.cpp
     CameraConfig.cpp
     PrimitivesConfig.cpp
+    AntialiasingConfig.cpp
 )
 
 set(CLASSCONFIG_HPP
