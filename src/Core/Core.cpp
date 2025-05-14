@@ -58,14 +58,28 @@ RayTracer::Core::Core(char **av
                                  this->_parser.getLightConfig(),
                                  this->_plugins);
 
+    auto renderingConfig = _parser.getRenderingConfig();
     Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
+    renderer.setMultithreading(renderingConfig.getMultithreading());
+    if (renderingConfig.getType() == "preview")
+        renderer.renderPreview();
 
+    GraphicRenderer graphicRenderer("preview.ppm", "output.ppm",
+        renderingConfig.getType() == "preview");
+    bool isProgressiveMode = (renderingConfig.getType() == "progressive");
+    graphicRenderer.setProgressiveMode(isProgressiveMode);
+
+    if (isProgressiveMode) {
+        renderer.registerUpdateCallback([&graphicRenderer](
+                const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+            graphicRenderer.updateProgressiveRendering(pixelBuffer);
+        });
+    }
 
     this->applyRenderingConfig(renderer);
     this->applyAntialiasing(renderer);
 
     std::atomic<bool> renderingComplete(false);
-    GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
 
     std::thread renderThread([&]() {
         renderer.render();
@@ -75,7 +89,9 @@ RayTracer::Core::Core(char **av
 
     if (renderThread.joinable())
         renderThread.join();
-    graphicRenderer.switchToFinalImage();
+
+    if (!isProgressiveMode)
+        graphicRenderer.switchToFinalImage();
     graphicRenderer.exportToPNG("output.png");
 }
 
@@ -113,6 +129,9 @@ void RayTracer::Core::applyRenderingConfig(Renderer& renderer) const
 {
     auto renderingConfig = _parser.getRenderingConfig();
 
-    renderer.setMultithreading(renderingConfig.getMultithreading());
-    renderer.renderPreview();
+    if (renderingConfig.getType() == "progressive") {
+        renderer.setRenderingMode(Renderer::PROGRESSIVE);
+    } else {
+        renderer.setRenderingMode(Renderer::PREVIEW);
+    }
 }

@@ -177,10 +177,19 @@ void Renderer::renderSegment(int startY, int endY)
 
             localBuffer[y - startY][x] = pixelColor;
             _completedPixels++;
+
             if (_showProgress && (_completedPixels % 500 == 0)) {
                 std::lock_guard<std::mutex> lock(_mutex);
                 updateProgress();
             }
+        }
+
+        if (_renderingMode == PROGRESSIVE) {
+            std::lock_guard<std::mutex> lock(_mutex);
+            for (int x = 0; x < _width; x++) {
+                _pixelBuffer[y][x] = localBuffer[y - startY][x];
+            }
+            notifyPixelUpdate();
         }
 
         if (_completedPixels == _width * 10) {
@@ -190,10 +199,12 @@ void Renderer::renderSegment(int startY, int endY)
         }
     }
 
-    std::lock_guard<std::mutex> lock(_mutex);
-    for (int y = startY; y < endY; y++) {
-        for (int x = 0; x < _width; x++) {
-            _pixelBuffer[y][x] = localBuffer[y - startY][x];
+    if (_renderingMode != PROGRESSIVE) {
+        std::lock_guard<std::mutex> lock(_mutex);
+        for (int y = startY; y < endY; y++) {
+            for (int x = 0; x < _width; x++) {
+                _pixelBuffer[y][x] = localBuffer[y - startY][x];
+            }
         }
     }
 }
@@ -548,4 +559,37 @@ Graphic::color_t Renderer::adaptiveSupersample(double u, double v, double thresh
     }
 
     return averageColors(colors);
+}
+
+void Renderer::setRenderingMode(RenderingMode mode)
+{
+    _renderingMode = mode;
+    _lastUpdateTime = std::chrono::steady_clock::now();
+}
+
+void Renderer::registerUpdateCallback(std::function<void(
+    const std::vector<std::vector<Graphic::color_t>>&)> callback)
+{
+    _updateCallback = callback;
+}
+
+const std::vector<std::vector<Graphic::color_t>>& Renderer::getPixelBuffer() const
+{
+    return _pixelBuffer;
+}
+
+void Renderer::notifyPixelUpdate()
+{
+    if (_renderingMode != PROGRESSIVE || !_updateCallback) {
+        return;
+    }
+
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                now - _lastUpdateTime).count();
+
+    if (elapsed >= 100) {
+        _updateCallback(_pixelBuffer);
+        _lastUpdateTime = now;
+    }
 }
