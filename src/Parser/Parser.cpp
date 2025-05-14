@@ -109,7 +109,8 @@ void Parser::_getLightsData(const libconfig::Setting &root)
 {
     auto ambient = RayTracer::Parser::LightsParser::getAmbientData(root);
     auto directional = RayTracer::Parser::LightsParser::getDirectionalData(root);
-    this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional);
+    auto point = RayTracer::Parser::LightsParser::getPositionData(root);
+    this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional, point);
 }
 
 void Parser::_getAntialiasingData(const libconfig::Setting &root)

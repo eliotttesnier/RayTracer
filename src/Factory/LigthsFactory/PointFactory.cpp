@@ -2,42 +2,38 @@
 // Created by roussierenoa on 5/1/25.
 //
 
-#include "DirectionalFactory.hpp"
+#include "PointFactory.hpp"
 
 #include <map>
 #include <memory>
 #include <string>
 #include <tuple>
 
-#include "Lights/DirectionalLight/DirectionalLight.hpp"
+#include "Lights/PointLight/PointLight.hpp"
 
-RayTracer::Factory::DirectionalFactory::DirectionalFactory(
+RayTracer::Factory::PointFactory::PointFactory(
             const double intensity,
             const std::tuple<double, double, double> &position,
-            const std::tuple<double, double, double> &direction,
             std::tuple<int, int, int> color
 ):
     _intensity(intensity),
-    _color(color),
     _position(position),
-    _direction(direction)
+    _color(color)
 {
 }
 
-std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(
+std::shared_ptr<ILight> RayTracer::Factory::PointFactory::create(
             std::map<std::string,
             std::unique_ptr<Loader::LibLoader>> &plugins) const
 {
-    if (!plugins.contains("DirectionalLight"))
-        throw std::runtime_error("DirectionalLight plugin not found");
-    auto obj = plugins["DirectionalLight"]
-        ->initEntryPointPtr<light::DirectionalLight>("create");
+    if (!plugins.contains("PointLight"))
+        throw std::runtime_error("PointLight plugin not found");
+    auto obj = plugins["PointLight"]
+        ->initEntryPointPtr<light::PointLight>("create");
     auto [r, g, b] = this->_color;
     Math::Point3D pos = this->_position;
-    Math::Vector3D direction = this->_direction;
     obj->setColor(r, g, b);
     obj->setIntensity(this->_intensity);
-    obj->setDirection(direction);
     obj->setPosition(pos);
     return std::shared_ptr<ILight>(obj, [](ILight* ptr) { delete ptr; });
 }
