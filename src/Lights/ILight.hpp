@@ -19,6 +19,11 @@
 
 class IPrimitive;
 
+typedef struct lightInfos_s {
+    bool hit;
+    Math::Vector3D lightDir;
+} lightInfos_t;
+
 class ILight {
     public:
         virtual ~ILight() = default;
@@ -38,8 +43,7 @@ class ILight {
         virtual std::string getType() = 0;
 
         // Check if this light illuminates the hit point (visibility test)
-        virtual bool intersect(
-            const Math::Ray &ray,
+        virtual lightInfos_t intersect(
             const Math::Point3D &hitPoint,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) const = 0;
