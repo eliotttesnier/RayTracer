@@ -7,6 +7,7 @@
 
 #include "ALight.hpp"
 #include <limits>
+#include <tuple>
 #include <string>
 #include <vector>
 
