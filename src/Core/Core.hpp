@@ -10,6 +10,7 @@
 #include "Factory/Factory.hpp"
 #include "LibLoader/LibLoader.hpp"
 #include "Parser/Parser.hpp"
+#include "Renderer.hpp"
 
 namespace RayTracer {
 
@@ -32,6 +33,7 @@ public:
     std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
     std::vector<std::shared_ptr<ILight>> getLights() const;
     std::shared_ptr<RayTracer::Camera> getCamera() const;
+    void applyAntialiasing(Renderer& renderer) const;
 
 }; // Core
 } // RayTracer
