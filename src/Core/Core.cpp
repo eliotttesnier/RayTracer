@@ -14,6 +14,8 @@
 
 #include "Factory/Factory.hpp"
 #include "Parser/Parser.hpp"
+#include "Renderer.hpp"
+#include "../GraphicRenderer/GraphicRenderer.hpp"
 
 void RayTracer::Core::_loadPlugins()
 {
@@ -55,6 +57,26 @@ RayTracer::Core::Core(char **av
                                  this->_parser.getPrimitivesConfig(),
                                  this->_parser.getLightConfig(),
                                  this->_plugins);
+
+    Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
+
+
+    this->applyRenderingConfig(renderer);
+    this->applyAntialiasing(renderer);
+
+    std::atomic<bool> renderingComplete(false);
+    GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
+
+    std::thread renderThread([&]() {
+        renderer.render();
+        renderingComplete = true;
+    });
+    graphicRenderer.run(renderingComplete);
+
+    if (renderThread.joinable())
+        renderThread.join();
+    graphicRenderer.switchToFinalImage();
+    graphicRenderer.exportToPNG("output.png");
 }
 
 std::vector<std::shared_ptr<IPrimitive>> RayTracer::Core::getPrimitives() const
@@ -85,4 +107,11 @@ void RayTracer::Core::applyAntialiasing(Renderer& renderer) const
     } else {
         renderer.setAntialiasingMode(Renderer::NONE);
     }
+}
+
+void RayTracer::Core::applyRenderingConfig(Renderer& renderer) const
+{
+    auto renderingConfig = _parser.getRenderingConfig();
+
+    renderer.renderPreview();
 }

@@ -18,34 +18,16 @@
 #include "GraphicRenderer/GraphicRenderer.hpp"
 
 int main(int ac, char **av) {
-    if (ac == 2) {
-        try {
-            RayTracer::Core core(av);
-            Renderer renderer(core.getCamera(), core.getPrimitives(), core.getLights());
-
-            renderer.renderPreview();
-            core.applyAntialiasing(renderer);
-
-            std::atomic<bool> renderingComplete(false);
-            GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
-
-            std::thread renderThread([&]() {
-                renderer.render();
-                renderingComplete = true;
-            });
-            graphicRenderer.run(renderingComplete);
-
-            if (renderThread.joinable())
-                renderThread.join();
-            graphicRenderer.switchToFinalImage();
-            graphicRenderer.exportToPNG("output.png");
-        } catch (const std::exception &e) {
-            std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
-            return 1;
-        }
-    } else {
+    if (ac != 2) {
         std::cerr << "Usage: ./raytracer <config_file.cfg>" << std::endl;
-        return 1;
+        return 84;
+    }
+
+    try {
+        RayTracer::Core core(av);
+    } catch (const std::exception &e) {
+        std::cerr << "[ERROR] Exception: " << e.what() << std::endl;
+        return 84;
     }
     return 0;
 }
