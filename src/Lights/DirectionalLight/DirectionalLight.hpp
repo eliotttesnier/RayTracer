@@ -29,13 +29,6 @@ namespace RayTracer::light {
             Math::Vector3D getDirection() const override;
             
             std::string getType() override { return "DirectionalLight"; }
-            
-            // Implement the light-specific calculation
-            Graphic::color_t calculateLighting(
-                const Math::hitdata_t& hitData,
-                const Math::Ray& ray,
-                const Math::Vector3D& viewDir
-            ) const override;
     };
 
 } // RayTracer
