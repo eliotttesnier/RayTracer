@@ -44,14 +44,6 @@ class ILight {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) const = 0;
 
-        // New methods for calculating lighting contribution
-        // Each light will calculate its own contribution to the final color
-        virtual Graphic::color_t calculateLighting(
-            const Math::hitdata_t& hitData,
-            const Math::Ray& ray,
-            const Math::Vector3D& viewDir
-        ) const = 0;
-
         // Helper method to check if point is in shadow
         virtual bool isInShadow(
             const Math::Point3D& hitPoint,
