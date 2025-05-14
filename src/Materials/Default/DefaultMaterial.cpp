@@ -90,7 +90,9 @@ Graphic::color_t DefaultMaterial::_getColor(
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
 
             double currentDiffuseIntensity = i * kd * std::max(0.0, L.dot(N));
-            double currentSpecularIntensity = i * ks * std::pow(std::max(0.0, R.dot(V)), shininess);
+            double currentSpecularIntensity = i * ks * std::pow(
+                std::max(0.0, R.dot(V)), shininess
+            );
 
             lightColor._x += (lr / 255.0) * currentDiffuseIntensity;
             lightColor._y += (lg / 255.0) * currentDiffuseIntensity;
