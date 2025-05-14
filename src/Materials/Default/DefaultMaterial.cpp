@@ -77,14 +77,15 @@ Graphic::color_t DefaultMaterial::_getColor(
             continue;
         }
 
-        if (light->intersect(ray, hitData.point, primitives)) {
-            Math::Vector3D lightDir = light->getDirection().normalized();
+        lightInfos_t infos = light->intersect(hitData.point, primitives);
+
+        if (infos.hit) {
             float i;
             float lr, lg, lb;
             light->getIntensity(i);
             light->getColor(lr, lg, lb);
 
-            Math::Vector3D L = -light->getDirection().normalized();
+            Math::Vector3D L = infos.lightDir;
             Math::Vector3D N = hitData.normal.normalized();
             Math::Vector3D V = -ray.direction.normalized();
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
