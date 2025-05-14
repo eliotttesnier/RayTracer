@@ -85,7 +85,7 @@ Graphic::color_t DefaultMaterial::_getColor(
             light->getIntensity(i);
             light->getColor(lr, lg, lb);
 
-            Math::Vector3D L = infos.lightDir;
+            Math::Vector3D L = infos.lightDir.normalized();
             Math::Vector3D N = hitData.normal.normalized();
             Math::Vector3D V = -ray.direction.normalized();
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
