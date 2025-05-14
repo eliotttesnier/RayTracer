@@ -13,6 +13,10 @@ target_include_directories(DirectionalLight PRIVATE
         ./
 )
 
+target_include_directories(PositionLight PRIVATE
+        ./
+)
+
 target_include_directories(Plane PRIVATE
         ./
 )
