@@ -22,6 +22,12 @@
 
 class Renderer {
     public:
+        enum AntialiasingMode {
+            NONE,
+            SUPERSAMPLING,
+            ADAPTIVE_SUPERSAMPLING
+        };
+
         Renderer(const std::shared_ptr<RayTracer::Camera> camera, const std::vector<std::shared_ptr<IPrimitive>> primitives,
                 const std::vector<std::shared_ptr<ILight>> lights);
         ~Renderer();
@@ -31,6 +37,9 @@ class Renderer {
         void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives);
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
+        void setAntialiasingMode(AntialiasingMode mode);
+        void setSupersamplingLevel(int level);
+        void setAdaptiveThreshold(double threshold);
         void render();
         void renderPreview();
 
@@ -41,6 +50,15 @@ class Renderer {
         void savePreviewToFile();
         void updateProgress();
         std::string formatTime(double seconds);
+
+        Graphic::color_t traceRay(const Math::Ray& ray) const;
+        Graphic::color_t supersample(double u, double v, int samples) const;
+        Graphic::color_t adaptiveSupersample(double u, double v, double threshold) const;
+        bool needsFurtherSampling(const Graphic::color_t& tl, const Graphic::color_t& tr,
+                                  const Graphic::color_t& bl, const Graphic::color_t& br,
+                                  double threshold) const;
+        double colorDifference(const Graphic::color_t& c1, const Graphic::color_t& c2) const;
+        Graphic::color_t averageColors(const std::vector<Graphic::color_t>& colors) const;
 
         std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
@@ -59,6 +77,10 @@ class Renderer {
         bool _showProgress{true};
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         double _pixelsPerSecond{0.0};
+
+        AntialiasingMode _antialiasingMode = NONE;
+        int _supersamplingLevel = 4;
+        double _adaptiveThreshold = 0.1;
 };
 
 #endif /* !RENDERER_HPP_ */

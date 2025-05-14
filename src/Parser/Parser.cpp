@@ -82,6 +82,47 @@ void Parser::_getLightsData(const libconfig::Setting &root)
     this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional);
 }
 
+void Parser::_getAntialiasingData(const libconfig::Setting &root)
+{
+    try {
+        if (!root.exists("antialiasing")) {
+            this->_antialiasingConfig = std::make_unique<AntialiasingConfig>(
+                "none", 4, 0.1
+            );
+            return;
+        }
+
+        const auto &antialiasing = root["antialiasing"];
+        std::string type = "none";
+        int samples = 4;
+        double threshold = 0.1;
+
+        if (antialiasing.exists("type"))
+            type = static_cast<const char*>(antialiasing["type"]);
+
+        if (antialiasing.exists("samples"))
+            samples = static_cast<int>(antialiasing["samples"]);
+
+        if (antialiasing.exists("treshold"))
+            threshold = static_cast<double>(antialiasing["treshold"]);
+
+        #ifdef _DEBUG
+            std::cout << "Antialiasing: type=" << typ
+                      << ", samples=" << samples
+                      << ", threshold=" << threshold << std::endl;
+        #endif
+
+        this->_antialiasingConfig = std::make_unique<AntialiasingConfig>(
+            type, samples, threshold
+        );
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Antialiasing setting type error: " << e.what() << std::endl;
+        this->_antialiasingConfig = std::make_unique<AntialiasingConfig>(
+            "none", 4, 0.1
+        );
+    }
+}
+
 void Parser::_importScenes(const libconfig::Setting &root)
 {
     if (!root.exists("scenes")) {
@@ -236,6 +277,10 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
                 } else if (sourceGroup[subfield].isNumber()) {
                     double value = static_cast<double>(sourceGroup[subfield]);
                     group.add(subname, libconfig::Setting::TypeFloat) = value;
+                } else if (sourceGroup[subfield].getType() ==
+                    libconfig::Setting::TypeBoolean) {
+                    bool value = static_cast<bool>(sourceGroup[subfield]);
+                    group.add(subname, libconfig::Setting::TypeBoolean) = value;
                 }
             }
         } else if (source[field].getType() == libconfig::Setting::TypeInt) {
@@ -250,6 +295,9 @@ void Parser::_copySettings(const libconfig::Setting &source, libconfig::Setting 
         } else if (source[field].getType() == libconfig::Setting::TypeString) {
             std::string value = static_cast<const char*>(source[field].c_str());
             target.add(name, libconfig::Setting::TypeString) = value;
+        } else if (source[field].getType() == libconfig::Setting::TypeBoolean) {
+            bool value = static_cast<bool>(source[field]);
+            target.add(name, libconfig::Setting::TypeBoolean) = value;
         }
     }
 }
@@ -267,6 +315,11 @@ LightsConfig Parser::getLightConfig() const
 PrimitivesConfig Parser::getPrimitivesConfig() const
 {
     return *this->_primitiveConfig;
+}
+
+AntialiasingConfig Parser::getAntialiasingConfig() const
+{
+    return *this->_antialiasingConfig;
 }
 
 Parser::Parser(char *path)
@@ -293,6 +346,7 @@ Parser::Parser(char *path)
         this->_importScenes(root);
         this->_getLightsData(root);
         this->_getPrimitivesData(root);
+        this->_getAntialiasingData(root);
     } catch (const libconfig::SettingNotFoundException &e) {
         std::cerr << "[ERROR] Missing setting: " << e.getPath() << "\n";
         throw;

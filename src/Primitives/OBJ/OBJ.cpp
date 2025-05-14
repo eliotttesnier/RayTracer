@@ -190,7 +190,7 @@ Math::hitdata_t OBJ::intersect(const Math::Ray &ray)
     }
 
     if (closestHit.hit)
-        closestHit.color = {255.0, 255.0, 255.0, 1.0};  // White
+        closestHit.color = _color;
     return closestHit;
 }
 

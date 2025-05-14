@@ -24,6 +24,8 @@ int main(int ac, char **av) {
             Renderer renderer(core.getCamera(), core.getPrimitives(), core.getLights());
 
             renderer.renderPreview();
+            core.applyAntialiasing(renderer);
+
             std::atomic<bool> renderingComplete(false);
             GraphicRenderer graphicRenderer("preview.ppm", "output.ppm");
 

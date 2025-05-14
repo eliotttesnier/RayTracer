@@ -101,7 +101,7 @@ Math::hitdata_t Sphere::intersect(const Math::Ray &ray) {
         hitData.normal = transformNormalToWorld(localNormal);
     }
 
-    hitData.color = {0.0, 0.0, 255.0, 1.0};  // Blue
+    hitData.color = _color;
     return hitData;
 }
 

@@ -113,7 +113,7 @@ Math::hitdata_t Triangles::calculateTriangleIntersection(const Math::Ray &localR
         }
         hitData.normal = transformNormalToWorld(localNormal);
 
-        hitData.color = {128.0, 0.0, 128.0, 1.0};  // Purple
+        hitData.color = _color;
     }
 
     return hitData;
