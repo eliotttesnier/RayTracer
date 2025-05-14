@@ -47,6 +47,7 @@ class Renderer {
         void setSupersamplingLevel(int level);
         void setAdaptiveThreshold(double threshold);
         void setMultithreading(bool useMultithreading);
+        void setMaxThreads(unsigned int maxThreads);
         void setRenderingMode(RenderingMode mode);
         void registerUpdateCallback(std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> callback);
         void render();
@@ -97,6 +98,7 @@ class Renderer {
         int _supersamplingLevel = 4;
         double _adaptiveThreshold = 0.1;
         bool _useMultithreading{true};
+        unsigned int _maxThreads = 8;
 };
 
 #endif /* !RENDERER_HPP_ */

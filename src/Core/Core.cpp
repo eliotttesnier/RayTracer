@@ -61,6 +61,7 @@ RayTracer::Core::Core(char **av
     auto renderingConfig = _parser.getRenderingConfig();
     Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
     renderer.setMultithreading(renderingConfig.getMultithreading());
+    renderer.setMaxThreads(renderingConfig.getMaxThreads());
     if (renderingConfig.getType() == "preview")
         renderer.renderPreview();
 

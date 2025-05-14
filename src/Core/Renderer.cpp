@@ -229,7 +229,7 @@ void Renderer::renderPreview()
               << AnsiColor::RESET << ")..." << std::endl;
 
     if (_useMultithreading) {
-        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), _maxThreads);
         std::vector<std::thread> threads;
         const int linesPerThread = _height / numThreads;
 
@@ -317,7 +317,7 @@ void Renderer::render()
               << AnsiColor::RESET << " pixels)";
 
     if (_useMultithreading) {
-        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), _maxThreads);
         std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
                   << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
                   << AnsiColor::RESET << std::endl;
@@ -565,6 +565,11 @@ void Renderer::setRenderingMode(RenderingMode mode)
 {
     _renderingMode = mode;
     _lastUpdateTime = std::chrono::steady_clock::now();
+}
+
+void Renderer::setMaxThreads(unsigned int maxThreads)
+{
+    _maxThreads = maxThreads;
 }
 
 void Renderer::registerUpdateCallback(std::function<void(
