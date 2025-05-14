@@ -10,8 +10,6 @@
 #include <algorithm>
 #include <numeric>
 
-#include <iostream>
-
 #include "DefaultMaterial.hpp"
 
 namespace RayTracer::Materials
