@@ -14,6 +14,8 @@
 
 #include "Factory/Factory.hpp"
 #include "Parser/Parser.hpp"
+#include "Renderer.hpp"
+#include "../GraphicRenderer/GraphicRenderer.hpp"
 
 void RayTracer::Core::_loadPlugins()
 {
@@ -55,6 +57,43 @@ RayTracer::Core::Core(char **av
                                  this->_parser.getPrimitivesConfig(),
                                  this->_parser.getLightConfig(),
                                  this->_plugins);
+
+    auto renderingConfig = _parser.getRenderingConfig();
+    Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
+    renderer.setMultithreading(renderingConfig.getMultithreading());
+    renderer.setMaxThreads(renderingConfig.getMaxThreads());
+    if (renderingConfig.getType() == "preview")
+        renderer.renderPreview();
+
+    GraphicRenderer graphicRenderer("preview.ppm", "output.ppm",
+        renderingConfig.getType() == "preview");
+    bool isProgressiveMode = (renderingConfig.getType() == "progressive");
+    graphicRenderer.setProgressiveMode(isProgressiveMode);
+
+    if (isProgressiveMode) {
+        renderer.registerUpdateCallback([&graphicRenderer](
+                const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+            graphicRenderer.updateProgressiveRendering(pixelBuffer);
+        });
+    }
+
+    this->applyRenderingConfig(renderer);
+    this->applyAntialiasing(renderer);
+
+    std::atomic<bool> renderingComplete(false);
+
+    std::thread renderThread([&]() {
+        renderer.render();
+        renderingComplete = true;
+    });
+    graphicRenderer.run(renderingComplete);
+
+    if (renderThread.joinable())
+        renderThread.join();
+
+    if (!isProgressiveMode)
+        graphicRenderer.switchToFinalImage();
+    graphicRenderer.exportToPNG("output.png");
 }
 
 std::vector<std::shared_ptr<IPrimitive>> RayTracer::Core::getPrimitives() const
@@ -84,5 +123,16 @@ void RayTracer::Core::applyAntialiasing(Renderer& renderer) const
         renderer.setAdaptiveThreshold(antialiasingConfig.getThreshold());
     } else {
         renderer.setAntialiasingMode(Renderer::NONE);
+    }
+}
+
+void RayTracer::Core::applyRenderingConfig(Renderer& renderer) const
+{
+    auto renderingConfig = _parser.getRenderingConfig();
+
+    if (renderingConfig.getType() == "progressive") {
+        renderer.setRenderingMode(Renderer::PROGRESSIVE);
+    } else {
+        renderer.setRenderingMode(Renderer::PREVIEW);
     }
 }

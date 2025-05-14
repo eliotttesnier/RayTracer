@@ -15,6 +15,7 @@
 #include <mutex>
 #include <atomic>
 #include <chrono>
+#include <functional>
 #include "../Primitives/IPrimitive.hpp"
 #include "../Lights/ILight.hpp"
 #include "../Graphic/Camera.hpp"
@@ -26,6 +27,11 @@ class Renderer {
             NONE,
             SUPERSAMPLING,
             ADAPTIVE_SUPERSAMPLING
+        };
+
+        enum RenderingMode {
+            PREVIEW,
+            PROGRESSIVE
         };
 
         Renderer(const std::shared_ptr<RayTracer::Camera> camera, const std::vector<std::shared_ptr<IPrimitive>> primitives,
@@ -40,8 +46,13 @@ class Renderer {
         void setAntialiasingMode(AntialiasingMode mode);
         void setSupersamplingLevel(int level);
         void setAdaptiveThreshold(double threshold);
+        void setMultithreading(bool useMultithreading);
+        void setMaxThreads(unsigned int maxThreads);
+        void setRenderingMode(RenderingMode mode);
+        void registerUpdateCallback(std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> callback);
         void render();
         void renderPreview();
+        const std::vector<std::vector<Graphic::color_t>>& getPixelBuffer() const;
 
     protected:
     private:
@@ -49,6 +60,7 @@ class Renderer {
         void saveToFile();
         void savePreviewToFile();
         void updateProgress();
+        void notifyPixelUpdate();
         std::string formatTime(double seconds);
 
         Graphic::color_t traceRay(const Math::Ray& ray) const;
@@ -77,10 +89,16 @@ class Renderer {
         bool _showProgress{true};
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         double _pixelsPerSecond{0.0};
+        std::chrono::steady_clock::time_point _lastUpdateTime;
+        std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> _updateCallback;
+        RenderingMode _renderingMode = PREVIEW;
+        int _updateFrequency = 100;
 
         AntialiasingMode _antialiasingMode = NONE;
         int _supersamplingLevel = 4;
         double _adaptiveThreshold = 0.1;
+        bool _useMultithreading{true};
+        unsigned int _maxThreads = 8;
 };
 
 #endif /* !RENDERER_HPP_ */

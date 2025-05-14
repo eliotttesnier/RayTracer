@@ -34,6 +34,7 @@ public:
     std::vector<std::shared_ptr<ILight>> getLights() const;
     std::shared_ptr<RayTracer::Camera> getCamera() const;
     void applyAntialiasing(Renderer& renderer) const;
+    void applyRenderingConfig(Renderer& renderer) const;
 
 }; // Core
 } // RayTracer

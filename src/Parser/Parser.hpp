@@ -16,6 +16,7 @@
 #include "ParserConfig/CameraConfig.hpp"
 #include "ParserConfig/PrimitivesConfig.hpp"
 #include "ParserConfig/AntialiasingConfig.hpp"
+#include "ParserConfig/RenderingConfig.hpp"
 
 namespace RayTracer::Parser {
 
@@ -26,11 +27,13 @@ class Parser {
         std::unordered_set<std::string> _importedScenes;
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;
         std::unique_ptr<AntialiasingConfig> _antialiasingConfig;
+        std::unique_ptr<RenderingConfig> _renderingConfig;
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
         void _getLightsData(const libconfig::Setting &root);
         void _getAntialiasingData(const libconfig::Setting &root);
+        void _getRenderingData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
@@ -60,6 +63,7 @@ class Parser {
         LightsConfig getLightConfig() const;
         PrimitivesConfig getPrimitivesConfig() const;
         AntialiasingConfig getAntialiasingConfig() const;
+        RenderingConfig getRenderingConfig() const;
 
         Parser() = delete;
         Parser(char *path);
