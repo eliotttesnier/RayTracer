@@ -10,6 +10,7 @@
 #include <string>
 #include <tuple>
 #include <map>
+#include <any>
 
 namespace RayTracer {
 namespace Parser {
@@ -20,7 +21,7 @@ typedef std::tuple<double, double, double, double> quaduple_t;
 typedef std::tuple<double, double, double, double, double> quintuple_t;
 typedef std::tuple<int, int, int> color_t;
 
-typedef std::map<std::string, double> material_t; // Material properties map
+typedef std::map<std::string, std::any> material_t; // Material properties
 
 typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Material, radius, Position, rotation, scale, shear, Color
 typedef std::tuple<material_t, duotuple_t, truple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Material, radius + height, Position , rotation, scale, shear, Color

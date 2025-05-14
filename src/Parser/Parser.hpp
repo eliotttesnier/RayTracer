@@ -15,6 +15,7 @@
 #include "ParserConfig/LightsConfig.hpp"
 #include "ParserConfig/CameraConfig.hpp"
 #include "ParserConfig/PrimitivesConfig.hpp"
+#include "ParserConfig/AntialiasingConfig.hpp"
 
 namespace RayTracer::Parser {
 
@@ -24,10 +25,12 @@ class Parser {
         std::unique_ptr<LightsConfig> _lightConfig;
         std::unordered_set<std::string> _importedScenes;
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;
+        std::unique_ptr<AntialiasingConfig> _antialiasingConfig;
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
         void _getLightsData(const libconfig::Setting &root);
+        void _getAntialiasingData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
@@ -66,7 +69,10 @@ class Parser {
                     materialProps["refraction"] = static_cast<double>(setting["refraction"]);
                 }
                 if (setting.exists("chess")) {
-                    materialProps["chess"] = static_cast<bool>(setting["chess"]) ? 1.0 : 0.0;
+                    materialProps["chess"] = static_cast<bool>(setting["chess"]);
+                }
+                if (setting.exists("fileTexture")) {
+                    materialProps["fileTexture"] = static_cast<std::string>(setting["fileTexture"]);
                 }
             } catch (const libconfig::SettingTypeException &e) {
                 std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
@@ -77,6 +83,7 @@ class Parser {
         CameraConfig getCameraConfig() const;
         LightsConfig getLightConfig() const;
         PrimitivesConfig getPrimitivesConfig() const;
+        AntialiasingConfig getAntialiasingConfig() const;
 
         Parser() = delete;
         Parser(char *path);

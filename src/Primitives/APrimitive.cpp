@@ -67,6 +67,11 @@ void APrimitive::setMaterial(const std::shared_ptr<RayTracer::Materials::IMateri
     _material = material;
 }
 
+void APrimitive::setColor(const Graphic::color_t &color)
+{
+    _color = color;
+}
+
 Math::hitdata_t APrimitive::intersect(const Math::Ray &ray)
 {
     Math::hitdata_t hitData;

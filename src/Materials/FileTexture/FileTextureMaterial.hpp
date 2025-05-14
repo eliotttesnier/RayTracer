@@ -2,13 +2,14 @@
 ** EPITECH PROJECT, 2025
 ** rayTracer
 ** File description:
-** ChessPatternMaterial
+** FileTextureMaterial
 */
 
-#ifndef CHESSPATTERNMATERIAL_HPP_
-#define CHESSPATTERNMATERIAL_HPP_
+#ifndef FILETEXTUREMATERIAL_HPP_
+#define FILETEXTUREMATERIAL_HPP_
 
 #include <memory>
+#include <SFML/Graphics.hpp>
 
 #include "../../Primitives/Cone/Cone.hpp"
 #include "../../Primitives/Cylinder/Cylinder.hpp"
@@ -26,7 +27,7 @@
 
 namespace RayTracer::Materials {
 
-class ChessPatternMaterial : public AMaterial {
+class FileTextureMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
@@ -106,34 +107,23 @@ class ChessPatternMaterial : public AMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
-        ChessPatternMaterial();
-        ChessPatternMaterial(std::shared_ptr<IMaterial> wrappee);
-        virtual ~ChessPatternMaterial();
+        FileTextureMaterial();
+        FileTextureMaterial(std::shared_ptr<IMaterial> wrappee, std::string filePath);
+        FileTextureMaterial(std::shared_ptr<IMaterial> wrappee, std::string filePath, float textureScale);
+        virtual ~FileTextureMaterial();
+
+        void setTextureScale(float scale) { _textureScale = scale; }
 
     private:
         std::shared_ptr<IMaterial> _wrappee;
-        double _scale;
-        Graphic::color_t _colorWhite;
-        Graphic::color_t _colorBlack;
-
-        Graphic::color_t _applyChessPattern(
-            const Math::Point3D &hitPoint,
-            Graphic::color_t baseColor
-        );
-
-        Graphic::color_t _applyChessPatternUV(
-            float u, float v,
-            Graphic::color_t baseColor
-        );
-
-        Graphic::color_t _getColorWithLighting(
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
-        );
+        std::string _filePath;
+        sf::Image _textureImage;
+        sf::Vector2u _textureSize;
+        bool _textureLoaded = false;
+        float _textureScale = 1.0f;
+        Graphic::color_t getTextureColorAtUV(float u, float v) const;
 };
 
 }
 
-#endif /* !CHESSPATTERNMATERIAL_HPP_ */
+#endif /* !FILETEXTUREMATERIAL_HPP_ */

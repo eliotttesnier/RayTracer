@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2025
 ** rayTracer
 ** File description:
-** ChessPatternMaterial
+** ReflectionMaterial
 */
 
-#ifndef CHESSPATTERNMATERIAL_HPP_
-#define CHESSPATTERNMATERIAL_HPP_
+#ifndef REFLECTIONMATERIAL_HPP_
+#define REFLECTIONMATERIAL_HPP_
 
 #include <memory>
 
@@ -26,7 +26,7 @@
 
 namespace RayTracer::Materials {
 
-class ChessPatternMaterial : public AMaterial {
+class ReflectionMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
             const RayTracer::primitive::Cone &obj,
@@ -106,34 +106,26 @@ class ChessPatternMaterial : public AMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
-        ChessPatternMaterial();
-        ChessPatternMaterial(std::shared_ptr<IMaterial> wrappee);
-        virtual ~ChessPatternMaterial();
+        ReflectionMaterial() = delete;
+        ReflectionMaterial(std::shared_ptr<IMaterial> wrappee, double reflection);
+        virtual ~ReflectionMaterial();
 
     private:
         std::shared_ptr<IMaterial> _wrappee;
-        double _scale;
-        Graphic::color_t _colorWhite;
-        Graphic::color_t _colorBlack;
-
-        Graphic::color_t _applyChessPattern(
+        double _reflection;
+        Graphic::color_t _calculateReflectionColor(
+            const Math::Ray &ray,
             const Math::Point3D &hitPoint,
-            Graphic::color_t baseColor
+            const Math::Vector3D &normal,
+            std::vector<std::shared_ptr<IPrimitive>> primitives,
+            std::vector<std::shared_ptr<ILight>> lights
         );
-
-        Graphic::color_t _applyChessPatternUV(
-            float u, float v,
-            Graphic::color_t baseColor
-        );
-
-        Graphic::color_t _getColorWithLighting(
-            Math::hitdata_t hitData,
-            Math::Ray ray,
-            std::vector<std::shared_ptr<ILight>> lights,
-            std::vector<std::shared_ptr<IPrimitive>> primitives
+        Graphic::color_t _blendColors(
+            Graphic::color_t originColor,
+            Graphic::color_t reflectionColor
         );
 };
 
 }
 
-#endif /* !CHESSPATTERNMATERIAL_HPP_ */
+#endif /* !REFLECTIONMATERIAL_HPP_ */

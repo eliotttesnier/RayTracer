@@ -9,6 +9,7 @@
 #include <string>
 #include <stdexcept>
 #include <vector>
+#include <any>
 
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Torus/Torus.hpp"
@@ -20,7 +21,7 @@ RayTracer::Factory::TorusFactory::TorusFactory(
     const Math::Vector3D &shear,
     double majorRadius,
     double minorRadius,
-    const std::map<std::string, double> &materials
+    const std::map<std::string, std::any> &materials
 ):
     _majorRadius(majorRadius),
     _minorRadius(minorRadius),

@@ -166,7 +166,7 @@ Math::hitdata_t Cylinder::calculateCylinderIntersection(const Math::Ray &localRa
         hitData.normal = transformNormalToWorld(localNormal);
     }
 
-    hitData.color = {255.0, 0.0, 0.0, 1.0};  // Red
+    hitData.color = _color;
     return hitData;
 }
 
