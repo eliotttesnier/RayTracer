@@ -66,3 +66,7 @@ target_include_directories(OBJ PRIVATE
 target_include_directories(RefractionMaterial PRIVATE
         ./
 )
+
+target_include_directories(PerlinNoiseMaterial PRIVATE
+        ./
+)
