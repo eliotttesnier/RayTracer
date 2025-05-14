@@ -12,9 +12,7 @@
 #include <vector>
 
 void ALight::setPosition(const Math::Point3D &point) {
-    this->_x = point._x;
-    this->_y = point._y;
-    this->_z = point._z;
+    this->_position = point;
 }
 
 void ALight::setColor(int r, int g, int b) {
@@ -27,8 +25,8 @@ void ALight::setIntensity(float intensity) {
     this->_intensity = intensity;
 }
 
-Math::Vector3D ALight::getPosition() const {
-    return {this->_x, this->_y, this->_z};
+Math::Point3D ALight::getPosition() const {
+    return this->_position;
 }
 
 std::tuple<int, int, int> ALight::getColor() const {

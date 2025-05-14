@@ -20,16 +20,19 @@ typedef std::tuple<double, color_t> ambient_t; // Intensity, color
 class LightsConfig {
     private:
         const std::vector<directional_t>  _directional;
+        const std::vector<point_t>  _point;
         const ambient_t _ambient;
 
     public:
         ambient_t getAmbient() const;
         std::vector<directional_t> getDirectional() const;
+        std::vector<point_t> getPoint() const;
 
         LightsConfig() = delete;
         LightsConfig(
             const ambient_t &ambiant, /* Intensité couleur */
-            const std::vector<directional_t> &directional /* Intenstié, position, direction, couleur */
+            const std::vector<directional_t> &directional, /* Intenstié, position, direction, couleur */
+            const std::vector<point_t> &point /* Intenstié, position, couleur */
         );
         ~LightsConfig() = default;
 };

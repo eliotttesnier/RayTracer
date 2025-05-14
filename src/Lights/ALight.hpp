@@ -7,7 +7,7 @@
 
 class ALight : public ILight {
     protected:
-        float _x = 0.0f, _y = 0.0f, _z = 0.0f;
+        Math::Point3D _position;
         float _r = 1.0f, _g = 1.0f, _b = 1.0f;
         float _intensity = 1.0f;
         std::string _lightName = "NONE";
@@ -21,7 +21,7 @@ class ALight : public ILight {
         void setIntensity(float intensity) override;
         void setDirection(const Math::Vector3D &direction) override;
 
-        Math::Vector3D getPosition() const override;
+        Math::Point3D getPosition() const override;
         std::tuple<int, int, int> getColor() const override;
         void getIntensity(float &intensity) const override;
         std::string getLightName() const override;

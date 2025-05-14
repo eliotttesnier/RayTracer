@@ -11,6 +11,7 @@
 
 #include "AmbientFactory.hpp"
 #include "DirectionalFactory.hpp"
+#include "PointFactory.hpp"
 #include "Lights/AmbientLight/AmbientLight.hpp"
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
@@ -39,5 +40,15 @@ std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
 #endif
         lights.emplace_back(factory.create(plugins));
     }
+
+    for (const auto &point : config.getPoint()) {
+        auto [intensity, position, color] = point;
+        PointFactory factory  = PointFactory(intensity, position, color);
+        lights.emplace_back(factory.create(plugins));
+#ifdef _DEBUG
+        std::cout << "Creating a point light" << std::endl;
+#endif
+    }
+
     return lights;
 }
