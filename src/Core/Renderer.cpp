@@ -217,29 +217,33 @@ void Renderer::renderPreview()
               << AnsiColor::RESET << "(" << AnsiColor::YELLOW << _width << "x" << _height
               << AnsiColor::RESET << ")..." << std::endl;
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
-    std::vector<std::thread> threads;
-    const int linesPerThread = _height / numThreads;
+    if (_useMultithreading) {
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+        std::vector<std::thread> threads;
+        const int linesPerThread = _height / numThreads;
 
-    try {
-        for (unsigned int i = 0; i < numThreads; i++) {
-            int startY = i * linesPerThread;
-            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
-            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
-        }
+        try {
+            for (unsigned int i = 0; i < numThreads; i++) {
+                int startY = i * linesPerThread;
+                int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+                threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
+            }
 
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
-        }
-    } catch (const std::exception& e) {
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+        } catch (const std::exception& e) {
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
+            throw;
         }
-        throw;
+    } else {
+        renderSegment(0, _height);
     }
 
     std::cout << "\r" << AnsiColor::BOLD << "Preview rendering:"
@@ -301,33 +305,39 @@ void Renderer::render()
               << AnsiColor::RESET << " = " << AnsiColor::YELLOW << _height * _width
               << AnsiColor::RESET << " pixels)";
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
-    std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
-              << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
-              << AnsiColor::RESET << std::endl;
+    if (_useMultithreading) {
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+        std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
+                  << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
+                  << AnsiColor::RESET << std::endl;
 
-    std::vector<std::thread> threads;
-    const int linesPerThread = _height / numThreads;
+        std::vector<std::thread> threads;
+        const int linesPerThread = _height / numThreads;
 
-    try {
-        for (unsigned int i = 0; i < numThreads; i++) {
-            int startY = i * linesPerThread;
-            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
-            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
-        }
-
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+        try {
+            for (unsigned int i = 0; i < numThreads; i++) {
+                int startY = i * linesPerThread;
+                int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+                threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
             }
-        }
-    } catch (const std::exception& e) {
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
+        } catch (const std::exception& e) {
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
+            }
+            throw;
         }
-        throw;
+    } else {
+        std::cout << AnsiColor::CYAN << " (Single-threaded rendering)"
+                  << AnsiColor::RESET << std::endl;
+        renderSegment(0, _height);
     }
 
     std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
@@ -397,6 +407,11 @@ void Renderer::setAdaptiveThreshold(double threshold)
     if (threshold > 0.0 && threshold <= 1.0) {
         _adaptiveThreshold = threshold;
     }
+}
+
+void Renderer::setMultithreading(bool useMultithreading)
+{
+    _useMultithreading = useMultithreading;
 }
 
 Graphic::color_t Renderer::traceRay(const Math::Ray& ray) const

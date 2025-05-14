@@ -113,5 +113,6 @@ void RayTracer::Core::applyRenderingConfig(Renderer& renderer) const
 {
     auto renderingConfig = _parser.getRenderingConfig();
 
+    renderer.setMultithreading(renderingConfig.getMultithreading());
     renderer.renderPreview();
 }

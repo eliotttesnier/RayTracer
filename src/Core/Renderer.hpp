@@ -40,6 +40,7 @@ class Renderer {
         void setAntialiasingMode(AntialiasingMode mode);
         void setSupersamplingLevel(int level);
         void setAdaptiveThreshold(double threshold);
+        void setMultithreading(bool useMultithreading);
         void render();
         void renderPreview();
 
@@ -81,6 +82,7 @@ class Renderer {
         AntialiasingMode _antialiasingMode = NONE;
         int _supersamplingLevel = 4;
         double _adaptiveThreshold = 0.1;
+        bool _useMultithreading{true};
 };
 
 #endif /* !RENDERER_HPP_ */
