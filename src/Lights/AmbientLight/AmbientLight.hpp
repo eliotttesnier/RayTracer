@@ -16,8 +16,7 @@ namespace RayTracer::light {
             AmbientLight();
             ~AmbientLight() = default;
 
-            bool intersect(
-                const Math::Ray &ray,
+            lightInfos_t intersect(
                 const Math::Point3D &hitPoint,
                 std::vector<std::shared_ptr<IPrimitive>> primitives
             ) const override;
