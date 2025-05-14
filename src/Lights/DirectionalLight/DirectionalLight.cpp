@@ -27,14 +27,16 @@ Math::Vector3D DirectionalLight::getDirection() const
     return _direction;
 }
 
-bool DirectionalLight::intersect(
-    const Math::Ray &ray,
+lightInfos_t DirectionalLight::intersect(
     const Math::Point3D &hitPoint,
     std::vector<std::shared_ptr<IPrimitive>> primitives
 ) const
 {
     Math::Vector3D lightDir = -_direction.normalized();
-    return !isInShadow(hitPoint, lightDir, primitives);
+    lightInfos_t infos;
+    infos.hit = !isInShadow(hitPoint, lightDir, primitives);
+    infos.lightDir = lightDir;
+    return infos;
 }
 
 }  // namespace RayTracer::light
