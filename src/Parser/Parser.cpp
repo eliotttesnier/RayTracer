@@ -157,13 +157,14 @@ void Parser::_getRenderingData(const libconfig::Setting &root)
 {
     try {
         if (!root.exists("rendering")) {
-            this->_renderingConfig = std::make_unique<RenderingConfig>("preview", true);
+            this->_renderingConfig = std::make_unique<RenderingConfig>("preview", true, 8u);
             return;
         }
 
         const auto &rendering = root["rendering"];
         std::string type = "preview";
         bool multithreading = true;
+        unsigned int maxThreads = 8u;
 
         if (rendering.exists("type"))
             type = static_cast<const char*>(rendering["type"]);
@@ -171,13 +172,19 @@ void Parser::_getRenderingData(const libconfig::Setting &root)
         if (rendering.exists("multithreading"))
             multithreading = static_cast<bool>(rendering["multithreading"]);
 
+        if (rendering.exists("maxThreads"))
+            maxThreads = static_cast<unsigned int>(rendering["maxThreads"]);
+        if (maxThreads < 1)
+            maxThreads = 1;
+
         #ifdef _DEBUG
             std::cout << "Rendering: type=" << type
-                      << ", multithreading=" << multithreading << std::endl;
+                      << ", multithreading=" << multithreading
+                      << ", maxThreads=" << maxThreads << std::endl;
         #endif
 
         this->_renderingConfig = std::make_unique<RenderingConfig>(
-            type, multithreading
+            type, multithreading, maxThreads
         );
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Rendering setting type error: " << e.what() << std::endl;

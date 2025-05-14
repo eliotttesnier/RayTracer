@@ -14,8 +14,9 @@ namespace RayTracer::Parser
 
 RenderingConfig::RenderingConfig(
     const std::string &type,
-    const bool multithreading
-) : _type(type), _multithreading(multithreading)
+    const bool multithreading,
+    const unsigned int maxThreads
+) : _type(type), _multithreading(multithreading), _maxThreads(maxThreads)
 {
 }
 
@@ -27,6 +28,11 @@ std::string RenderingConfig::getType() const
 bool RenderingConfig::getMultithreading() const
 {
     return _multithreading;
+}
+
+unsigned int RenderingConfig::getMaxThreads() const
+{
+    return _maxThreads;
 }
 
 }
