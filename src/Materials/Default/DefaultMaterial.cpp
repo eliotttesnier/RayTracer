@@ -89,15 +89,18 @@ Graphic::color_t DefaultMaterial::_getColor(
             Math::Vector3D V = -ray.direction.normalized();
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
 
-            diffuseIntensity += i * kd * L.dot(N);
-            specularIntensity += i * ks * std::pow(R.dot(V), shininess);
+            double currentDiffuseIntensity = i * kd * std::max(0.0, L.dot(N));
+            double currentSpecularIntensity = i * ks * std::pow(std::max(0.0, R.dot(V)), shininess);
 
-            lightColor._x += (lr / 255.0) * diffuseIntensity;
-            lightColor._y += (lg / 255.0) * diffuseIntensity;
-            lightColor._z += (lb / 255.0) * diffuseIntensity;
-            lightColor._x += (lr / 255.0) * specularIntensity;
-            lightColor._y += (lg / 255.0) * specularIntensity;
-            lightColor._z += (lb / 255.0) * specularIntensity;
+            lightColor._x += (lr / 255.0) * currentDiffuseIntensity;
+            lightColor._y += (lg / 255.0) * currentDiffuseIntensity;
+            lightColor._z += (lb / 255.0) * currentDiffuseIntensity;
+            lightColor._x += (lr / 255.0) * currentSpecularIntensity;
+            lightColor._y += (lg / 255.0) * currentSpecularIntensity;
+            lightColor._z += (lb / 255.0) * currentSpecularIntensity;
+
+            diffuseIntensity += currentDiffuseIntensity;
+            specularIntensity += currentSpecularIntensity;
         }
     }
 
