@@ -207,6 +207,7 @@ void Renderer::renderSegment(int startY, int endY)
             }
         }
     }
+    notifyPixelUpdate();
 }
 
 void Renderer::renderPreview()
@@ -593,7 +594,7 @@ void Renderer::notifyPixelUpdate()
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                                                 now - _lastUpdateTime).count();
 
-    if (elapsed >= 100) {
+    if (elapsed >= 10) {
         _updateCallback(_pixelBuffer);
         _lastUpdateTime = now;
     }
