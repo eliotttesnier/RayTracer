@@ -38,11 +38,10 @@ class ALight : public ILight {
         ) const override;
 
         // Each light type must implement these
-        virtual bool intersect(
-            const Math::Ray &ray,
+        virtual lightInfos_t intersect(
             const Math::Point3D &hitPoint,
             std::vector<std::shared_ptr<IPrimitive>> primitives
-        ) const override = 0;
+        ) const = 0;
 };
 
 #endif // ALIGHT_HPP
