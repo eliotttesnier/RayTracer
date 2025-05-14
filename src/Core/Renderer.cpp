@@ -375,6 +375,8 @@ void Renderer::render()
     std::cout << AnsiColor::GREEN << "✅ Rendering complete! Saving to "
               << AnsiColor::UNDERLINE << _outputFile << AnsiColor::RESET << std::endl;
 
+    if (_renderingMode == PROGRESSIVE)
+        notifyPixelUpdate(true);
     saveToFile();
 }
 
@@ -584,7 +586,7 @@ const std::vector<std::vector<Graphic::color_t>>& Renderer::getPixelBuffer() con
     return _pixelBuffer;
 }
 
-void Renderer::notifyPixelUpdate()
+void Renderer::notifyPixelUpdate(bool force)
 {
     if (_renderingMode != PROGRESSIVE || !_updateCallback) {
         return;
@@ -594,7 +596,7 @@ void Renderer::notifyPixelUpdate()
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
                                                 now - _lastUpdateTime).count();
 
-    if (elapsed >= 10) {
+    if (elapsed >= 100 || force) {
         _updateCallback(_pixelBuffer);
         _lastUpdateTime = now;
     }

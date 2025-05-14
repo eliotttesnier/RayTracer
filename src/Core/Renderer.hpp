@@ -60,7 +60,7 @@ class Renderer {
         void saveToFile();
         void savePreviewToFile();
         void updateProgress();
-        void notifyPixelUpdate();
+        void notifyPixelUpdate(bool force = false);
         std::string formatTime(double seconds);
 
         Graphic::color_t traceRay(const Math::Ray& ray) const;
