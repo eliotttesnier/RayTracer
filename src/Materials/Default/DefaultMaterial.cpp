@@ -43,20 +43,26 @@ Graphic::color_t DefaultMaterial::_getColor(
     Graphic::color_t baseColor = hitData.color;
 
     Graphic::color_t finalColor = {
-        baseColor.r,
-        baseColor.g,
-        baseColor.b,
+        baseColor.r / 255.0,
+        baseColor.g / 255.0,
+        baseColor.b / 255.0,
         baseColor.a
     };
 
     double ka = 0.3;
-    double kd = 0.7;
-    double ks = 1.0;
-    double shininess = 20.0;
+    double kd = 0.5;
+    double ks = 0.9;
+    double shininess = 32.0;
 
     double ambientIntensity = 0.0;
     double diffuseIntensity = 0.0;
     double specularIntensity = 0.0;
+
+    Math::Vector3D lightColor = {
+        0.0,
+        0.0,
+        0.0
+    };
 
     for (const auto& light : lights) {
         if (light->getType() == "AmbientLight") {
@@ -66,6 +72,10 @@ Graphic::color_t DefaultMaterial::_getColor(
             light->getColor(ar, ag, ab);
 
             ambientIntensity = ia * ka;
+
+            lightColor._x += (ar / 255.0) * ambientIntensity;
+            lightColor._y += (ag / 255.0) * ambientIntensity;
+            lightColor._z += (ab / 255.0) * ambientIntensity;
             continue;
         }
 
@@ -82,20 +92,24 @@ Graphic::color_t DefaultMaterial::_getColor(
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
 
             diffuseIntensity += i * kd * L.dot(N);
-
             specularIntensity += i * ks * std::pow(R.dot(V), shininess);
+
+            lightColor._x += (lr / 255.0) * diffuseIntensity;
+            lightColor._y += (lg / 255.0) * diffuseIntensity;
+            lightColor._z += (lb / 255.0) * diffuseIntensity;
+            lightColor._x += (lr / 255.0) * specularIntensity;
+            lightColor._y += (lg / 255.0) * specularIntensity;
+            lightColor._z += (lb / 255.0) * specularIntensity;
         }
     }
 
-    double intensity = ambientIntensity + diffuseIntensity + specularIntensity;
+    finalColor.r *= lightColor._x;
+    finalColor.g *= lightColor._y;
+    finalColor.b *= lightColor._z;
 
-    finalColor.r *= intensity;
-    finalColor.g *= intensity;
-    finalColor.b *= intensity;
-
-    finalColor.r = std::pow(finalColor.r / 255.0, 1.0 / 2.2) * 255.0;
-    finalColor.g = std::pow(finalColor.g / 255.0, 1.0 / 2.2) * 255.0;
-    finalColor.b = std::pow(finalColor.b / 255.0, 1.0 / 2.2) * 255.0;
+    finalColor.r = std::pow(finalColor.r, 1.0 / 2.2) * 255.0;
+    finalColor.g = std::pow(finalColor.g, 1.0 / 2.2) * 255.0;
+    finalColor.b = std::pow(finalColor.b, 1.0 / 2.2) * 255.0;
 
     finalColor.r = std::max(0.0, std::min(255.0, finalColor.r));
     finalColor.g = std::max(0.0, std::min(255.0, finalColor.g));
