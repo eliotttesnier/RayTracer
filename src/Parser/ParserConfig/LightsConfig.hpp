@@ -14,6 +14,7 @@ typedef std::tuple<double, double, double> truple_t;
 typedef std::tuple<int, int, int> color_t;
 
 typedef std::tuple<double, truple_t, truple_t, color_t> directional_t; // Intensity, position, direction, color
+typedef std::tuple<double, truple_t, color_t> point_t; // Intensity, position, color
 typedef std::tuple<double, color_t> ambient_t; // Intensity, color
 
 class LightsConfig {

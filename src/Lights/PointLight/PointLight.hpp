@@ -2,8 +2,8 @@
 // Created by roussierenoa on 4/28/25.
 //
 
-#ifndef POSITIONLIGHT
-#define POSITIONLIGHT
+#ifndef POINTLIGHT
+#define POINTLIGHT
 
 #include "../../Lights/ALight.hpp"
 #include "../../Math/Ray.hpp"
@@ -11,13 +11,13 @@
 #include "../../Math/Vector3D.hpp"
 
 namespace RayTracer::light {
-    class PositionLight : public ALight {
+    class PointLight : public ALight {
     private:
         Math::Vector3D _direction;
 
     public:
-        PositionLight(const Math::Vector3D &direction = Math::Vector3D(0, -1, 0));
-        ~PositionLight() = default;
+        PointLight(const Math::Vector3D &direction = Math::Vector3D(0, -1, 0));
+        ~PointLight() = default;
 
         bool intersect(
             const Math::Ray &ray,
@@ -33,4 +33,4 @@ namespace RayTracer::light {
 
 } // RayTracer
 
-#endif //POSITIONLIGHT
+#endif //POINTLIGHT

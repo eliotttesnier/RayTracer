@@ -50,15 +50,42 @@ std::vector<RayTracer::Parser::directional_t>
             direction,
             color
         );
-        #ifdef _DEBUG
-            std::cout << "Directional Light " << i << ": intensity= "<< intensity
-                    << ", direction(" << std::get<0>(direction) << ", " <<
-                        std::get<1>(direction) << ", " << std::get<2>(direction) << ")"
-                    << ", position(" << std::get<0>(position) << ", " <<
-                        std::get<1>(position) << ", " << std::get<2>(position) << ")"
-                    << ", color(" << std::get<0>(color) << ", " <<
-                        std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
-        #endif
+#ifdef _DEBUG
+        std::cout << "Directional Light " << i << ": intensity= " << intensity
+                << ", direction(" << std::get<0>(direction) << ", " <<
+                std::get<1>(direction) << ", " << std::get<2>(direction) << ")"
+                << ", position(" << std::get<0>(position) << ", " <<
+                std::get<1>(position) << ", " << std::get<2>(position) << ")"
+                << ", color(" << std::get<0>(color) << ", " <<
+                std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
+#endif
     }
     return directionalData;
+}
+
+std::vector<RayTracer::Parser::point_t> RayTracer::Parser::LightsParser::getPositionData(
+    const libconfig::Setting &root)
+{
+    std::vector<RayTracer::Parser::point_t> positionData;
+    const auto &positionRoot = root["lights"]["position"];
+
+    for (int i = 0; i < positionRoot.getLength(); ++i) {
+        const auto &s = positionRoot[i];
+        auto position = RayTracer::Parser::Parser::getData3D<double>(s["position"]);
+        auto color = RayTracer::Parser::Parser::getData3D<int>(s["color"], "r", "g", "b");
+        double intensity = s["intensity"];
+        positionData.emplace_back(
+            intensity,
+            position,
+            color
+        );
+#ifdef _DEBUG
+        std::cout << "Point Light " << i << ": intensity= " << intensity
+                << ", position(" << std::get<0>(position) << ", " <<
+                std::get<1>(position) << ", " << std::get<2>(position) << ")"
+                << ", color(" << std::get<0>(color) << ", " <<
+                std::get<1>(color) << ", " << std::get<2>(color) << ")" << std::endl;
+#endif
+    }
+    return positionData;
 }

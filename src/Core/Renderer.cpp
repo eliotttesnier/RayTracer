@@ -217,7 +217,7 @@ void Renderer::renderPreview()
               << AnsiColor::RESET << "(" << AnsiColor::YELLOW << _width << "x" << _height
               << AnsiColor::RESET << ")..." << std::endl;
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 32u);
     std::vector<std::thread> threads;
     const int linesPerThread = _height / numThreads;
 
@@ -301,7 +301,7 @@ void Renderer::render()
               << AnsiColor::RESET << " = " << AnsiColor::YELLOW << _height * _width
               << AnsiColor::RESET << " pixels)";
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
+    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 32u);
     std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
               << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
               << AnsiColor::RESET << std::endl;

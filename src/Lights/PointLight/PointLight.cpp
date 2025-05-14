@@ -2,7 +2,7 @@
 // Created by roussierenoa on 4/28/25.
 //
 
-#include "PositionLight.hpp"
+#include "PointLight.hpp"
 
 #include <cmath>
 #include <iostream>
@@ -11,23 +11,23 @@
 
 namespace RayTracer::light {
 
-    PositionLight::PositionLight(const Math::Vector3D &direction)
+    PointLight::PointLight(const Math::Vector3D &direction)
         : _direction(direction)
     {
         this->_lightName = "PositionLight";
     }
 
-    void PositionLight::setDirection(const Math::Vector3D &direction)
+    void PointLight::setDirection(const Math::Vector3D &direction)
     {
         this->_direction = direction;
     }
 
-    Math::Vector3D PositionLight::getDirection() const
+    Math::Vector3D PointLight::getDirection() const
     {
         return this->_direction;
     }
 
-    bool PositionLight::intersect(
+    bool PointLight::intersect(
         const Math::Ray &ray,
         const Math::Point3D &hitPoint,
         std::vector<std::shared_ptr<IPrimitive>> primitives

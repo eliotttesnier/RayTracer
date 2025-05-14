@@ -15,10 +15,11 @@ namespace RayTracer::Parser {
     public:
         static ambient_t getAmbientData(const libconfig::Setting &root);
         static std::vector<directional_t> getDirectionalData(const libconfig::Setting &root);
+        static std::vector<point_t> getPositionData(const libconfig::Setting &root);
         LightsParser() = delete;
         ~LightsParser() = default;
     };
-}
+} // namespace RayTracer::Parser
 
 
 

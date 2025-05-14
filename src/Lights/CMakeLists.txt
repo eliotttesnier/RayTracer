@@ -1,3 +1,3 @@
 add_subdirectory(AmbientLight)
 add_subdirectory(DirectionalLight)
-add_subdirectory(PositionLight)
+add_subdirectory(PointLight)

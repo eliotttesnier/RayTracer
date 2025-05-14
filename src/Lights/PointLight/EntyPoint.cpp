@@ -7,12 +7,12 @@
 #include <iostream>
 
 #include "LoaderType.hpp"
-#include "PositionLight.hpp"
+#include "PointLight.hpp"
 #include "../ILight.hpp"
 
 extern "C" {
-    RayTracer::light::PositionLight *create(void) {
-        return new RayTracer::light::PositionLight();
+    RayTracer::light::PointLight *create(void) {
+        return new RayTracer::light::PointLight();
     }
     RayTracer::Loader::ModuleType getType(void) {
         return RayTracer::Loader::ModuleType::LIGHT_MODULE;
