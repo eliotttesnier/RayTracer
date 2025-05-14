@@ -21,7 +21,7 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
 )
 {
     std::vector<std::shared_ptr<RayTracer::Materials::IMaterial>> materialStack;
-    bool hasChess = false;
+    bool differentColor = false;
 
     materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
         plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
@@ -38,12 +38,12 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
                     materialStack.at(materialStack.size() - 1)
                 )
         ));
-        hasChess = true;
+        differentColor = true;
     }
 
     auto fileTextureIt = materialProps.find("fileTexture");
     if (fileTextureIt != materialProps.end() &&
-        std::any_cast<std::string>(fileTextureIt->second) != "" && !hasChess) {
+        std::any_cast<std::string>(fileTextureIt->second) != "" && !differentColor) {
         std::string filePath = std::any_cast<std::string>(fileTextureIt->second);
         materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
             plugins["FileTextureMaterial"]->
@@ -53,6 +53,22 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
                     filePath
                 )
         ));
+        differentColor = true;
+    }
+
+    auto perlinNoiseIt = materialProps.find("perlinNoise");
+    if (
+        perlinNoiseIt != materialProps.end() &&
+        std::any_cast<bool>(perlinNoiseIt->second)
+    ) {
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["PerlinNoiseMaterial"]->
+                initEntryPointPtr<RayTracer::Materials::PerlinNoiseMaterial>(
+                    "create",
+                    materialStack.at(materialStack.size() - 1)
+                )
+        ));
+        differentColor = true;
     }
 
     auto transparencyIt = materialProps.find("transparency");

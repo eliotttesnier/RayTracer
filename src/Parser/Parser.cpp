@@ -34,6 +34,36 @@ void Parser::_getCameraData(const libconfig::Setting &root)
     );
 }
 
+material_t Parser::getMaterialData(const libconfig::Setting &setting)
+{
+    material_t materialProps;
+
+    try {
+        if (setting.exists("transparency")) {
+            materialProps["transparency"] = static_cast<double>(setting["transparency"]);
+        }
+        if (setting.exists("reflection")) {
+            materialProps["reflection"] = static_cast<double>(setting["reflection"]);
+        }
+        if (setting.exists("refraction")) {
+            materialProps["refraction"] = static_cast<double>(setting["refraction"]);
+        }
+        if (setting.exists("chess")) {
+            materialProps["chess"] = static_cast<bool>(setting["chess"]);
+        }
+        if (setting.exists("fileTexture")) {
+            materialProps["fileTexture"] = static_cast<std::string>(setting["fileTexture"]);
+        }
+        if (setting.exists("perlinNoise")) {
+            materialProps["perlinNoise"] = static_cast<bool>(setting["perlinNoise"]);
+        }
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
+    }
+    return materialProps;
+}
+
+
 void Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector = PrimitivesParser::getSpheresData(root);
