@@ -30,9 +30,9 @@ class LightsConfig {
 
         LightsConfig() = delete;
         LightsConfig(
-            const ambient_t &ambiant, /* Intensité couleur */
-            const std::vector<directional_t> &directional, /* Intenstié, position, direction, couleur */
-            const std::vector<point_t> &point /* Intenstié, position, couleur */
+            const ambient_t &ambiant, // Intensity, color
+            const std::vector<directional_t> &directional, // Intensity, position, direction, color
+            const std::vector<point_t> &point // Intensity, position, color
         );
         ~LightsConfig() = default;
 };
