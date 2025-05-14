@@ -65,9 +65,8 @@ Graphic::color_t DefaultMaterial::_getColor(
     for (const auto& light : lights) {
         if (light->getType() == "AmbientLight") {
             float ia;
-            float ar, ag, ab;
             light->getIntensity(ia);
-            light->getColor(ar, ag, ab);
+            auto [ar, ag, ab] = light->getColor();
 
             ambientIntensity = ia * ka;
 
@@ -80,9 +79,8 @@ Graphic::color_t DefaultMaterial::_getColor(
         if (light->intersect(ray, hitData.point, primitives)) {
             Math::Vector3D lightDir = light->getDirection().normalized();
             float i;
-            float lr, lg, lb;
             light->getIntensity(i);
-            light->getColor(lr, lg, lb);
+            auto [lr, lg, lb] = light->getColor();
 
             Math::Vector3D L = -light->getDirection().normalized();
             Math::Vector3D N = hitData.normal.normalized();

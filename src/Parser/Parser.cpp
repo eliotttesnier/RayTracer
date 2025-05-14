@@ -107,7 +107,7 @@ void Parser::_getAntialiasingData(const libconfig::Setting &root)
             threshold = static_cast<double>(antialiasing["treshold"]);
 
         #ifdef _DEBUG
-            std::cout << "Antialiasing: type=" << typ
+            std::cout << "Antialiasing: type=" << type
                       << ", samples=" << samples
                       << ", threshold=" << threshold << std::endl;
         #endif
