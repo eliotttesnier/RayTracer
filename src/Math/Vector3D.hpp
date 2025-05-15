@@ -23,11 +23,11 @@ namespace Math
             Vector3D(double x, double y, double z);
             Vector3D(const std::tuple<double, double, double> &tuple);
             ~Vector3D() = default;
-
+            
             double length() const;
             double dot(const Vector3D &other) const;
             Vector3D cross(const Vector3D &other) const;
-
+            
             Vector3D operator+(const Vector3D &other) const;
             Vector3D &operator+=(const Vector3D &other);
             Vector3D operator-(const Vector3D &other) const;
@@ -36,7 +36,8 @@ namespace Math
             Vector3D &operator*=(const Vector3D &other);
             Vector3D operator/(const Vector3D &other) const;
             Vector3D &operator/=(const Vector3D &other);
-
+            
+            Vector3D &operator=(const Vector3D &other);
             Vector3D &operator=(const std::tuple<double, double, double> &tuple);
 
             Vector3D operator*(double scalar) const;

@@ -6,7 +6,7 @@ add_library(Cone SHARED
 )
 
 target_include_directories(Cone PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Cone PRIVATE math)
+target_link_libraries(Cone PRIVATE Math)
 
 add_custom_command(TARGET Cone POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy

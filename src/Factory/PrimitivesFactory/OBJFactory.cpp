@@ -14,13 +14,15 @@
 #include "Primitives/OBJ/OBJ.hpp"
 
 RayTracer::Factory::OBJFactory::OBJFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     const std::string &filepath,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _filepath(filepath),
     _position(position),
     _rotation(rotation),
@@ -46,8 +48,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

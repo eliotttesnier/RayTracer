@@ -18,6 +18,7 @@ namespace RayTracer::Factory {
     class OBJFactory : public IPrimitiveFactory {
     public:
         OBJFactory(
+            shading_t shading,
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
@@ -34,6 +35,7 @@ namespace RayTracer::Factory {
         Math::Vector3D _scale;
         Math::Vector3D _shear;
         std::map<std::string, std::any> _materials;
+        shading_t _shading;
     };
 
 } // namespace RayTracer::Factory

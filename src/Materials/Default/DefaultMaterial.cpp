@@ -9,25 +9,47 @@
 #include <vector>
 #include <algorithm>
 #include <numeric>
+#include <tuple>
 
 #include "DefaultMaterial.hpp"
 
 namespace RayTracer::Materials
 {
 
-DefaultMaterial::DefaultMaterial()
+DefaultMaterial::DefaultMaterial(shading_t shading)
     : _wrappee(nullptr)
 {
-}
+    auto [phong, ao] = shading;
+    auto [ka, kd, ks, s] = phong;
+    auto [rc, md] = ao;
 
-DefaultMaterial::DefaultMaterial(std::shared_ptr<IMaterial> wrappee)
-    : _wrappee(wrappee)
-{
+    _ka = ka;
+    _kd = kd;
+    _ks = ks;
+    _s = s;
+    _rc = rc;
+    _md = md;
 }
 
 DefaultMaterial::~DefaultMaterial() = default;
 
 Graphic::color_t DefaultMaterial::_getColor(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    Graphic::color_t phongColor = _phongModel(hitData, ray, lights, primitives);
+    double occlusion = _ambientOcclusion(hitData, primitives);
+    occlusion = 0.5 + 0.5 * occlusion;
+    phongColor.r *= occlusion;
+    phongColor.g *= occlusion;
+    phongColor.b *= occlusion;
+    return phongColor;
+}
+
+Graphic::color_t DefaultMaterial::_phongModel(
     Math::hitdata_t hitData,
     Math::Ray ray,
     std::vector<std::shared_ptr<ILight>> lights,
@@ -47,11 +69,6 @@ Graphic::color_t DefaultMaterial::_getColor(
         baseColor.a
     };
 
-    double ka = 0.3;
-    double kd = 0.5;
-    double ks = 0.9;
-    double shininess = 32.0;
-
     double ambientIntensity = 0.0;
     double diffuseIntensity = 0.0;
     double specularIntensity = 0.0;
@@ -67,7 +84,7 @@ Graphic::color_t DefaultMaterial::_getColor(
             const float ia = light->getIntensity();
             auto [ar, ag, ab] = light->getColor();
 
-            ambientIntensity = ia * ka;
+            ambientIntensity = ia * _ka;
 
             lightColor._x += (ar / 255.0) * ambientIntensity;
             lightColor._y += (ag / 255.0) * ambientIntensity;
@@ -87,9 +104,9 @@ Graphic::color_t DefaultMaterial::_getColor(
             Math::Vector3D V = -ray.direction.normalized();
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
 
-            double currentDiffuseIntensity = i * kd * std::max(0.0, L.dot(N));
-            double currentSpecularIntensity = i * ks * std::pow(
-                std::max(0.0, R.dot(V)), shininess
+            double currentDiffuseIntensity = i * _kd * std::max(0.0, L.dot(N));
+            double currentSpecularIntensity = i * _ks * std::pow(
+                std::max(0.0, R.dot(V)), _s
             );
 
             lightColor._x += (lr / 255.0) * currentDiffuseIntensity;
@@ -117,6 +134,74 @@ Graphic::color_t DefaultMaterial::_getColor(
     finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
 
     return finalColor;
+}
+
+std::tuple<Math::Vector3D, Math::Vector3D> DefaultMaterial::_orthonormalBasis(
+    Math::Vector3D normal
+)
+{
+    Math::Vector3D tangent;
+    Math::Vector3D bitangent;
+
+    if (std::abs(normal._z) < 0.999f) {
+        tangent = normal.cross(Math::Vector3D(0, 0, 1)).normalized();
+    } else {
+        tangent = normal.cross(Math::Vector3D(0, 1, 0)).normalized();
+    }
+    bitangent = normal.cross(tangent).normalized();
+    return std::make_tuple(tangent, bitangent);
+}
+
+float DefaultMaterial::_randomFloat() {
+    return std::rand() / (RAND_MAX + 1.0f);
+}
+
+Math::Vector3D DefaultMaterial::_randomHemisphereSample(Math::Vector3D normal)
+{
+    float r1 = _randomFloat();
+    float r2 = _randomFloat();
+
+    float phi = 2.0f * M_PI * r1;
+    float cosTheta = sqrt(1.0f - r2);
+    float sinTheta = sqrt(r2);
+
+    float x = cos(phi) * sinTheta;
+    float y = sin(phi) * sinTheta;
+    float z = cosTheta;
+
+    auto [tangent, bitangent] = _orthonormalBasis(normal);
+
+    Math::Vector3D sampleWorld = (
+        tangent * x +
+        bitangent * y +
+        normal * z
+    );
+    return sampleWorld.normalized();
+}
+
+double DefaultMaterial::_ambientOcclusion(
+    Math::hitdata_t hitData,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    int occludedRays = 0;
+    double epsilon = 1e-4;
+
+    for (int i = 0; i < _rc; i++) {
+        Math::Vector3D dir = _randomHemisphereSample(hitData.normal);
+
+        Math::Ray aoRay(hitData.point + hitData.normal * epsilon, dir);
+
+        for (auto primitive : primitives) {
+            Math::hitdata_t hd = primitive->intersect(aoRay);
+            if (hd.hit && hd.distance < _md) {
+                occludedRays += 1;
+                break;
+            }
+        }
+    }
+    double occlusion = static_cast<double>(occludedRays) / static_cast<double>(_rc);
+    return 1.0 - occlusion;
 }
 
 Graphic::color_t DefaultMaterial::calculateColor(

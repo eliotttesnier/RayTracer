@@ -17,6 +17,7 @@
 #include "Primitives/FractaleCube/FractaleCube.hpp"
 
 RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
@@ -24,7 +25,8 @@ RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
     double size,
     int recursion,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _size(size),
     _recursion(recursion),
     _position(position),
@@ -52,8 +54,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::FractaleCubeFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

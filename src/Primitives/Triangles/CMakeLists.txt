@@ -6,7 +6,7 @@ add_library(Triangles SHARED
 )
 
 target_include_directories(Triangles PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Triangles PRIVATE math)
+target_link_libraries(Triangles PRIVATE Math)
 
 add_custom_command(TARGET Triangles POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy

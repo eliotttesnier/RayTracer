@@ -10,7 +10,7 @@ set(PLANE_INC
 
 add_library(Plane SHARED ${PLANE_SRC} ${PLANE_INC})
 target_include_directories(Plane PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(Plane PRIVATE math)
+target_link_libraries(Plane PRIVATE Math)
 
 add_custom_command(TARGET Plane POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy

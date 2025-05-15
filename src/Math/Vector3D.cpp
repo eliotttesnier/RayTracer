@@ -88,6 +88,14 @@ Vector3D &Vector3D::operator/=(const Vector3D &other)
     return *this;
 }
 
+Vector3D &Vector3D::operator=(const Vector3D &other)
+{
+    _x = other._x;
+    _y = other._y;
+    _z = other._z;
+    return *this;
+}
+
 Vector3D & Vector3D::operator=(const std::tuple<double, double, double> &tuple) {
     _x = std::get<0>(tuple);
     _y = std::get<1>(tuple);

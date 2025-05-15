@@ -16,13 +16,15 @@
 #include "Primitives/InfiniteCylinder/InfiniteCylinder.hpp"
 
 RayTracer::Factory::InfiniteCylinderFactory::InfiniteCylinderFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double radius,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _radius(radius),
     _position(position),
     _rotation(rotation),
@@ -48,8 +50,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::InfiniteCylinderFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

@@ -16,6 +16,7 @@
 // TODO(roussierenoa): Utiliser Libloader pour charger les primitives
 
 RayTracer::Factory::CylinderFactory::CylinderFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
@@ -23,7 +24,8 @@ RayTracer::Factory::CylinderFactory::CylinderFactory(
     double radius,
     double height,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _radius(radius),
     _height(height),
     _position(position),
@@ -51,8 +53,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

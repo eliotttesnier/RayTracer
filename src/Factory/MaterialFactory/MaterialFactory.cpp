@@ -17,7 +17,8 @@ namespace RayTracer::Factory {
 
 std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial(
     const std::map<std::string, std::any> &materialProps,
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins,
+    shading_t shading
 )
 {
     std::vector<std::shared_ptr<RayTracer::Materials::IMaterial>> materialStack;
@@ -25,7 +26,8 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
 
     materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
         plugins["DefaultMaterial"]->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
-            "create"
+            "create",
+            shading
         )
     ));
 

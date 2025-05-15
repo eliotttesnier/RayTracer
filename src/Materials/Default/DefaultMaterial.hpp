@@ -14,6 +14,10 @@
 
 namespace RayTracer::Materials {
 
+typedef std::tuple<double, double, double, double> phong_t;
+typedef std::tuple<int, double> ambientOcclusion_t;
+typedef std::tuple<phong_t, ambientOcclusion_t> shading_t; // Shading properties
+
 class DefaultMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
@@ -94,8 +98,8 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
-        DefaultMaterial();
-        DefaultMaterial(std::shared_ptr<IMaterial> wrappee);
+        DefaultMaterial() = delete;
+        DefaultMaterial(shading_t shading);
         virtual ~DefaultMaterial();
 
     private:
@@ -106,6 +110,27 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         );
+        Graphic::color_t _phongModel(
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        );
+        double _ambientOcclusion(
+            Math::hitdata_t hitData,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        );
+        std::tuple<Math::Vector3D, Math::Vector3D> _orthonormalBasis(
+            Math::Vector3D normal
+        );
+        Math::Vector3D _randomHemisphereSample(Math::Vector3D normal);
+        float _randomFloat();
+        double _ka;
+        double _kd;
+        double _ks;
+        double _s;
+        double _rc;
+        double _md;
 };
 
 };

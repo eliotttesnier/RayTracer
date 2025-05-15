@@ -14,13 +14,15 @@
 #include "Primitives/Tanglecube/Tanglecube.hpp"
 
 RayTracer::Factory::TanglecubeFactory::TanglecubeFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     double size,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _size(size),
     _position(position),
     _rotation(rotation),
@@ -46,8 +48,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TanglecubeFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

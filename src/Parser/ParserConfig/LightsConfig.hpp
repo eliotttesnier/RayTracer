@@ -30,7 +30,7 @@ class LightsConfig {
 
         LightsConfig() = delete;
         LightsConfig(
-            const ambient_t &ambiant, // Intensity, color
+            const ambient_t &ambient, // Intensity, color
             const std::vector<directional_t> &directional, // Intensity, position, direction, color
             const std::vector<point_t> &point // Intensity, position, color
         );

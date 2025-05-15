@@ -12,7 +12,11 @@
 
 namespace RayTracer::Factory {
 
-    class IPrimitiveFactory {
+typedef std::tuple<double, double, double, double> phong_t;
+typedef std::tuple<int, double> ambientOcclusion_t;
+typedef std::tuple<phong_t, ambientOcclusion_t> shading_t; // Shading properties
+
+class IPrimitiveFactory {
     public:
         virtual std::shared_ptr<IPrimitive> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const = 0;
         virtual ~IPrimitiveFactory() = default;

@@ -17,9 +17,9 @@ target_link_libraries(raytracer PRIVATE
         LibLoader
         Graphic
         Core
-        math
-        parser
-        graphic_renderer
+        Math
+        Parser
+        GraphicRenderer
         sfml-graphics
         sfml-window
         sfml-system

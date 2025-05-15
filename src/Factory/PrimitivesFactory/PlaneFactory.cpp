@@ -15,12 +15,14 @@
 #include "Primitives/Plane/Plane.hpp"
 
 RayTracer::Factory::PlaneFactory::PlaneFactory(
+    shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _position(position),
     _rotation(rotation),
     _scale(scale),
@@ -44,8 +46,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

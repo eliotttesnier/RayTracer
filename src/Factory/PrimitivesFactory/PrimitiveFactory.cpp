@@ -60,7 +60,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
     primitives.insert(primitives.end(), infiniteCylinders.begin(), infiniteCylinders.end());
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
-        auto [materials, size, recursion, position, rotation, sc, sh, color] = fractalecube;
+        auto [shading, materials, size, recursion, position, rotation, sc, sh, color] =
+            fractalecube;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
@@ -68,6 +69,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::FractaleCubeFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -96,7 +98,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto& sphere : config.getSpheres()) {
-        auto [materials, radius, position, rotation, sc, sh, color] = sphere;
+        auto [shading, materials, radius, position, rotation, sc, sh, color] = sphere;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
@@ -104,6 +106,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::SphereFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -130,13 +133,14 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto& plane : config.getPlanes()) {
-        auto [materials, axis, position, rotation, sc, sh, color] = plane;
+        auto [shading, materials, axis, position, rotation, sc, sh, color] = plane;
         Math::Point3D pos = position;
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::PlaneFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -162,7 +166,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto& cylinder : config.getCylinders()) {
-        auto [materials, size, position, rotation, sc, sh, color] = cylinder;
+        auto [shading, materials, size, position, rotation, sc, sh, color] = cylinder;
         auto [radius, height] = size;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
@@ -171,6 +175,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::CylinderFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -198,7 +203,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &cone : config.getCones()) {
-        auto [materials, size, position, rotation, sc, sh, color] = cone;
+        auto [shading, materials, size, position, rotation, sc, sh, color] = cone;
         auto [radius, height] = size;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
@@ -207,6 +212,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::ConeFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -234,7 +240,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &torus : config.getToruses()) {
-        auto [materials, radius, position, rotation, sc, sh, color] = torus;
+        auto [shading, materials, radius, position, rotation, sc, sh, color] = torus;
         auto [majorRadius, minorRadius] = radius;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
@@ -243,6 +249,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::TorusFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -270,7 +277,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &tanglecube : config.getTanglecubes()) {
-        auto [materials, size, position, rotation, sc, sh, color] = tanglecube;
+        auto [shading, materials, size, position, rotation, sc, sh, color] = tanglecube;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
@@ -278,6 +285,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::TanglecubeFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -304,7 +312,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &triangle : config.getTriangles()) {
-        auto [materials, points, rotation, sc, sh, color] = triangle;
+        auto [shading, materials, points, rotation, sc, sh, color] = triangle;
         auto [p1, p2, p3] = points;
         Math::Point3D point1 = p1;
         Math::Point3D point2 = p2;
@@ -314,6 +322,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::TrianglesFactory factory(
+            shading,
             point1,
             point2,
             point3,
@@ -341,7 +350,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &obj : config.getOBJs()) {
-        auto [materials, filepath, position, rotation, sc, sh, color] = obj;
+        auto [shading, materials, filepath, position, rotation, sc, sh, color] = obj;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
@@ -349,6 +358,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
         Math::Vector3D shear = sh;
 
         RayTracer::Factory::OBJFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -375,13 +385,14 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCones(
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &cone : config.getInfiniteCones()) {
-        auto [materials, angle, position, rotation, sc, sh, color] = cone;
+        auto [shading, materials, angle, position, rotation, sc, sh, color] = cone;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
         RayTracer::Factory::InfiniteConeFactory factory(
+            shading,
             pos,
             rota,
             scale,
@@ -408,13 +419,14 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
     for (const auto &cylinder : config.getInfiniteCylinders()) {
-        auto [materials, radius, position, rotation, sc, sh, color] = cylinder;
+        auto [shading, materials, radius, position, rotation, sc, sh, color] = cylinder;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
         Math::Vector3D scale = sc;
         Math::Vector3D shear = sh;
         RayTracer::Factory::InfiniteCylinderFactory factory(
+            shading,
             pos,
             rota,
             scale,

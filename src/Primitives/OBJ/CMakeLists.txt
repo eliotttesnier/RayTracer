@@ -8,7 +8,7 @@ add_library(OBJ SHARED
 )
 
 target_include_directories(OBJ PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(OBJ PRIVATE math)
+target_link_libraries(OBJ PRIVATE Math)
 
 add_custom_command(TARGET OBJ POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy

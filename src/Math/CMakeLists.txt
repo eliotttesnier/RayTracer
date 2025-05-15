@@ -13,5 +13,5 @@ set(MATH_INC
     Rectangle3D.hpp
 )
 
-add_library(math STATIC ${MATH_SRC} ${MATH_INC})
-target_include_directories(math PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+add_library(Math STATIC ${MATH_SRC} ${MATH_INC})
+target_include_directories(Math PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

@@ -28,12 +28,14 @@ class Parser {
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;
         std::unique_ptr<AntialiasingConfig> _antialiasingConfig;
         std::unique_ptr<RenderingConfig> _renderingConfig;
+        shading_t _shadingData;
 
         void _getCameraData(const libconfig::Setting &root);
-        void _getPrimitivesData(const libconfig::Setting &root);
+        void _getPrimitivesData(const libconfig::Setting &root, shading_t shading);
         void _getLightsData(const libconfig::Setting &root);
         void _getAntialiasingData(const libconfig::Setting &root);
         void _getRenderingData(const libconfig::Setting &root);
+        void _getShadingData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
