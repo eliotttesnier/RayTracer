@@ -361,6 +361,10 @@ void Renderer::render()
         renderSegment(0, _height);
     }
 
+    if (_stopThreads.load()) {
+        std::cout << std::endl << std::endl;
+        return;
+    }
     std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
         << AnsiColor::RESET << " [" << AnsiColor::GREEN;
     for (int i = 0; i < 50; ++i) {
