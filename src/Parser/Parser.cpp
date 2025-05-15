@@ -57,6 +57,9 @@ material_t Parser::getMaterialData(const libconfig::Setting &setting)
         if (setting.exists("perlinNoise")) {
             materialProps["perlinNoise"] = static_cast<bool>(setting["perlinNoise"]);
         }
+        if (setting.exists("normalMap")) {
+            materialProps["normalMap"] = static_cast<std::string>(setting["normalMap"]);
+        }
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
     }

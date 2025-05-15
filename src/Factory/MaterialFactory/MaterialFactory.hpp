@@ -22,6 +22,7 @@
 #include "../../Materials/ChessPattern/ChessPatternMaterial.hpp"
 #include "../../Materials/FileTexture/FileTextureMaterial.hpp"
 #include "../../Materials/PerlinNoise/PerlinNoiseMaterial.hpp"
+#include "../../Materials/NormalMapping/NormalMappingMaterial.hpp"
 #include "../../LibLoader/LibLoader.hpp"
 #include "../../Math/Vector3D.hpp"
 

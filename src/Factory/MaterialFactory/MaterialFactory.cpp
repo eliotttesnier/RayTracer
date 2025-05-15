@@ -71,6 +71,20 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
         differentColor = true;
     }
 
+    auto normalMapIt = materialProps.find("normalMap");
+    if (normalMapIt != materialProps.end() &&
+    std::any_cast<std::string>(normalMapIt->second) != "") {
+        std::string mapPath = std::any_cast<std::string>(normalMapIt->second);
+        materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
+            plugins["NormalMappingMaterial"]->
+            initEntryPointPtr<RayTracer::Materials::NormalMappingMaterial>(
+                "create",
+                materialStack.at(materialStack.size() - 1),
+                mapPath
+            )
+        ));
+    }
+
     auto transparencyIt = materialProps.find("transparency");
     if (transparencyIt != materialProps.end() &&
         std::any_cast<double>(transparencyIt->second) > 0.0) {

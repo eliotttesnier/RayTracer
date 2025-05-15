@@ -63,6 +63,10 @@ target_include_directories(FileTextureMaterial PRIVATE
         ./
 )
 
+target_include_directories(NormalMappingMaterial PRIVATE
+        ./
+)
+
 target_include_directories(OBJ PRIVATE
         ./
 )
