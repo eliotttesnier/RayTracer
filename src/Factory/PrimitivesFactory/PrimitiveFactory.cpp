@@ -58,6 +58,10 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 
     auto infiniteCylinders = _addInfiniteCylinders(config, plugins);
     primitives.insert(primitives.end(), infiniteCylinders.begin(), infiniteCylinders.end());
+    
+    auto mobiusStrips = _addMobiusStrips(config, plugins);
+    primitives.insert(primitives.end(), mobiusStrips.begin(), mobiusStrips.end());
+    
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
         auto [materials, size, recursion, position, rotation, sc, sh, color] = fractalecube;
@@ -424,6 +428,43 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders
         );
         #ifdef _DEBUG
             std::cout << "Creating an infinite cylinder" << std::endl;
+        #endif
+        auto primitive = factory.create(plugins);
+        auto [r, g, b] = color;
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
+        primitives.emplace_back(primitive);
+    }
+    return primitives;
+}
+
+std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addMobiusStrips(
+    const RayTracer::Parser::PrimitivesConfig& config,
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+)
+{
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
+    for (const auto &mobius : config.getMobiusStrips()) {
+        auto [materials, params, position, rotation, sc, sh, color] = mobius;
+        auto [majorRadius, minorRadius, twist] = params;
+        auto [x, y, z] = position;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
+
+        RayTracer::Factory::MobiusFactory factory(
+            pos,
+            rota,
+            scale,
+            shear,
+            majorRadius,
+            minorRadius,
+            twist,
+            materials
+        );
+        #ifdef _DEBUG
+            std::cout << "Creating a Mobius strip" << std::endl;
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
