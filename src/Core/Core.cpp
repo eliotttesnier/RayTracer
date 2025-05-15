@@ -94,13 +94,16 @@ RayTracer::Core::Core(char **av
 
     runResult_e result = graphicRenderer.run(renderingComplete);
 
-    if (renderThread.joinable())
-        renderThread.join();
-
     if (result == RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
         Core reCore(av);
         return;
     }
+
+    if (renderThread.joinable())
+        renderThread.join();
 
     if (!isProgressiveMode)
         graphicRenderer.switchToFinalImage();
