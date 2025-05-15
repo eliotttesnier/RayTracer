@@ -487,7 +487,7 @@ std::vector<RayTracer::Parser::mobius_t>
         const auto &mobius = root["primitives"]["mobius"];
         for (int i = 0; i < mobius.getLength(); ++i) {
             const auto &m = mobius[i];
-            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(m);
+            material_t material = RayTracer::Parser::Parser::getMaterialData(m);
             auto position = RayTracer::Parser::Parser::getData3D<double>(m["position"]);
             auto rotation = RayTracer::Parser::Parser::getData3D<double>(m["rotation"]);
             auto scale = RayTracer::Parser::Parser::getData3D<double>(m["scale"]);
