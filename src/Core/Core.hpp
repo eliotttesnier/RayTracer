@@ -24,10 +24,14 @@ private:
         std::shared_ptr<RayTracer::Camera>
     > _sceneElements;
 
+    Math::Point3D _cameraOffset;
+    Math::Point3D _cameraRotateOffset;
     void _loadPlugins();
+    void _handleCameraMovement(char **av);
 public:
 
     explicit Core(char **av);
+    Core(char **av, const Math::Point3D &additionalOffset);
     ~Core() = default;
 
     std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
