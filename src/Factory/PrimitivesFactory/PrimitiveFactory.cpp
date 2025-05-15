@@ -60,7 +60,8 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
     primitives.insert(primitives.end(), infiniteCylinders.begin(), infiniteCylinders.end());
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
-        auto [shading, materials, size, recursion, position, rotation, sc, sh, color] = fractalecube;
+        auto [shading, materials, size, recursion, position, rotation, sc, sh, color] =
+            fractalecube;
         auto [x, y, z] = position;
         Math::Point3D pos(x, y, z);
         Math::Vector3D rota = rotation;
