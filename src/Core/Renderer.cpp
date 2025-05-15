@@ -161,7 +161,6 @@ void Renderer::renderSegment(int startY, int endY)
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
-
             if (_stopThreads.load()) {
                 return;
             }
