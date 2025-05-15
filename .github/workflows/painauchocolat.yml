@@ -1,4 +1,7 @@
-name: CPP-Norm
+env:
+  EXECUTABLES: 'raytracer'
+
+name: painauchocolat
 on:
   push:
     branches-ignore:
@@ -10,15 +13,14 @@ on:
       - 'ga-ignore-*'
     paths:
       - '**'
+    types:
+      - opened
 
 jobs:
   check_coding_style:
-    name: "Check coding style"
-
+    name: "Check banana coding style"
     runs-on: ubuntu-latest
-
     container: ghcr.io/epitech/coding-style-checker:latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4.1.1
@@ -27,7 +29,7 @@ jobs:
         run: |
           check.sh "$(pwd)" "$(pwd)"
           tmpfile=$(mktemp)
-          
+
           echo "0" > "$tmpfile"
           cat coding-style-reports.log | while read -r line; do
             file=$(echo "$line" | cut -d':' -f1 | cut -d'/' -f 2-)
@@ -37,7 +39,7 @@ jobs:
             echo "::error title=$title,file=$file,line=$nbline,col=0::$code"
             echo "1" > "$tmpfile"
           done
-          
+
           if [ "$(cat "$tmpfile")" = "1" ]; then
             rm "$tmpfile"
             exit 1
@@ -45,11 +47,9 @@ jobs:
           rm "$tmpfile"
 
   cpplint:
+    name: "Check cpplint coding style"
     runs-on: ubuntu-latest
-
-    container:
-      image: ghcr.io/epitech/coding-style-checker:latest
-
+    container: ghcr.io/epitech/coding-style-checker:latest
     steps:
       - name: checkout@v4
         uses: actions/checkout@v4
@@ -73,3 +73,34 @@ jobs:
           else
             echo "No coding style errors found."
           fi
+
+  check_program_compilation:
+    name: "Check program compilation"
+    runs-on: ubuntu-latest
+    container: epitechcontent/epitest-docker:devel
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+      - name: Build project
+        timeout-minutes: 2
+        run: ./shell/cmpRelease.sh
+      - name: Check executables
+        shell: bash
+        run: |
+          exit_code=0
+
+          IFS=', ' read -r -a array <<< "$EXECUTABLES"
+
+          for element in "${array[@]}"
+          do
+              if [[ ! -f "$element" ]]; then
+                  echo ::error title=$element does not exist::The file $element does not exist.
+                  exit_code=1
+              fi
+              if [[ ! -x "$element" ]]; then
+                  echo ::error title=$element is not executable::The file $element cannot be executed.
+                  exit_code=1
+              fi
+          done
+
+          exit $exit_code
