@@ -9,8 +9,13 @@
 
 #include "Parser.hpp"
 
-std::vector<RayTracer::Parser::sphere_t>
-    RayTracer::Parser::PrimitivesParser::getSpheresData(const libconfig::Setting &root, shading_t shading)
+namespace RayTracer::Parser
+{
+
+std::vector<RayTracer::Parser::sphere_t> PrimitivesParser::getSpheresData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<sphere_t> spheresVector;
     const auto &spheres = root["primitives"]["spheres"];
@@ -45,8 +50,10 @@ std::vector<RayTracer::Parser::sphere_t>
     return spheresVector;
 }
 
-std::vector<RayTracer::Parser::plane_t>
-    RayTracer::Parser::PrimitivesParser::getPlanesData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::plane_t> PrimitivesParser::getPlanesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<plane_t> planesVector;
     const auto &planes = root["primitives"]["planes"];
@@ -82,8 +89,10 @@ std::vector<RayTracer::Parser::plane_t>
     return planesVector;
 }
 
-std::vector<RayTracer::Parser::cylinder_t>
-    RayTracer::Parser::PrimitivesParser::getCylindersData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::cylinder_t> PrimitivesParser::getCylindersData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<cylinder_t> cylinderVector;
 
@@ -121,8 +130,10 @@ std::vector<RayTracer::Parser::cylinder_t>
     return cylinderVector;
 }
 
-std::vector<RayTracer::Parser::cone_t>
-    RayTracer::Parser::PrimitivesParser::getConesData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::cone_t> PrimitivesParser::getConesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<cone_t> coneVector;
 
@@ -168,8 +179,10 @@ std::vector<RayTracer::Parser::cone_t>
     return coneVector;
 }
 
-std::vector<RayTracer::Parser::torus_t>
-    RayTracer::Parser::PrimitivesParser::getTorusData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::torus_t> PrimitivesParser::getTorusData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<torus_t> torusVector;
 
@@ -215,8 +228,10 @@ std::vector<RayTracer::Parser::torus_t>
     return torusVector;
 }
 
-std::vector<RayTracer::Parser::tanglecube_t>
-    RayTracer::Parser::PrimitivesParser::getTangleCubesData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::tanglecube_t> PrimitivesParser::getTangleCubesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<tanglecube_t> tangleCubeVector;
     try {
@@ -261,8 +276,10 @@ std::vector<RayTracer::Parser::tanglecube_t>
     return tangleCubeVector;
 }
 
-std::vector<RayTracer::Parser::fractalecube_t>
-    RayTracer::Parser::PrimitivesParser::getFractaleCubesData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::fractalecube_t> PrimitivesParser::getFractaleCubesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<fractalecube_t> fractaleCubeVector;
     try {
@@ -305,8 +322,10 @@ std::vector<RayTracer::Parser::fractalecube_t>
     return fractaleCubeVector;
 }
 
-std::vector<RayTracer::Parser::triangle_t>
-    RayTracer::Parser::PrimitivesParser::getTrianglesData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::triangle_t> PrimitivesParser::getTrianglesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<triangle_t> triangleVector;
 
@@ -359,8 +378,10 @@ std::vector<RayTracer::Parser::triangle_t>
     return triangleVector;
 }
 
-std::vector<RayTracer::Parser::obj_t>
-    RayTracer::Parser::PrimitivesParser::getOBJsData(const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::obj_t> PrimitivesParser::getOBJsData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<obj_t> objVector;
 
@@ -406,9 +427,10 @@ std::vector<RayTracer::Parser::obj_t>
     return objVector;
 }
 
-std::vector<RayTracer::Parser::infinitecylinder_t>
-    RayTracer::Parser::PrimitivesParser::getInfiniteCylindersData
-    (const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::infinitecylinder_t> PrimitivesParser::getInfiniteCylindersData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<infinitecylinder_t> infiniteCylinderVector;
     try {
@@ -448,9 +470,10 @@ std::vector<RayTracer::Parser::infinitecylinder_t>
     return infiniteCylinderVector;
 }
 
-std::vector<RayTracer::Parser::infinitecone_t>
-    RayTracer::Parser::PrimitivesParser::getInfiniteConesData
-    (const libconfig::Setting &root, shading_t shading)
+std::vector<RayTracer::Parser::infinitecone_t> PrimitivesParser::getInfiniteConesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
 {
     std::vector<infinitecone_t> infiniteConeVector;
     try {
@@ -488,4 +511,6 @@ std::vector<RayTracer::Parser::infinitecone_t>
         #endif
     }
     return infiniteConeVector;
+}
+
 }

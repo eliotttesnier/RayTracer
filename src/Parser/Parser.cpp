@@ -79,7 +79,10 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root, shading_t shadin
 
     std::vector<torus_t> torusVector = PrimitivesParser::getTorusData(root, shading);
 
-    std::vector<tanglecube_t> tangleCubeVector = PrimitivesParser::getTangleCubesData(root, shading);
+    std::vector<tanglecube_t> tangleCubeVector = PrimitivesParser::getTangleCubesData(
+        root,
+        shading
+    );
 
     std::vector<triangle_t> triangleVector = PrimitivesParser::getTrianglesData(root, shading);
 
@@ -88,7 +91,10 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root, shading_t shadin
     std::vector<infinitecylinder_t> infiniteCylinders =
         PrimitivesParser::getInfiniteCylindersData(root, shading);
 
-    std::vector<infinitecone_t> infiniteCones = PrimitivesParser::getInfiniteConesData(root, shading);
+    std::vector<infinitecone_t> infiniteCones = PrimitivesParser::getInfiniteConesData(
+        root,
+        shading
+    );
 
     std::vector<fractalecube_t> fractaleCubeVector =
         PrimitivesParser::getFractaleCubesData(root, shading);
