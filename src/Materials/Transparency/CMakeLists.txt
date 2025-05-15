@@ -28,4 +28,5 @@ target_link_libraries(TransparencyMaterial PRIVATE
         FractaleCube
         InfiniteCone
         InfiniteCylinder
+        Mobius
 )
