@@ -17,6 +17,7 @@
 #include "Primitives/Triangles/Triangles.hpp"
 
 RayTracer::Factory::TrianglesFactory::TrianglesFactory(
+    shading_t shading,
     const Math::Point3D &p1,
     const Math::Point3D &p2,
     const Math::Point3D &p3,
@@ -24,7 +25,8 @@ RayTracer::Factory::TrianglesFactory::TrianglesFactory(
     const Math::Vector3D &scale,
     const Math::Vector3D &shear,
     const std::map<std::string, std::any> &materials
-):
+) :
+    _shading(shading),
     _p1(p1),
     _p2(p2),
     _p3(p3),
@@ -52,8 +54,9 @@ std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(
     obj->setShear(this->_shear);
     std::shared_ptr<RayTracer::Materials::IMaterial> material =
         RayTracer::Factory::MaterialFactory::createMaterial(
-        this->_materials,
-        plugins
+        _materials,
+        plugins,
+        _shading
     );
     obj->setMaterial(material);
     return std::shared_ptr<IPrimitive>(obj, [](IPrimitive* ptr) { delete ptr; });

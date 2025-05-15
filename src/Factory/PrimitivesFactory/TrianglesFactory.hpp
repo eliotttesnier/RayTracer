@@ -20,6 +20,7 @@ namespace RayTracer::Factory {
     class TrianglesFactory : public IPrimitiveFactory {
     public:
         TrianglesFactory(
+            shading_t shading,
             const Math::Point3D &p1,
             const Math::Point3D &p2,
             const Math::Point3D &p3,
@@ -38,6 +39,7 @@ namespace RayTracer::Factory {
         Math::Vector3D _scale;
         Math::Vector3D _shear;
         std::map<std::string, std::any> _materials;
+        shading_t _shading;
     };
 
 } // namespace RayTracer::Factory
