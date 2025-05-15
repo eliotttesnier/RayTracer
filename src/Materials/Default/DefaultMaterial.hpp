@@ -14,6 +14,10 @@
 
 namespace RayTracer::Materials {
 
+typedef std::tuple<double, double, double, double> phong_t;
+typedef std::tuple<int, double> ambiantOcclusion_t;
+typedef std::tuple<phong_t, ambiantOcclusion_t> shading_t; // Shading properties
+
 class DefaultMaterial : public AMaterial {
     public:
         Graphic::color_t calculateColor(
@@ -94,8 +98,8 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
 
-        DefaultMaterial();
-        DefaultMaterial(std::shared_ptr<IMaterial> wrappee);
+        DefaultMaterial() = delete;
+        DefaultMaterial(shading_t shading);
         virtual ~DefaultMaterial();
 
     private:
@@ -121,6 +125,12 @@ class DefaultMaterial : public AMaterial {
         );
         Math::Vector3D _randomHemisphereSample(Math::Vector3D normal);
         float _randomFloat();
+        double _ka;
+        double _kd;
+        double _ks;
+        double _s;
+        double _rc;
+        double _md;
 };
 
 };

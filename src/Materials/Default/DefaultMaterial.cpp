@@ -15,14 +15,19 @@
 namespace RayTracer::Materials
 {
 
-DefaultMaterial::DefaultMaterial()
+DefaultMaterial::DefaultMaterial(shading_t shading)
     : _wrappee(nullptr)
 {
-}
+    auto [phong, ao] = shading;
+    auto [ka, kd, ks, s] = phong;
+    auto [rc, md] = ao;
 
-DefaultMaterial::DefaultMaterial(std::shared_ptr<IMaterial> wrappee)
-    : _wrappee(wrappee)
-{
+    _ka = ka;
+    _kd = kd;
+    _ks = ks;
+    _s = s;
+    _rc = rc;
+    _md = md;
 }
 
 DefaultMaterial::~DefaultMaterial() = default;
@@ -63,11 +68,6 @@ Graphic::color_t DefaultMaterial::_phongModel(
         baseColor.a
     };
 
-    double ka = 0.3;
-    double kd = 0.5;
-    double ks = 0.9;
-    double shininess = 32.0;
-
     double ambientIntensity = 0.0;
     double diffuseIntensity = 0.0;
     double specularIntensity = 0.0;
@@ -83,7 +83,7 @@ Graphic::color_t DefaultMaterial::_phongModel(
             const float ia = light->getIntensity();
             auto [ar, ag, ab] = light->getColor();
 
-            ambientIntensity = ia * ka;
+            ambientIntensity = ia * _ka;
 
             lightColor._x += (ar / 255.0) * ambientIntensity;
             lightColor._y += (ag / 255.0) * ambientIntensity;
@@ -103,9 +103,9 @@ Graphic::color_t DefaultMaterial::_phongModel(
             Math::Vector3D V = -ray.direction.normalized();
             Math::Vector3D R = N * N.dot(L) * 2.0 - L;
 
-            double currentDiffuseIntensity = i * kd * std::max(0.0, L.dot(N));
-            double currentSpecularIntensity = i * ks * std::pow(
-                std::max(0.0, R.dot(V)), shininess
+            double currentDiffuseIntensity = i * _kd * std::max(0.0, L.dot(N));
+            double currentSpecularIntensity = i * _ks * std::pow(
+                std::max(0.0, R.dot(V)), _s
             );
 
             lightColor._x += (lr / 255.0) * currentDiffuseIntensity;
@@ -184,24 +184,22 @@ double DefaultMaterial::_ambiantOcclusion(
 )
 {
     int occludedRays = 0;
-    int sampleCount = 64;
-    double maxDistance = 0.3;
     double epsilon = 1e-4;
 
-    for (int i = 0; i < sampleCount; i++) {
+    for (int i = 0; i < _rc; i++) {
         Math::Vector3D dir = _randomHemisphereSample(hitData.normal);
 
         Math::Ray aoRay(hitData.point + hitData.normal * epsilon, dir);
 
         for (auto primitive : primitives) {
             Math::hitdata_t hd = primitive->intersect(aoRay);
-            if (hd.hit && hd.distance < maxDistance) {
+            if (hd.hit && hd.distance < _md) {
                 occludedRays += 1;
                 break;
             }
         }
     }
-    double occlusion = static_cast<double>(occludedRays) / static_cast<double>(sampleCount);
+    double occlusion = static_cast<double>(occludedRays) / static_cast<double>(_rc);
     return 1.0 - occlusion;
 }
 
