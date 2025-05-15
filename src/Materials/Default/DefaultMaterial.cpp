@@ -34,6 +34,22 @@ Graphic::color_t DefaultMaterial::_getColor(
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )
 {
+    Graphic::color_t phongColor = _phongModel(hitData, ray, lights, primitives);
+    double occlusion = _ambiantOcclusion(hitData, primitives);
+    occlusion = 0.5 + 0.5 * occlusion;
+    phongColor.r *= occlusion;
+    phongColor.g *= occlusion;
+    phongColor.b *= occlusion;
+    return phongColor;
+}
+
+Graphic::color_t DefaultMaterial::_phongModel(
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
     if (lights.empty()) {
         return hitData.color;
     }
@@ -117,6 +133,76 @@ Graphic::color_t DefaultMaterial::_getColor(
     finalColor.b = std::max(0.0, std::min(255.0, finalColor.b));
 
     return finalColor;
+}
+
+std::tuple<Math::Vector3D, Math::Vector3D> DefaultMaterial::_orthonormalBasis(
+    Math::Vector3D normal
+)
+{
+    Math::Vector3D tangent;
+    Math::Vector3D bitangent;
+
+    if (std::abs(normal._z) < 0.999f) {
+        tangent = normal.cross(Math::Vector3D(0, 0, 1)).normalized();
+    } else {
+        tangent = normal.cross(Math::Vector3D(0, 1, 0)).normalized();
+    }
+    bitangent = normal.cross(tangent).normalized();
+    return std::make_tuple(tangent, bitangent);
+}
+
+float DefaultMaterial::_randomFloat() {
+    return std::rand() / (RAND_MAX + 1.0f);
+}
+
+Math::Vector3D DefaultMaterial::_randomHemisphereSample(Math::Vector3D normal)
+{
+    float r1 = _randomFloat();
+    float r2 = _randomFloat();
+
+    float phi = 2.0f * M_PI * r1;
+    float cosTheta = sqrt(1.0f - r2);
+    float sinTheta = sqrt(r2);
+
+    float x = cos(phi) * sinTheta;
+    float y = sin(phi) * sinTheta;
+    float z = cosTheta;
+
+    auto [tangent, bitangent] = _orthonormalBasis(normal);
+
+    Math::Vector3D sampleWorld = (
+        tangent * x +
+        bitangent * y +
+        normal * z
+    );
+    return sampleWorld.normalized();
+}
+
+double DefaultMaterial::_ambiantOcclusion(
+    Math::hitdata_t hitData,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    int occludedRays = 0;
+    int sampleCount = 64;
+    double maxDistance = 0.3;
+    double epsilon = 1e-4;
+
+    for (int i = 0; i < sampleCount; i++) {
+        Math::Vector3D dir = _randomHemisphereSample(hitData.normal);
+
+        Math::Ray aoRay(hitData.point + hitData.normal * epsilon, dir);
+
+        for (auto primitive : primitives) {
+            Math::hitdata_t hd = primitive->intersect(aoRay);
+            if (hd.hit && hd.distance < maxDistance) {
+                occludedRays += 1;
+                break;
+            }
+        }
+    }
+    double occlusion = static_cast<double>(occludedRays) / static_cast<double>(sampleCount);
+    return 1.0 - occlusion;
 }
 
 Graphic::color_t DefaultMaterial::calculateColor(
