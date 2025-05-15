@@ -34,6 +34,7 @@ typedef std::tuple<material_t, std::string, truple_t, truple_t, truple_t, truple
 typedef std::tuple<material_t, double, int, truple_t, truple_t, truple_t, truple_t, color_t> fractalecube_t; // Material, size, recursion, Position, rotation, scale, shear, Color
 typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> infinitecone_t; // Material, radius, Position, rotation, scale, shear, Color
 typedef std::tuple<material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> infinitecylinder_t; // Material, radius , Position, rotation, scale, shear, Color
+typedef std::tuple<material_t, truple_t, truple_t, truple_t, truple_t, truple_t, color_t> mobius_t; // Material, majorRadius + minorRadius + twist, Position, rotation, scale, shear, Color
 
 class PrimitivesConfig {
     private:
@@ -48,6 +49,7 @@ class PrimitivesConfig {
         std::vector<infinitecone_t> _infiniteCones;
         std::vector<infinitecylinder_t> _infiniteCylinders;
         std::vector<fractalecube_t> _fractalecubes;
+        std::vector<mobius_t> _mobiusStrips;
 
     public:
         std::vector<sphere_t> getSpheres() const;
@@ -61,6 +63,7 @@ class PrimitivesConfig {
         std::vector<infinitecone_t> getInfiniteCones() const;
         std::vector<infinitecylinder_t> getInfiniteCylinders() const;
         std::vector<fractalecube_t> getFractaleCubes() const;
+        std::vector<mobius_t> getMobiusStrips() const;
 
         PrimitivesConfig() = delete;
         PrimitivesConfig(
@@ -74,7 +77,8 @@ class PrimitivesConfig {
             const std::vector<obj_t> &objs,
             const std::vector<infinitecylinder_t> &infiniteCylinders,
             const std::vector<infinitecone_t> &infiniteCones,
-            const std::vector<fractalecube_t> &fractalecubes
+            const std::vector<fractalecube_t> &fractalecubes,
+            const std::vector<mobius_t> &mobiusStrips
         );
         ~PrimitivesConfig() = default;
 };
