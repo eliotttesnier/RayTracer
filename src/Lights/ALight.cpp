@@ -33,8 +33,8 @@ std::tuple<int, int, int> ALight::getColor() const {
     return {this->_r, this->_g, this->_b};
 }
 
-void ALight::getIntensity(float &intensity) const {
-    intensity = _intensity;
+float ALight::getIntensity() const {
+    return _intensity;
 }
 
 Math::Vector3D ALight::getDirection() const {

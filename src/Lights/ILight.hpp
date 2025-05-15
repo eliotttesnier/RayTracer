@@ -37,7 +37,7 @@ class ILight {
         // Basic light properties getters
         virtual Math::Point3D getPosition() const = 0;
         virtual std::tuple<int, int, int> getColor() const = 0;
-        virtual void getIntensity(float &intensity) const = 0;
+        virtual float getIntensity() const = 0;
         virtual std::string getLightName() const = 0;
         virtual Math::Vector3D getDirection() const = 0;
         virtual std::string getType() = 0;

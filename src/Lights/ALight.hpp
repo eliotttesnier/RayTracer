@@ -23,7 +23,7 @@ class ALight : public ILight {
 
         Math::Point3D getPosition() const override;
         std::tuple<int, int, int> getColor() const override;
-        void getIntensity(float &intensity) const override;
+        float getIntensity() const override;
         std::string getLightName() const override;
         Math::Vector3D getDirection() const override;
         
