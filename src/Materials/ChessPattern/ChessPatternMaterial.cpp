@@ -369,4 +369,34 @@ Graphic::color_t ChessPatternMaterial::calculateColor(
     return color;
 }
 
+Graphic::color_t ChessPatternMaterial::calculateColor(
+    const RayTracer::primitive::Mobius &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    Math::Point3D localPoint = obj.transformPointToLocal(hitData.point);
+    double theta = atan2(localPoint._z, localPoint._x);
+    float u = (theta + M_PI) / (2 * M_PI);
+
+    double distFromCenter = sqrt(localPoint._x * localPoint._x + localPoint._z * localPoint._z) - obj.getMajorRadius();
+    double v = (atan2(localPoint._y, distFromCenter) / M_PI + 1.0) * 0.5;
+
+    Graphic::color_t color = _applyChessPatternUV(u, v, hitData.color);
+    hitData.color = color;
+
+    if (_wrappee != nullptr) {
+        return _wrappee->calculateColor(
+            obj,
+            hitData,
+            ray,
+            lights,
+            primitives
+        );
+    }
+    return color;
+}
+
 }
