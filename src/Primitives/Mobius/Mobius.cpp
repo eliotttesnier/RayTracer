@@ -129,8 +129,15 @@ double Mobius::SDF(const Math::Point3D& point) const
         double circle_x = _majorRadius * std::cos(theta);
         double circle_z = _majorRadius * std::sin(theta);
         
+        // Calculer l'écart hélicoïdal pour éviter que les cercles se croisent au même point
+        // L'écart est maximal à mi-chemin (theta = PI) et revient à zéro à 2PI
+        double helicalOffset = 0.1 * _minorRadius * std::sin(theta);
+        
+        // Ajustement de la position Y du cercle principal pour créer l'effet hélicoïdal
+        double circle_y = helicalOffset * std::sin(theta * _twist);
+        
         // Calculer les extrémités gauche et droite du ruban à cette position angulaire
-        // La torsion se fait sur l'axe Z (le 3ème axe)
+        // La torsion se fait progressivement le long du parcours
         double halfTwist = theta * _twist / 2.0;
         
         // Tracer une ligne horizontale (sur l'axe X) à cette position angulaire
@@ -142,14 +149,12 @@ double Mobius::SDF(const Math::Point3D& point) const
             // Calculer la position avec la torsion de Möbius
             // La torsion fait que lorsqu'on fait le tour complet, gauche devient droite et vice versa
             
-            // Position sur le ruban à cet angle et cette largeur
-            // La largeur du ruban reste constante (_minorRadius)
+            // Position sur le ruban à cet angle et cette largeur avec l'écart hélicoïdal
             double ribbon_x = circle_x;
-            double ribbon_y = t * _minorRadius * std::cos(halfTwist);
+            double ribbon_y = circle_y + t * _minorRadius * std::cos(halfTwist);
             double ribbon_z = circle_z + t * _minorRadius * std::sin(halfTwist);
             
             // Si nous ne sommes pas au premier cercle, calculer la distance aux segments
-            // qui relient ce cercle au précédent
             if (i > 0) {
                 // Angle du cercle précédent
                 double prevTheta = 2.0 * M_PI * (i - 1) / numAngles;
