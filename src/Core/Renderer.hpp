@@ -49,10 +49,13 @@ class Renderer {
         void setMultithreading(bool useMultithreading);
         void setMaxThreads(unsigned int maxThreads);
         void setRenderingMode(RenderingMode mode);
+        void stopThreads();
+
+        const std::vector<std::vector<Graphic::color_t>>& getPixelBuffer() const;
+        
         void registerUpdateCallback(std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> callback);
         void render();
         void renderPreview();
-        const std::vector<std::vector<Graphic::color_t>>& getPixelBuffer() const;
 
     protected:
     private:
@@ -99,6 +102,8 @@ class Renderer {
         double _adaptiveThreshold = 0.1;
         bool _useMultithreading{true};
         unsigned int _maxThreads = 8;
+
+        std::atomic<bool> _stopThreads;
 };
 
 #endif /* !RENDERER_HPP_ */

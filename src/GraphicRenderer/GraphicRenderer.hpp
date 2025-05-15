@@ -20,13 +20,23 @@
 #include <SFML/System.hpp>
 #include "../Graphic/Color.hpp"
 
+enum runResult_e {
+    FINISHED,
+    RELOAD_CONFIG
+};
+
 class GraphicRenderer {
     public:
-        GraphicRenderer(std::string const &previewFilename, std::string const &finalFilename = "",
-                bool isPreviewMode = true, bool isProgressiveMode = false);
+        GraphicRenderer(
+            std::string const &configFilename,
+            std::string const &previewFilename,
+            std::string const &finalFilename = "",
+            bool isPreviewMode = true,
+            bool isProgressiveMode = false
+        );
         ~GraphicRenderer() = default;
 
-        void run(std::atomic<bool>& renderingComplete);
+        runResult_e run(std::atomic<bool>& renderingComplete);
         bool loadFromFile(const std::string& filename);
         void exportToPNG(const std::string& outputFilename) const;
         void switchToFinalImage();
@@ -50,6 +60,8 @@ class GraphicRenderer {
         sf::Font _font;
         sf::Text _loadingText;
         std::mutex _pixelMutex;
+        std::string _configFilename;
+        int _inotifyId;
 };
 
 #endif /* !GRAPHICRENDERER_HPP_ */

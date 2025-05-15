@@ -47,7 +47,7 @@ Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
     const std::vector<std::shared_ptr<IPrimitive>> primitives,
     const std::vector<std::shared_ptr<ILight>> lights)
     : _camera(camera), _primitives(primitives), _lights(lights),
-    _outputFile("output.ppm"), _previewOutputFile("preview.ppm")
+    _outputFile("output.ppm"), _previewOutputFile("preview.ppm"), _stopThreads(false)
 {
     _width = std::get<0>(camera->getResolution());
     _height = std::get<1>(camera->getResolution());
@@ -91,6 +91,11 @@ void Renderer::setResolution(int width, int height)
 void Renderer::setOutputFile(const std::string& outputFile)
 {
     _outputFile = outputFile;
+}
+
+void Renderer::stopThreads()
+{
+    _stopThreads = true;
 }
 
 std::string Renderer::formatTime(double seconds)
@@ -156,6 +161,10 @@ void Renderer::renderSegment(int startY, int endY)
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
+            if (_stopThreads.load()) {
+                return;
+            }
+
             double u = (2.0 * static_cast<double>(x) / (_width - 1)) - 1.0;
             double v = 1.0 - (2.0 * static_cast<double>(y) / (_height - 1));
 
