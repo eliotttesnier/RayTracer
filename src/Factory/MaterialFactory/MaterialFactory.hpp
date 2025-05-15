@@ -28,11 +28,16 @@
 
 namespace RayTracer::Factory {
 
+typedef std::tuple<double, double, double, double> phong_t;
+typedef std::tuple<int, double> ambiantOcclusion_t;
+typedef std::tuple<phong_t, ambiantOcclusion_t> shading_t; // Shading properties
+
 class MaterialFactory {
     public:
         static std::shared_ptr<RayTracer::Materials::IMaterial> createMaterial(
             const std::map<std::string, std::any> &materialProps,
-            std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins,
+            shading_t shading
         );
         MaterialFactory() = default;
         ~MaterialFactory() = delete;
