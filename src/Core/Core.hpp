@@ -11,6 +11,7 @@
 #include "LibLoader/LibLoader.hpp"
 #include "Parser/Parser.hpp"
 #include "Renderer.hpp"
+#include "../GraphicRenderer/GraphicRenderer.hpp"
 
 namespace RayTracer {
 
@@ -25,9 +26,8 @@ private:
     > _sceneElements;
 
     Math::Point3D _cameraOffset;
-    Math::Point3D _cameraRotateOffset;
     void _loadPlugins();
-    void _handleCameraMovement(char **av);
+    void _handleCameraMovement(char **av, runResult_e result);
 public:
 
     explicit Core(char **av);

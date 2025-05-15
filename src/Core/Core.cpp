@@ -47,33 +47,30 @@ void RayTracer::Core::_loadPlugins()
     }
 }
 
-void RayTracer::Core::_handleCameraMovement(char **av)
-{
-    const char* cameraMoveEnv = getenv("RAYTRACER_CAMERA_MOVE");
-    if (cameraMoveEnv == nullptr) {
-        Core reCore(av, Math::Point3D(0.0, 0.0, 0.0));
-        return;
-    }
+void RayTracer::Core::_handleCameraMovement(char **av, runResult_e result)
 
-    std::string cameraMove(cameraMoveEnv);
-    unsetenv("RAYTRACER_CAMERA_MOVE");
+{
     Math::Point3D movementOffset(0.0, 0.0, 0.0);
     const float MOVEMENT_AMOUNT = 2.0f;
 
-    if (cameraMove == "forward")
+    if (result == MOVE_FORWARD)
         movementOffset = Math::Point3D(0.0, 0.0, -MOVEMENT_AMOUNT);
-    if (cameraMove == "backward")
+    if (result == MOVE_BACKWARD)
         movementOffset = Math::Point3D(0.0, 0.0, MOVEMENT_AMOUNT);
-    if (cameraMove == "right")
+    if (result == MOVE_RIGHT)
         movementOffset = Math::Point3D(MOVEMENT_AMOUNT, 0.0, 0.0);
-    if (cameraMove == "left")
+    if (result == MOVE_LEFT)
         movementOffset = Math::Point3D(-MOVEMENT_AMOUNT, 0.0, 0.0);
-    if (cameraMove == "up")
+    if (result == MOVE_UP)
         movementOffset = Math::Point3D(0.0, MOVEMENT_AMOUNT, 0.0);
-    if (cameraMove == "down")
+    if (result == MOVE_DOWN)
         movementOffset = Math::Point3D(0.0, -MOVEMENT_AMOUNT, 0.0);
 
-    Core reCore(av, movementOffset);
+    Core reCore(av, Math::Point3D(
+        _cameraOffset._x + movementOffset._x,
+        _cameraOffset._y + movementOffset._y,
+        _cameraOffset._z + movementOffset._z
+    ));
 }
 
 RayTracer::Core::Core(char **av
@@ -127,7 +124,15 @@ RayTracer::Core::Core(char **av
         renderer.stopThreads();
         if (renderThread.joinable())
             renderThread.join();
-        _handleCameraMovement(av);
+        Core reCore(av, _cameraOffset);
+        return;
+    }
+
+    if (result != NOTHING && result != FINISHED && result != RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
+        _handleCameraMovement(av, result);
         return;
     }
 
@@ -143,27 +148,9 @@ RayTracer::Core::Core(char **av, const Math::Point3D &additionalOffset)
 :
     _parser(av[1])
 {
-    const char *offsetXStr = getenv("RAYTRACER_CAMERA_OFFSET_X");
-    const char *offsetYStr = getenv("RAYTRACER_CAMERA_OFFSET_Y");
-    const char *offsetZStr = getenv("RAYTRACER_CAMERA_OFFSET_Z");
-
-    _cameraOffset = Math::Point3D(0.0, 0.0, 0.0);
-
-    if (offsetXStr && offsetYStr && offsetZStr) {
-        try {
-            _cameraOffset._x = std::stod(offsetXStr);
-            _cameraOffset._y = std::stod(offsetYStr);
-            _cameraOffset._z = std::stod(offsetZStr);
-        } catch (const std::exception &e) {
-        }
-    }
-    _cameraOffset._x += additionalOffset._x;
-    _cameraOffset._y += additionalOffset._y;
-    _cameraOffset._z += additionalOffset._z;
-
-    setenv("RAYTRACER_CAMERA_OFFSET_X", std::to_string(_cameraOffset._x).c_str(), 1);
-    setenv("RAYTRACER_CAMERA_OFFSET_Y", std::to_string(_cameraOffset._y).c_str(), 1);
-    setenv("RAYTRACER_CAMERA_OFFSET_Z", std::to_string(_cameraOffset._z).c_str(), 1);
+    _cameraOffset = Math::Point3D(additionalOffset._x,
+                                  additionalOffset._y,
+                                  additionalOffset._z);
 
     this->_loadPlugins();
     this->_sceneElements = RayTracer::Factory::Factory::createElement(
@@ -218,7 +205,15 @@ RayTracer::Core::Core(char **av, const Math::Point3D &additionalOffset)
         renderer.stopThreads();
         if (renderThread.joinable())
             renderThread.join();
-        _handleCameraMovement(av);
+        Core reCore(av, _cameraOffset);
+        return;
+    }
+
+    if (result != NOTHING && result != FINISHED && result != RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
+        _handleCameraMovement(av, result);
         return;
     }
 
