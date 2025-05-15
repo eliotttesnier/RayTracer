@@ -404,5 +404,33 @@ Graphic::color_t PerlinNoiseMaterial::calculateColor(
     );
 }
 
+Graphic::color_t PerlinNoiseMaterial::calculateColor(
+    const RayTracer::primitive::Mobius &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    Math::Point3D hitPoint = hitData.point;
+    double scale = 70;
+    double n = _noise3d(hitPoint._x * scale, hitPoint._y * scale, hitPoint._z * scale);
+    n = std::clamp((n + 1.0) / 2.0, 0.0, 1.0);
+    Graphic::color_t color = {
+        n * 255,
+        n * 255,
+        n * 255,
+        1.0
+    };
+    hitData.color = color;
+    return _wrappee->calculateColor(
+        obj,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+}
+
 
 }
