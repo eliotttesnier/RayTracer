@@ -11,6 +11,7 @@
 #include "LibLoader/LibLoader.hpp"
 #include "Parser/Parser.hpp"
 #include "Renderer.hpp"
+#include "../GPU/GPURenderer.hpp"
 
 namespace RayTracer {
 
@@ -23,6 +24,7 @@ private:
         std::vector<std::shared_ptr<ILight>>,
         std::shared_ptr<RayTracer::Camera>
     > _sceneElements;
+    bool _useGPU;
 
     void _loadPlugins();
 public:

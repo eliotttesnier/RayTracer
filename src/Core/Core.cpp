@@ -16,6 +16,7 @@
 #include "Parser/Parser.hpp"
 #include "Renderer.hpp"
 #include "../GraphicRenderer/GraphicRenderer.hpp"
+#include "../GPU/GPURenderer.hpp"
 
 void RayTracer::Core::_loadPlugins()
 {
@@ -49,7 +50,12 @@ void RayTracer::Core::_loadPlugins()
 
 RayTracer::Core::Core(char **av
 ):
-    _parser(av[1])
+    _parser(av[1]),
+#ifdef USE_CUDA
+    _useGPU(true) // Activer le rendu GPU si CUDA est disponible
+#else
+    _useGPU(false) // Désactiver le rendu GPU si CUDA n'est pas disponible
+#endif
 {
     this->_loadPlugins();
     this->_sceneElements = RayTracer::Factory::Factory::createElement(
@@ -62,34 +68,94 @@ RayTracer::Core::Core(char **av
     Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
     renderer.setMultithreading(renderingConfig.getMultithreading());
     renderer.setMaxThreads(renderingConfig.getMaxThreads());
-    if (renderingConfig.getType() == "preview")
+    this->applyRenderingConfig(renderer);
+    this->applyAntialiasing(renderer);
+    
+    if (renderingConfig.getType() == "preview") {
         renderer.renderPreview();
+    }
 
     GraphicRenderer graphicRenderer("preview.ppm", "output.ppm",
         renderingConfig.getType() == "preview");
     bool isProgressiveMode = (renderingConfig.getType() == "progressive");
     graphicRenderer.setProgressiveMode(isProgressiveMode);
 
-    if (isProgressiveMode) {
-        renderer.registerUpdateCallback([&graphicRenderer](
-                const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
-            graphicRenderer.updateProgressiveRendering(pixelBuffer);
-        });
-    }
-
-    this->applyRenderingConfig(renderer);
-    this->applyAntialiasing(renderer);
-
     std::atomic<bool> renderingComplete(false);
 
-    std::thread renderThread([&]() {
-        renderer.render();
-        renderingComplete = true;
-    });
-    graphicRenderer.run(renderingComplete);
+    if (_useGPU) {
+#ifdef USE_CUDA
+        // Utiliser le rendu GPU
+        try {
+            std::cout << "Utilisation du rendu GPU (CUDA)..." << std::endl;
+            
+            GPURenderer gpuRenderer(renderer);
+            gpuRenderer.initialize();
+            
+            std::thread renderThread([&]() {
+                gpuRenderer.render();
+                gpuRenderer.saveToPPM("output.ppm");
+                renderingComplete = true;
+            });
+            
+            graphicRenderer.run(renderingComplete);
+            
+            if (renderThread.joinable())
+                renderThread.join();
+                
+        } catch (const std::exception& e) {
+            std::cerr << "Erreur lors du rendu GPU: " << e.what() << std::endl;
+            std::cerr << "Retour au rendu CPU..." << std::endl;
+            
+            // En cas d'erreur, revenir au rendu CPU
+            std::thread renderThread([&]() {
+                renderer.render();
+                renderingComplete = true;
+            });
+            
+            graphicRenderer.run(renderingComplete);
+            
+            if (renderThread.joinable())
+                renderThread.join();
+        }
+#else
+        std::cerr << "Le rendu GPU a été demandé, mais CUDA n'est pas disponible. Utilisation du CPU." << std::endl;
+        // Fallback to CPU rendering
+        if (isProgressiveMode) {
+            renderer.registerUpdateCallback([&graphicRenderer](
+                    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+                graphicRenderer.updateProgressiveRendering(pixelBuffer);
+            });
+        }
 
-    if (renderThread.joinable())
-        renderThread.join();
+        std::thread renderThread([&]() {
+            renderer.render();
+            renderingComplete = true;
+        });
+        
+        graphicRenderer.run(renderingComplete);
+        
+        if (renderThread.joinable())
+            renderThread.join();
+#endif
+    } else {
+        // Utiliser le rendu CPU standard
+        if (isProgressiveMode) {
+            renderer.registerUpdateCallback([&graphicRenderer](
+                    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+                graphicRenderer.updateProgressiveRendering(pixelBuffer);
+            });
+        }
+
+        std::thread renderThread([&]() {
+            renderer.render();
+            renderingComplete = true;
+        });
+        
+        graphicRenderer.run(renderingComplete);
+        
+        if (renderThread.joinable())
+            renderThread.join();
+    }
 
     if (!isProgressiveMode)
         graphicRenderer.switchToFinalImage();

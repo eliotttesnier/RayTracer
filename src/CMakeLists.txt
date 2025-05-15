@@ -9,6 +9,12 @@ add_subdirectory(Core)
 add_subdirectory(Factory)
 add_subdirectory(LibLoader)
 
+# Ajouter le module GPU si CUDA est trouvé
+if(CUDA_FOUND)
+    add_subdirectory(GPU)
+    add_definitions(-DUSE_CUDA)
+endif()
+
 add_executable(raytracer
     main.cpp
 )
@@ -24,6 +30,16 @@ target_link_libraries(raytracer PRIVATE
         sfml-window
         sfml-system
 )
+
+# Ajouter GPU si disponible
+if(CUDA_FOUND)
+    target_link_libraries(raytracer PRIVATE GPU)
+endif()
+)
+
+if(CUDA_FOUND)
+    target_link_libraries(raytracer PRIVATE GPU)
+endif()
 
 target_link_libraries(Core PRIVATE
     Factory
