@@ -5,13 +5,18 @@
 ** GraphicRenderer implementation
 */
 
+#include <sys/inotify.h>
+#include <unistd.h>
+#include <limits.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <cmath>
 #include <vector>
+#include <cstring>
 
 #include "GraphicRenderer.hpp"
+#include "../Core/Core.hpp"
 
 namespace AnsiColor {
 const std::string RESET      = "\033[0m";
@@ -21,13 +26,26 @@ const std::string GREEN      = "\033[32m";
 const std::string CYAN       = "\033[36m";
 }
 
-GraphicRenderer::GraphicRenderer(std::string const &previewFilename,
-        std::string const &finalFilename, bool isPreviewMode, bool isProgressiveMode)
-    : _inputFilename(previewFilename),
+GraphicRenderer::GraphicRenderer(
+    const std::string &configFilename,
+    std::string const &previewFilename,
+    std::string const &finalFilename,
+    bool isPreviewMode,
+    bool isProgressiveMode
+) : _inputFilename(previewFilename),
     _finalFilename(finalFilename.empty() ? "output.ppm" : finalFilename),
     _isPreviewMode(isPreviewMode),
-    _isProgressiveMode(isProgressiveMode)
+    _isProgressiveMode(isProgressiveMode),
+    _configFilename(configFilename)
 {
+    _inotifyId = inotify_init1(IN_NONBLOCK);
+    if (_inotifyId == -1) {
+        throw std::runtime_error("inotify_init failed");
+    }
+    if (inotify_add_watch(_inotifyId, _configFilename.c_str(), IN_MODIFY) == -1) {
+        close(_inotifyId);
+        throw std::runtime_error("inotify_add_watch failed");
+    }
     if (_isPreviewMode) {
         if (!loadFromFile(previewFilename)) {
             std::cerr << "Failed to load preview PPM file: " << previewFilename << std::endl;
@@ -179,15 +197,36 @@ void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
     }
 }
 
-void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
+runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 {
+    runResult_e result = FINISHED;
     bool finalImageLoaded = false;
     bool pngExported = false;
     sf::Clock checkClock;
+    static const size_t kEventBufferLength = 4096;
+    char buffer[kEventBufferLength];
 
     if (_isPreviewMode)
         exportToPNG("preview.png");
+
     while (_window.isOpen()) {
+        ssize_t length = read(_inotifyId, buffer, kEventBufferLength);
+        if (length < 0) {
+            if (errno == EAGAIN) {
+                usleep(100 * 1000);
+            } else {
+                std::cerr << "read inotifyId failed" << std::endl;
+            }
+        }
+        for (char *ptr = buffer; ptr < buffer + length;) {
+            struct inotify_event *event = (struct inotify_event *)ptr;
+            if (event->mask & IN_MODIFY) {
+                _window.close();
+                result = RELOAD_CONFIG;
+            }
+            ptr += sizeof(struct inotify_event) + event->len;
+        }
+
         sf::Event event;
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -250,6 +289,7 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         _window.display();
         sf::sleep(sf::milliseconds(33));
     }
+    return result;
 }
 
 void GraphicRenderer::updateProgressiveRendering(
