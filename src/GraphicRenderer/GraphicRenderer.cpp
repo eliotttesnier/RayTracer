@@ -289,6 +289,7 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         _window.display();
         sf::sleep(sf::milliseconds(33));
     }
+    close(_inotifyId);
     return result;
 }
 
