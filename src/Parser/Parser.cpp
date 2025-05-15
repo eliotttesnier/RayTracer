@@ -67,31 +67,31 @@ material_t Parser::getMaterialData(const libconfig::Setting &setting)
 }
 
 
-void Parser::_getPrimitivesData(const libconfig::Setting &root)
+void Parser::_getPrimitivesData(const libconfig::Setting &root, shading_t shading)
 {
-    std::vector<sphere_t> spheresVector = PrimitivesParser::getSpheresData(root);
+    std::vector<sphere_t> spheresVector = PrimitivesParser::getSpheresData(root, shading);
 
-    std::vector<plane_t> planesVector = PrimitivesParser::getPlanesData(root);
+    std::vector<plane_t> planesVector = PrimitivesParser::getPlanesData(root, shading);
 
-    std::vector<cylinder_t> cylinderVector = PrimitivesParser::getCylindersData(root);
+    std::vector<cylinder_t> cylinderVector = PrimitivesParser::getCylindersData(root, shading);
 
-    std::vector<cone_t> coneVector = PrimitivesParser::getConesData(root);
+    std::vector<cone_t> coneVector = PrimitivesParser::getConesData(root, shading);
 
-    std::vector<torus_t> torusVector = PrimitivesParser::getTorusData(root);
+    std::vector<torus_t> torusVector = PrimitivesParser::getTorusData(root, shading);
 
-    std::vector<tanglecube_t> tangleCubeVector = PrimitivesParser::getTangleCubesData(root);
+    std::vector<tanglecube_t> tangleCubeVector = PrimitivesParser::getTangleCubesData(root, shading);
 
-    std::vector<triangle_t> triangleVector = PrimitivesParser::getTrianglesData(root);
+    std::vector<triangle_t> triangleVector = PrimitivesParser::getTrianglesData(root, shading);
 
-    std::vector<obj_t> objVector = PrimitivesParser::getOBJsData(root);
+    std::vector<obj_t> objVector = PrimitivesParser::getOBJsData(root, shading);
 
     std::vector<infinitecylinder_t> infiniteCylinders =
-        PrimitivesParser::getInfiniteCylindersData(root);
+        PrimitivesParser::getInfiniteCylindersData(root, shading);
 
-    std::vector<infinitecone_t> infiniteCones = PrimitivesParser::getInfiniteConesData(root);
+    std::vector<infinitecone_t> infiniteCones = PrimitivesParser::getInfiniteConesData(root, shading);
 
     std::vector<fractalecube_t> fractaleCubeVector =
-        PrimitivesParser::getFractaleCubesData(root);
+        PrimitivesParser::getFractaleCubesData(root, shading);
 
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector,
@@ -193,6 +193,60 @@ void Parser::_getRenderingData(const libconfig::Setting &root)
     } catch (const libconfig::SettingTypeException &e) {
         std::cerr << "[WARNING] Rendering setting type error: " << e.what() << std::endl;
     }
+}
+
+void Parser::_getShadingData(const libconfig::Setting &root)
+{
+    double ka = 0.3;
+    double kd = 0.5;
+    double ks = 0.9;
+    double s = 32.0;
+    int rc = 8;
+    double md = 0.5;
+    try {
+        if (!root.exists("shading")) {
+            _shadingData = std::make_tuple(
+                (phong_t) {ka, kd, ks, s}, (ambiantOcclusion_t) {rc, md}
+            );
+            return;
+        }
+        const auto &shading = root["shading"];
+        if (shading.exists("phong")) {
+            const auto &phong = shading["phong"];
+
+            if (phong.exists("ambiantIntensityFactor"))
+                ka = static_cast<double>(phong["ambiantIntensityFactor"]);
+            if (phong.exists("diffuseIntensityFactor"))
+                kd = static_cast<double>(phong["diffuseIntensityFactor"]);
+            if (phong.exists("specularIntensityFactor"))
+                ks = static_cast<double>(phong["specularIntensityFactor"]);
+            if (phong.exists("shininess"))
+                s = static_cast<double>(phong["shininess"]);
+        }
+
+        if (shading.exists("ambiantOcclusion")) {
+            const auto &ambiantOcclusion = shading["ambiantOcclusion"];
+
+            if (ambiantOcclusion.exists("rayCount"))
+                rc = static_cast<int>(ambiantOcclusion["rayCount"]);
+            if (ambiantOcclusion.exists("maxDistance"))
+                md = static_cast<double>(ambiantOcclusion["maxDistance"]);
+        }
+        #ifdef _DEBUG
+            std::cout << "Shading config: "
+                "ambiantIntensityFactor= " << ka <<
+                "diffuseIntensityFactor= " << kd <<
+                "specularIntensityFactor= " << ks <<
+                "shininess= " << s <<
+                "rayCount= " << rc <<
+                "maxDistance= " << md << std::endl;
+        #endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Rendering setting type error: " << e.what() << std::endl;
+    }
+    _shadingData = std::make_tuple(
+        (phong_t) {ka, kd, ks, s}, (ambiantOcclusion_t) {rc, md}
+    );
 }
 
 void Parser::_importScenes(const libconfig::Setting &root)
@@ -422,7 +476,8 @@ Parser::Parser(char *path)
         this->_getCameraData(root);
         this->_importScenes(root);
         this->_getLightsData(root);
-        this->_getPrimitivesData(root);
+        this->_getShadingData(root);
+        this->_getPrimitivesData(root, _shadingData);
         this->_getAntialiasingData(root);
         this->_getRenderingData(root);
     } catch (const libconfig::SettingNotFoundException &e) {
