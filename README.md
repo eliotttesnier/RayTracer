@@ -6,6 +6,11 @@ Here is an example of the expected result:
 
 ![Raytracing example](https://raw.githubusercontent.com/Godzil/DoRayMe/master/output/ch11_test.png)
 
+### Documentation
+[Notion](https://grave-algebra-657.notion.site/Technical-Documentation-Raytracer-Project-1f476f48289c8093afdffd1f9650986b?pvs=74) <br>
+The documentation is available in the `doc` folder. It contains the following files:
+- `doc/README.md` : This file contains the general information about the project.
+
 ### Commit norm
 
 Template for the commits:
