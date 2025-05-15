@@ -478,3 +478,53 @@ std::vector<RayTracer::Parser::infinitecone_t>
     }
     return infiniteConeVector;
 }
+
+std::vector<RayTracer::Parser::mobius_t>
+    RayTracer::Parser::PrimitivesParser::getMobiusStripsData(const libconfig::Setting &root)
+{
+    std::vector<mobius_t> mobiusVector;
+    try {
+        const auto &mobius = root["primitives"]["mobius"];
+        for (int i = 0; i < mobius.getLength(); ++i) {
+            const auto &m = mobius[i];
+            material_t material = RayTracer::Parser::Parser::getMaterialData<double>(m);
+            auto position = RayTracer::Parser::Parser::getData3D<double>(m["position"]);
+            auto rotation = RayTracer::Parser::Parser::getData3D<double>(m["rotation"]);
+            auto scale = RayTracer::Parser::Parser::getData3D<double>(m["scale"]);
+            auto shear = RayTracer::Parser::Parser::getData3D<double>(m["shear"]);
+            auto color = RayTracer::Parser::Parser::getData3D<int>(m["color"], "r", "g", "b");
+            double majorRadius = m["R"];
+            double minorRadius = m["r"];
+            double twist = m["twist"];
+            auto params = std::make_tuple(majorRadius, minorRadius, twist);
+
+            mobiusVector.emplace_back(
+                material,
+                params,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
+            );
+            #ifdef _DEBUG
+                std::cout << "Mobius Strip: "
+                    << "pos(" << std::get<0>(position) << "," << std::get<1>(position)
+                        << "," << std::get<2>(position) << "), "
+                    << "R=" << majorRadius << ", "
+                    << "r=" << minorRadius << ", "
+                    << "twist=" << twist << ", "
+                    << "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                        << std::get<2>(color) << ")" << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No mobius strips found in config" << std::endl;
+        #endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Mobius strip setting type error: " << e.what() << std::endl;
+    }
+
+    return mobiusVector;
+}
