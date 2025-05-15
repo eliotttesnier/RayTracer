@@ -28,4 +28,5 @@ target_link_libraries(PerlinNoiseMaterial PRIVATE
         FractaleCube
         InfiniteCone
         InfiniteCylinder
+        Mobius
 )
