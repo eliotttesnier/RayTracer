@@ -94,6 +94,13 @@ class AMaterial : public IMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Mobius &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
 
         void setWrappee(std::shared_ptr<IMaterial> wrappee) override;
 
