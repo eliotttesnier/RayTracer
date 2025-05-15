@@ -6,7 +6,7 @@ add_library(InfiniteCone SHARED
 )
 
 target_include_directories(InfiniteCone PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(InfiniteCone PRIVATE math)
+target_link_libraries(InfiniteCone PRIVATE Math)
 
 add_custom_command(TARGET InfiniteCone POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
