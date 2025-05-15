@@ -47,9 +47,35 @@ void RayTracer::Core::_loadPlugins()
     }
 }
 
+void RayTracer::Core::_handleCameraMovement(char **av, runResult_e result)
+
+{
+    Math::Point3D movementOffset(0.0, 0.0, 0.0);
+    const float MOVEMENT_AMOUNT = 2.0f;
+
+    if (result == MOVE_FORWARD)
+        movementOffset = Math::Point3D(0.0, 0.0, -MOVEMENT_AMOUNT);
+    if (result == MOVE_BACKWARD)
+        movementOffset = Math::Point3D(0.0, 0.0, MOVEMENT_AMOUNT);
+    if (result == MOVE_RIGHT)
+        movementOffset = Math::Point3D(MOVEMENT_AMOUNT, 0.0, 0.0);
+    if (result == MOVE_LEFT)
+        movementOffset = Math::Point3D(-MOVEMENT_AMOUNT, 0.0, 0.0);
+    if (result == MOVE_UP)
+        movementOffset = Math::Point3D(0.0, MOVEMENT_AMOUNT, 0.0);
+    if (result == MOVE_DOWN)
+        movementOffset = Math::Point3D(0.0, -MOVEMENT_AMOUNT, 0.0);
+
+    Core reCore(av, Math::Point3D(
+        _cameraOffset._x + movementOffset._x,
+        _cameraOffset._y + movementOffset._y,
+        _cameraOffset._z + movementOffset._z
+    ));
+}
+
 RayTracer::Core::Core(char **av
 ):
-    _parser(av[1])
+    _parser(av[1]), _cameraOffset(0.0, 0.0, 0.0)
 {
     this->_loadPlugins();
     this->_sceneElements = RayTracer::Factory::Factory::createElement(
@@ -98,7 +124,96 @@ RayTracer::Core::Core(char **av
         renderer.stopThreads();
         if (renderThread.joinable())
             renderThread.join();
-        Core reCore(av);
+        Core reCore(av, _cameraOffset);
+        return;
+    }
+
+    if (result != NOTHING && result != FINISHED && result != RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
+        _handleCameraMovement(av, result);
+        return;
+    }
+
+    if (renderThread.joinable())
+        renderThread.join();
+
+    if (!isProgressiveMode)
+        graphicRenderer.switchToFinalImage();
+    graphicRenderer.exportToPNG("output.png");
+}
+
+RayTracer::Core::Core(char **av, const Math::Point3D &additionalOffset)
+:
+    _parser(av[1])
+{
+    _cameraOffset = Math::Point3D(additionalOffset._x,
+                                  additionalOffset._y,
+                                  additionalOffset._z);
+
+    this->_loadPlugins();
+    this->_sceneElements = RayTracer::Factory::Factory::createElement(
+        this->_parser.getCameraConfig(),
+        this->_parser.getPrimitivesConfig(),
+        this->_parser.getLightConfig(),
+        this->_plugins
+    );
+
+    auto camera = std::get<2>(this->_sceneElements);
+    Math::Point3D currentPos = camera->getPosition();
+    camera->setPosition(currentPos._x + _cameraOffset._x,
+                       currentPos._y + _cameraOffset._y,
+                       currentPos._z + _cameraOffset._z);
+
+    auto renderingConfig = _parser.getRenderingConfig();
+    Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
+    renderer.setMultithreading(renderingConfig.getMultithreading());
+    renderer.setMaxThreads(renderingConfig.getMaxThreads());
+    if (renderingConfig.getType() == "preview")
+        renderer.renderPreview();
+
+    GraphicRenderer graphicRenderer(
+        av[1],
+        "preview.ppm",
+        "output.ppm",
+        renderingConfig.getType() == "preview",
+        renderingConfig.getType() == "progressive"
+    );
+    bool isProgressiveMode = (renderingConfig.getType() == "progressive");
+
+    if (isProgressiveMode) {
+        renderer.registerUpdateCallback([&graphicRenderer](
+                const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+            graphicRenderer.updateProgressiveRendering(pixelBuffer);
+        });
+    }
+
+    this->applyRenderingConfig(renderer);
+    this->applyAntialiasing(renderer);
+
+    std::atomic<bool> renderingComplete(false);
+
+    std::thread renderThread([&]() {
+        renderer.render();
+        renderingComplete = true;
+    });
+
+    runResult_e result = graphicRenderer.run(renderingComplete);
+
+    if (result == RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
+        Core reCore(av, _cameraOffset);
+        return;
+    }
+
+    if (result != NOTHING && result != FINISHED && result != RELOAD_CONFIG) {
+        renderer.stopThreads();
+        if (renderThread.joinable())
+            renderThread.join();
+        _handleCameraMovement(av, result);
         return;
     }
 

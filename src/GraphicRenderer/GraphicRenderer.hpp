@@ -22,7 +22,14 @@
 
 enum runResult_e {
     FINISHED,
-    RELOAD_CONFIG
+    RELOAD_CONFIG,
+    MOVE_FORWARD,
+    MOVE_BACKWARD,
+    MOVE_LEFT,
+    MOVE_RIGHT,
+    MOVE_UP,
+    MOVE_DOWN,
+    NOTHING,
 };
 
 class GraphicRenderer {
@@ -43,6 +50,7 @@ class GraphicRenderer {
         void displayLoadingMessage(const std::string& message);
         void updateProgressiveRendering(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);
         void setProgressiveMode(bool isProgressiveMode);
+        runResult_e handleCamMovement(sf::Event event);
 
     private:
         void updatePixelsFromBuffer(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);

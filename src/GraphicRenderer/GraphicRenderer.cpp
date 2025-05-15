@@ -197,6 +197,25 @@ void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
     }
 }
 
+runResult_e GraphicRenderer::handleCamMovement(sf::Event event)
+{
+    if (event.type != sf::Event::KeyPressed)
+        return NOTHING;
+
+    runResult_e result = NOTHING;
+    switch (event.key.code) {
+        case sf::Keyboard::Z: result = MOVE_FORWARD; break;
+        case sf::Keyboard::S: result = MOVE_BACKWARD; break;
+        case sf::Keyboard::D: result = MOVE_RIGHT; break;
+        case sf::Keyboard::Q: result = MOVE_LEFT; break;
+        case sf::Keyboard::A: result = MOVE_UP; break;
+        case sf::Keyboard::E: result = MOVE_DOWN; break;
+        default: return NOTHING;
+    }
+    _window.close();
+    return result;
+}
+
 runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 {
     runResult_e result = FINISHED;
@@ -234,6 +253,13 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
                 _window.close();
+
+            runResult_e camMovementResult = handleCamMovement(event);
+            if (camMovementResult != NOTHING) {
+                result = camMovementResult;
+                _window.close();
+                return result;
+            }
         }
 
         if (_isPreviewMode && !_isProgressiveMode && !finalImageLoaded

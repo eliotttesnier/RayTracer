@@ -11,6 +11,7 @@
 #include "LibLoader/LibLoader.hpp"
 #include "Parser/Parser.hpp"
 #include "Renderer.hpp"
+#include "../GraphicRenderer/GraphicRenderer.hpp"
 
 namespace RayTracer {
 
@@ -24,10 +25,13 @@ private:
         std::shared_ptr<RayTracer::Camera>
     > _sceneElements;
 
+    Math::Point3D _cameraOffset;
     void _loadPlugins();
+    void _handleCameraMovement(char **av, runResult_e result);
 public:
 
     explicit Core(char **av);
+    Core(char **av, const Math::Point3D &additionalOffset);
     ~Core() = default;
 
     std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
