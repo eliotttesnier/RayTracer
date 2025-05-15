@@ -308,4 +308,33 @@ Graphic::color_t FileTextureMaterial::calculateColor(
     return textureColor;
 }
 
+Graphic::color_t FileTextureMaterial::calculateColor(
+    const RayTracer::primitive::Mobius &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    if (!_textureLoaded) {
+        if (_wrappee)
+            return _wrappee->calculateColor(obj, hitData, ray, lights, primitives);
+        return hitData.color;
+    }
+
+    Math::Point3D localPoint = obj.transformPointToLocal(hitData.point);
+    double theta = atan2(localPoint._z, localPoint._x);
+    float u = (theta + M_PI) / (2 * M_PI);
+
+    double distFromCenter = sqrt(localPoint._x * localPoint._x + localPoint._z * localPoint._z) - obj.getMajorRadius();
+    double v = (atan2(localPoint._y, distFromCenter) / M_PI + 1.0) * 0.5;
+
+    Graphic::color_t textureColor = getTextureColorAtUV(u, v);
+    hitData.color = textureColor;
+
+    if (_wrappee)
+        return _wrappee->calculateColor(obj, hitData, ray, lights, primitives);
+    return textureColor;
+}
+
 }
