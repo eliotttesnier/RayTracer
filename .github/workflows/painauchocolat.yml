@@ -13,6 +13,8 @@ on:
       - 'ga-ignore-*'
     paths:
       - '**'
+    types:
+      - opened
 
 jobs:
   check_coding_style:
