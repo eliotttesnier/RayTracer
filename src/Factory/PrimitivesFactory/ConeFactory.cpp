@@ -11,7 +11,7 @@
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "Primitives/Cone/Cone.hpp"
 
-RayTracer::Factory::ConeFactory::ConeFactory( 
+RayTracer::Factory::ConeFactory::ConeFactory(
     shading_t shading,
     const Math::Point3D &position,
     const Math::Vector3D &rotation,
