@@ -12,8 +12,8 @@ if(NOT SFML_FOUND)
     find_package(SFML COMPONENTS graphics window system REQUIRED)
 endif()
 
-add_library(graphic_renderer STATIC ${SRC})
-target_link_libraries(graphic_renderer
+add_library(GraphicRenderer STATIC ${SRC})
+target_link_libraries(GraphicRenderer
     sfml-graphics
     sfml-window
     sfml-system
