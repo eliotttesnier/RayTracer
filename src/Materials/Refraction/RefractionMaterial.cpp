@@ -552,4 +552,42 @@ Graphic::color_t RefractionMaterial::calculateColor(
     return _blendColors(originColor, refractionColor);
 }
 
+Graphic::color_t RefractionMaterial::calculateColor(
+    const RayTracer::primitive::Mobius &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    Graphic::color_t originColor = _wrappee->calculateColor(
+        obj,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Mobius *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    bool insideObject = hitData.normal.dot(ray.direction) > 0;
+    Graphic::color_t refractionColor = _calculateRefractionColor(
+        ray,
+        hitData.point,
+        hitData.normal,
+        insideObject,
+        primitivesCopy,
+        lights
+    );
+
+    return _blendColors(originColor, refractionColor);
+}
+
 }
