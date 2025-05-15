@@ -13,7 +13,9 @@
 #include "DefaultMaterial.hpp"
 
 extern "C" {
-    RayTracer::Materials::DefaultMaterial *create(const RayTracer::Materials::shading_t &shading) {
+    RayTracer::Materials::DefaultMaterial *create(
+        const RayTracer::Materials::shading_t &shading
+    ) {
         return new RayTracer::Materials::DefaultMaterial(
             shading
         );
