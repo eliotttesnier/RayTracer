@@ -60,6 +60,9 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
     std::vector<fractalecube_t> fractaleCubeVector =
         PrimitivesParser::getFractaleCubesData(root);
 
+    std::vector<mobius_t> mobiusVector =
+        PrimitivesParser::getMobiusStripsData(root);
+
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector,
         planesVector,
@@ -71,7 +74,8 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root)
         objVector,
         infiniteCylinders,
         infiniteCones,
-        fractaleCubeVector
+        fractaleCubeVector,
+        mobiusVector
     );
 }
 
@@ -107,7 +111,7 @@ void Parser::_getAntialiasingData(const libconfig::Setting &root)
             threshold = static_cast<double>(antialiasing["treshold"]);
 
         #ifdef _DEBUG
-            std::cout << "Antialiasing: type=" << typ
+            std::cout << "Antialiasing: type=" << type
                       << ", samples=" << samples
                       << ", threshold=" << threshold << std::endl;
         #endif
@@ -194,7 +198,8 @@ libconfig::Setting &targetRoot)
 
         const char *primitiveTypes[] = {
             "spheres", "planes", "cylinders", "cones",
-            "toruses", "tanglecubes", "triangles", "objs"
+            "toruses", "tanglecubes", "triangles", "objs",
+            "infiniteCones", "infiniteCylinders", "fractalecubes", "mobius"
         };
 
         for (const char *type : primitiveTypes) {
