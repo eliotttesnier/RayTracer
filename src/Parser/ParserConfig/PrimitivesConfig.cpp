@@ -19,7 +19,8 @@ PrimitivesConfig::PrimitivesConfig(
     const std::vector<obj_t> &objs,
     const std::vector<infinitecylinder_t> &infiniteCylinders,
     const std::vector<infinitecone_t> &infiniteCones,
-    const std::vector<fractalecube_t> &fractalecubes
+    const std::vector<fractalecube_t> &fractalecubes,
+    const std::vector<mobius_t> &mobiusStrips
 ) :
     _spheres(spheres),
     _planes(planes),
@@ -31,7 +32,8 @@ PrimitivesConfig::PrimitivesConfig(
     _objs(objs),
     _infiniteCylinders(infiniteCylinders),
     _infiniteCones(infiniteCones),
-    _fractalecubes(fractalecubes)
+    _fractalecubes(fractalecubes),
+    _mobiusStrips(mobiusStrips)
 {
 }
 
@@ -77,6 +79,10 @@ std::vector<infinitecone_t> PrimitivesConfig::getInfiniteCones() const {
 
 std::vector<infinitecylinder_t> PrimitivesConfig::getInfiniteCylinders() const {
     return this->_infiniteCylinders;
+}
+
+std::vector<mobius_t> PrimitivesConfig::getMobiusStrips() const {
+    return this->_mobiusStrips;
 }
 
 }
