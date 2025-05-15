@@ -22,6 +22,7 @@ namespace RayTracer::Factory {
     class FractaleCubeFactory : public IPrimitiveFactory {
     public:
         FractaleCubeFactory(
+            shading_t shading,
             const Math::Point3D &position,
             const Math::Vector3D &rotation,
             const Math::Vector3D &scale,
@@ -35,6 +36,7 @@ namespace RayTracer::Factory {
     private:
         double _size;
         int _recursion;
+        shading_t _shading;
         Math::Point3D _position;
         Math::Vector3D _rotation;
         Math::Vector3D _scale;
