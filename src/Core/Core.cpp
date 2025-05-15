@@ -53,10 +53,11 @@ RayTracer::Core::Core(char **av
 {
     this->_loadPlugins();
     this->_sceneElements = RayTracer::Factory::Factory::createElement(
-                                 this->_parser.getCameraConfig(),
-                                 this->_parser.getPrimitivesConfig(),
-                                 this->_parser.getLightConfig(),
-                                 this->_plugins);
+        this->_parser.getCameraConfig(),
+        this->_parser.getPrimitivesConfig(),
+        this->_parser.getLightConfig(),
+        this->_plugins
+    );
 
     auto renderingConfig = _parser.getRenderingConfig();
     Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
@@ -65,10 +66,14 @@ RayTracer::Core::Core(char **av
     if (renderingConfig.getType() == "preview")
         renderer.renderPreview();
 
-    GraphicRenderer graphicRenderer("preview.ppm", "output.ppm",
-        renderingConfig.getType() == "preview");
+    GraphicRenderer graphicRenderer(
+        av[1],
+        "preview.ppm",
+        "output.ppm",
+        renderingConfig.getType() == "preview",
+        renderingConfig.getType() == "progressive"
+    );
     bool isProgressiveMode = (renderingConfig.getType() == "progressive");
-    graphicRenderer.setProgressiveMode(isProgressiveMode);
 
     if (isProgressiveMode) {
         renderer.registerUpdateCallback([&graphicRenderer](
@@ -86,10 +91,16 @@ RayTracer::Core::Core(char **av
         renderer.render();
         renderingComplete = true;
     });
-    graphicRenderer.run(renderingComplete);
+
+    runResult_e result = graphicRenderer.run(renderingComplete);
 
     if (renderThread.joinable())
         renderThread.join();
+
+    if (result == RELOAD_CONFIG) {
+        Core reCore(av);
+        return;
+    }
 
     if (!isProgressiveMode)
         graphicRenderer.switchToFinalImage();
