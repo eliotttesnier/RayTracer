@@ -43,6 +43,7 @@ class GraphicRenderer {
         void displayLoadingMessage(const std::string& message);
         void updateProgressiveRendering(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);
         void setProgressiveMode(bool isProgressiveMode);
+        bool handleCamMovement(sf::Event event);
 
     private:
         void updatePixelsFromBuffer(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);
