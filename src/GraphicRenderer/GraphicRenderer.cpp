@@ -5,11 +5,18 @@
 ** GraphicRenderer implementation
 */
 
+#include <sys/inotify.h>
+#include <unistd.h>
+#include <limits.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <cmath>
+#include <vector>
+#include <cstring>
 
 #include "GraphicRenderer.hpp"
+#include "../Core/Core.hpp"
 
 namespace AnsiColor {
 const std::string RESET      = "\033[0m";
@@ -19,15 +26,38 @@ const std::string GREEN      = "\033[32m";
 const std::string CYAN       = "\033[36m";
 }
 
-GraphicRenderer::GraphicRenderer(std::string const &previewFilename,
-        std::string const &finalFilename)
-    : _inputFilename(previewFilename),
+GraphicRenderer::GraphicRenderer(
+    const std::string &configFilename,
+    std::string const &previewFilename,
+    std::string const &finalFilename,
+    bool isPreviewMode,
+    bool isProgressiveMode
+) : _inputFilename(previewFilename),
     _finalFilename(finalFilename.empty() ? "output.ppm" : finalFilename),
-    _isPreviewMode(true)
+    _isPreviewMode(isPreviewMode),
+    _isProgressiveMode(isProgressiveMode),
+    _configFilename(configFilename)
 {
-    if (!loadFromFile(previewFilename)) {
-        std::cerr << "Failed to load preview PPM file: " << previewFilename << std::endl;
-        throw std::runtime_error("Failed to load preview PPM file");
+    _inotifyId = inotify_init1(IN_NONBLOCK);
+    if (_inotifyId == -1) {
+        throw std::runtime_error("inotify_init failed");
+    }
+    if (inotify_add_watch(_inotifyId, _configFilename.c_str(), IN_MODIFY) == -1) {
+        close(_inotifyId);
+        throw std::runtime_error("inotify_add_watch failed");
+    }
+    if (_isPreviewMode) {
+        if (!loadFromFile(previewFilename)) {
+            std::cerr << "Failed to load preview PPM file: " << previewFilename << std::endl;
+            throw std::runtime_error("Failed to load preview PPM file");
+        }
+    } else {
+        _width = 1920;
+        _height = 1080;
+        _pixels.resize(_width * _height * 4, 0);
+        for (size_t i = 3; i < _pixels.size(); i += 4) {
+            _pixels[i] = 255;
+        }
     }
 
     _window.create(sf::VideoMode(1920, 1080), "Ray Tracer Visualizer - Preview Mode");
@@ -167,13 +197,55 @@ void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
     }
 }
 
-void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
+runResult_e GraphicRenderer::handleCamMovement(sf::Event event)
 {
-    bool finalImageLoaded = false;
-    sf::Clock checkClock;
+    if (event.type != sf::Event::KeyPressed)
+        return NOTHING;
 
-    exportToPNG("preview.png");
+    runResult_e result = NOTHING;
+    switch (event.key.code) {
+        case sf::Keyboard::Z: result = MOVE_FORWARD; break;
+        case sf::Keyboard::S: result = MOVE_BACKWARD; break;
+        case sf::Keyboard::D: result = MOVE_RIGHT; break;
+        case sf::Keyboard::Q: result = MOVE_LEFT; break;
+        case sf::Keyboard::A: result = MOVE_UP; break;
+        case sf::Keyboard::E: result = MOVE_DOWN; break;
+        default: return NOTHING;
+    }
+    _window.close();
+    return result;
+}
+
+runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
+{
+    runResult_e result = FINISHED;
+    bool finalImageLoaded = false;
+    bool pngExported = false;
+    sf::Clock checkClock;
+    static const size_t kEventBufferLength = 4096;
+    char buffer[kEventBufferLength];
+
+    if (_isPreviewMode)
+        exportToPNG("preview.png");
+
     while (_window.isOpen()) {
+        ssize_t length = read(_inotifyId, buffer, kEventBufferLength);
+        if (length < 0) {
+            if (errno == EAGAIN) {
+                usleep(100 * 1000);
+            } else {
+                std::cerr << "read inotifyId failed" << std::endl;
+            }
+        }
+        for (char *ptr = buffer; ptr < buffer + length;) {
+            struct inotify_event *event = (struct inotify_event *)ptr;
+            if (event->mask & IN_MODIFY) {
+                _window.close();
+                result = RELOAD_CONFIG;
+            }
+            ptr += sizeof(struct inotify_event) + event->len;
+        }
+
         sf::Event event;
         while (_window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
@@ -181,9 +253,17 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 
             if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Escape)
                 _window.close();
+
+            runResult_e camMovementResult = handleCamMovement(event);
+            if (camMovementResult != NOTHING) {
+                result = camMovementResult;
+                _window.close();
+                return result;
+            }
         }
 
-        if (_isPreviewMode && !finalImageLoaded && renderingComplete.load()) {
+        if (_isPreviewMode && !_isProgressiveMode && !finalImageLoaded
+                && renderingComplete.load()) {
             switchToFinalImage();
             finalImageLoaded = true;
             exportToPNG("output.png");
@@ -192,14 +272,27 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         _window.clear(sf::Color::Black);
         _window.draw(_sprite);
 
-        if (_isPreviewMode && _font.getInfo().family.length() > 0) {
+        if ((_isPreviewMode || _isProgressiveMode) && _font.getInfo().family.length() > 0) {
             sf::Text statusText;
             statusText.setFont(_font);
             statusText.setCharacterSize(16);
             statusText.setFillColor(sf::Color::White);
 
-            if (renderingComplete.load()) {
+            if (renderingComplete.load() && !_isProgressiveMode) {
                 statusText.setString("Switching to final image...");
+            } else if (_isProgressiveMode) {
+                int n = (static_cast<int>(checkClock.getElapsedTime().asSeconds() * 2) % 4);
+                std::string dots;
+                for (int i = 0; i < n; i++) dots += ".";
+
+                if (renderingComplete.load()) {
+                    if (!pngExported) {
+                        exportToPNG("output.png");
+                        pngExported = true;
+                    }
+                } else {
+                    statusText.setString("Progressive rendering" + dots);
+                }
             } else {
                 int n = (static_cast<int>(checkClock.getElapsedTime().asSeconds() * 2) % 4);
                 std::string dots;
@@ -207,16 +300,95 @@ void GraphicRenderer::run(std::atomic<bool>& renderingComplete)
                 statusText.setString("Rendering full resolution image" + dots);
             }
 
-            statusText.setPosition(10, 10);
-            sf::FloatRect textRect = statusText.getLocalBounds();
-            sf::RectangleShape back(sf::Vector2f(textRect.width + 20, textRect.height + 10));
-            back.setFillColor(sf::Color(0, 0, 0, 180));
-            back.setPosition(5, 5);
-            _window.draw(back);
-            _window.draw(statusText);
+            if (!pngExported) {
+                statusText.setPosition(10, 10);
+                sf::FloatRect textRect = statusText.getLocalBounds();
+                sf::RectangleShape back(sf::Vector2f(textRect.width + 20,
+                    textRect.height + 10));
+                back.setFillColor(sf::Color(0, 0, 0, 180));
+                back.setPosition(5, 5);
+                _window.draw(back);
+                _window.draw(statusText);
+            }
         }
 
         _window.display();
-        sf::sleep(sf::milliseconds(100));
+        sf::sleep(sf::milliseconds(33));
+    }
+    close(_inotifyId);
+    return result;
+}
+
+void GraphicRenderer::updateProgressiveRendering(
+    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer)
+{
+    if (!_isProgressiveMode) {
+        return;
+    }
+
+    std::lock_guard<std::mutex> lock(_pixelMutex);
+    updatePixelsFromBuffer(pixelBuffer);
+    updateTexture();
+}
+
+void GraphicRenderer::updatePixelsFromBuffer(
+    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer)
+{
+    int height = pixelBuffer.size();
+    if (height == 0) return;
+
+    int width = pixelBuffer[0].size();
+    if (width == 0) return;
+
+    if (width != _width || height != _height) {
+        _width = width;
+        _height = height;
+        _pixels.resize(width * height * 4);
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            const auto& color = pixelBuffer[y][x];
+            int r = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.r))));
+            int g = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.g))));
+            int b = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.b))));
+
+            int index = (y * width + x) * 4;
+            _pixels[index] = static_cast<sf::Uint8>(r);
+            _pixels[index + 1] = static_cast<sf::Uint8>(g);
+            _pixels[index + 2] = static_cast<sf::Uint8>(b);
+            _pixels[index + 3] = 255;
+        }
+    }
+}
+
+void GraphicRenderer::updateTexture()
+{
+    if (_width != static_cast<int>(_texture.getSize().x) ||
+        _height != static_cast<int>(_texture.getSize().y)) {
+        if (!_texture.create(_width, _height)) {
+            std::cerr << "Failed to recreate texture" << std::endl;
+            return;
+        }
+
+        _sprite.setTexture(_texture, true);
+        float scaleX = 1920.0f / static_cast<float>(_width);
+        float scaleY = 1080.0f / static_cast<float>(_height);
+        float scale = std::min(scaleX, scaleY);
+        _sprite.setScale(scale, scale);
+
+        float scaledWidth = _width * scale;
+        float scaledHeight = _height * scale;
+        _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
+    }
+
+    _texture.update(_pixels.data());
+}
+
+void GraphicRenderer::setProgressiveMode(bool isProgressiveMode)
+{
+    _isProgressiveMode = isProgressiveMode;
+    if (_isProgressiveMode) {
+        _window.setTitle("Ray Tracer Visualizer - Progressive Mode");
     }
 }

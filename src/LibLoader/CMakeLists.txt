@@ -13,6 +13,10 @@ target_include_directories(DirectionalLight PRIVATE
         ./
 )
 
+target_include_directories(PointLight PRIVATE
+        ./
+)
+
 target_include_directories(Plane PRIVATE
         ./
 )
@@ -59,6 +63,10 @@ target_include_directories(FileTextureMaterial PRIVATE
         ./
 )
 
+target_include_directories(NormalMappingMaterial PRIVATE
+        ./
+)
+
 target_include_directories(OBJ PRIVATE
         ./
 )
@@ -68,5 +76,9 @@ target_include_directories(RefractionMaterial PRIVATE
 )
 
 target_include_directories(Mobius PRIVATE
+        ./
+)
+
+target_include_directories(PerlinNoiseMaterial PRIVATE
         ./
 )

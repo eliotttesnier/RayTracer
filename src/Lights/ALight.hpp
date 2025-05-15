@@ -7,7 +7,7 @@
 
 class ALight : public ILight {
     protected:
-        float _x = 0.0f, _y = 0.0f, _z = 0.0f;
+        Math::Point3D _position;
         float _r = 1.0f, _g = 1.0f, _b = 1.0f;
         float _intensity = 1.0f;
         std::string _lightName = "NONE";
@@ -16,14 +16,14 @@ class ALight : public ILight {
         ~ALight() = default;
 
         // Implementation of basic setters and getters
-        void setPosition(float x, float y, float z) override;
-        void setColor(float r, float g, float b) override;
+        void setPosition(const Math::Point3D &pos) override;
+        void setColor(int r, int g, int b) override;
         void setIntensity(float intensity) override;
         void setDirection(const Math::Vector3D &direction) override;
 
-        void getPosition(float &x, float &y, float &z) const override;
-        void getColor(float &r, float &g, float &b) const override;
-        void getIntensity(float &intensity) const override;
+        Math::Point3D getPosition() const override;
+        std::tuple<int, int, int> getColor() const override;
+        float getIntensity() const override;
         std::string getLightName() const override;
         Math::Vector3D getDirection() const override;
         
@@ -38,11 +38,10 @@ class ALight : public ILight {
         ) const override;
 
         // Each light type must implement these
-        virtual bool intersect(
-            const Math::Ray &ray,
+        virtual lightInfos_t intersect(
             const Math::Point3D &hitPoint,
             std::vector<std::shared_ptr<IPrimitive>> primitives
-        ) const override = 0;
+        ) const = 0;
 };
 
 #endif // ALIGHT_HPP

@@ -34,6 +34,39 @@ void Parser::_getCameraData(const libconfig::Setting &root)
     );
 }
 
+material_t Parser::getMaterialData(const libconfig::Setting &setting)
+{
+    material_t materialProps;
+
+    try {
+        if (setting.exists("transparency")) {
+            materialProps["transparency"] = static_cast<double>(setting["transparency"]);
+        }
+        if (setting.exists("reflection")) {
+            materialProps["reflection"] = static_cast<double>(setting["reflection"]);
+        }
+        if (setting.exists("refraction")) {
+            materialProps["refraction"] = static_cast<double>(setting["refraction"]);
+        }
+        if (setting.exists("chess")) {
+            materialProps["chess"] = static_cast<bool>(setting["chess"]);
+        }
+        if (setting.exists("fileTexture")) {
+            materialProps["fileTexture"] = static_cast<std::string>(setting["fileTexture"]);
+        }
+        if (setting.exists("perlinNoise")) {
+            materialProps["perlinNoise"] = static_cast<bool>(setting["perlinNoise"]);
+        }
+        if (setting.exists("normalMap")) {
+            materialProps["normalMap"] = static_cast<std::string>(setting["normalMap"]);
+        }
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
+    }
+    return materialProps;
+}
+
+
 void Parser::_getPrimitivesData(const libconfig::Setting &root)
 {
     std::vector<sphere_t> spheresVector = PrimitivesParser::getSpheresData(root);
@@ -83,7 +116,8 @@ void Parser::_getLightsData(const libconfig::Setting &root)
 {
     auto ambient = RayTracer::Parser::LightsParser::getAmbientData(root);
     auto directional = RayTracer::Parser::LightsParser::getDirectionalData(root);
-    this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional);
+    auto point = RayTracer::Parser::LightsParser::getPositionData(root);
+    this->_lightConfig = std::make_unique<LightsConfig>(ambient, directional, point);
 }
 
 void Parser::_getAntialiasingData(const libconfig::Setting &root)
@@ -124,6 +158,44 @@ void Parser::_getAntialiasingData(const libconfig::Setting &root)
         this->_antialiasingConfig = std::make_unique<AntialiasingConfig>(
             "none", 4, 0.1
         );
+    }
+}
+
+void Parser::_getRenderingData(const libconfig::Setting &root)
+{
+    try {
+        if (!root.exists("rendering")) {
+            this->_renderingConfig = std::make_unique<RenderingConfig>("preview", true, 8u);
+            return;
+        }
+
+        const auto &rendering = root["rendering"];
+        std::string type = "preview";
+        bool multithreading = true;
+        unsigned int maxThreads = 8u;
+
+        if (rendering.exists("type"))
+            type = static_cast<const char*>(rendering["type"]);
+
+        if (rendering.exists("multithreading"))
+            multithreading = static_cast<bool>(rendering["multithreading"]);
+
+        if (rendering.exists("maxThreads"))
+            maxThreads = static_cast<unsigned int>(rendering["maxThreads"]);
+        if (maxThreads < 1)
+            maxThreads = 1;
+
+        #ifdef _DEBUG
+            std::cout << "Rendering: type=" << type
+                      << ", multithreading=" << multithreading
+                      << ", maxThreads=" << maxThreads << std::endl;
+        #endif
+
+        this->_renderingConfig = std::make_unique<RenderingConfig>(
+            type, multithreading, maxThreads
+        );
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Rendering setting type error: " << e.what() << std::endl;
     }
 }
 
@@ -327,6 +399,11 @@ AntialiasingConfig Parser::getAntialiasingConfig() const
     return *this->_antialiasingConfig;
 }
 
+RenderingConfig Parser::getRenderingConfig() const
+{
+    return *this->_renderingConfig;
+}
+
 Parser::Parser(char *path)
 {
     libconfig::Config cfg;
@@ -352,6 +429,7 @@ Parser::Parser(char *path)
         this->_getLightsData(root);
         this->_getPrimitivesData(root);
         this->_getAntialiasingData(root);
+        this->_getRenderingData(root);
     } catch (const libconfig::SettingNotFoundException &e) {
         std::cerr << "[ERROR] Missing setting: " << e.getPath() << "\n";
         throw;

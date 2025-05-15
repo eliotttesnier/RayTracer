@@ -16,6 +16,7 @@
 #include "ParserConfig/CameraConfig.hpp"
 #include "ParserConfig/PrimitivesConfig.hpp"
 #include "ParserConfig/AntialiasingConfig.hpp"
+#include "ParserConfig/RenderingConfig.hpp"
 
 namespace RayTracer::Parser {
 
@@ -26,11 +27,13 @@ class Parser {
         std::unordered_set<std::string> _importedScenes;
         std::unique_ptr<PrimitivesConfig> _primitiveConfig;
         std::unique_ptr<AntialiasingConfig> _antialiasingConfig;
+        std::unique_ptr<RenderingConfig> _renderingConfig;
 
         void _getCameraData(const libconfig::Setting &root);
         void _getPrimitivesData(const libconfig::Setting &root);
         void _getLightsData(const libconfig::Setting &root);
         void _getAntialiasingData(const libconfig::Setting &root);
+        void _getRenderingData(const libconfig::Setting &root);
 
         void _importScenes(const libconfig::Setting &root);
         void _importScene(const std::string &filepath, libconfig::Setting &targetRoot);
@@ -54,36 +57,13 @@ class Parser {
             return std::make_tuple(static_cast<T>(pos[fst.c_str()]), static_cast<T>(pos[snd.c_str()]));
         }
 
-        template<typename T>
-        static material_t getMaterialData(const libconfig::Setting &setting) {
-            material_t materialProps;
-
-            try {
-                if (setting.exists("transparency")) {
-                    materialProps["transparency"] = static_cast<double>(setting["transparency"]);
-                }
-                if (setting.exists("reflection")) {
-                    materialProps["reflection"] = static_cast<double>(setting["reflection"]);
-                }
-                if (setting.exists("refraction")) {
-                    materialProps["refraction"] = static_cast<double>(setting["refraction"]);
-                }
-                if (setting.exists("chess")) {
-                    materialProps["chess"] = static_cast<bool>(setting["chess"]);
-                }
-                if (setting.exists("fileTexture")) {
-                    materialProps["fileTexture"] = static_cast<std::string>(setting["fileTexture"]);
-                }
-            } catch (const libconfig::SettingTypeException &e) {
-                std::cerr << "[WARNING] Material setting type error: " << e.what() << std::endl;
-            }
-            return materialProps;
-        }
+        static material_t getMaterialData(const libconfig::Setting &setting);
 
         CameraConfig getCameraConfig() const;
         LightsConfig getLightConfig() const;
         PrimitivesConfig getPrimitivesConfig() const;
         AntialiasingConfig getAntialiasingConfig() const;
+        RenderingConfig getRenderingConfig() const;
 
         Parser() = delete;
         Parser(char *path);

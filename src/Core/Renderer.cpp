@@ -47,7 +47,7 @@ Renderer::Renderer(const std::shared_ptr<RayTracer::Camera> camera,
     const std::vector<std::shared_ptr<IPrimitive>> primitives,
     const std::vector<std::shared_ptr<ILight>> lights)
     : _camera(camera), _primitives(primitives), _lights(lights),
-    _outputFile("output.ppm"), _previewOutputFile("preview.ppm")
+    _outputFile("output.ppm"), _previewOutputFile("preview.ppm"), _stopThreads(false)
 {
     _width = std::get<0>(camera->getResolution());
     _height = std::get<1>(camera->getResolution());
@@ -91,6 +91,11 @@ void Renderer::setResolution(int width, int height)
 void Renderer::setOutputFile(const std::string& outputFile)
 {
     _outputFile = outputFile;
+}
+
+void Renderer::stopThreads()
+{
+    _stopThreads = true;
 }
 
 std::string Renderer::formatTime(double seconds)
@@ -156,6 +161,10 @@ void Renderer::renderSegment(int startY, int endY)
 
     for (int y = startY; y < endY; y++) {
         for (int x = 0; x < _width; x++) {
+            if (_stopThreads.load()) {
+                return;
+            }
+
             double u = (2.0 * static_cast<double>(x) / (_width - 1)) - 1.0;
             double v = 1.0 - (2.0 * static_cast<double>(y) / (_height - 1));
 
@@ -177,10 +186,19 @@ void Renderer::renderSegment(int startY, int endY)
 
             localBuffer[y - startY][x] = pixelColor;
             _completedPixels++;
+
             if (_showProgress && (_completedPixels % 500 == 0)) {
                 std::lock_guard<std::mutex> lock(_mutex);
                 updateProgress();
             }
+        }
+
+        if (_renderingMode == PROGRESSIVE) {
+            std::lock_guard<std::mutex> lock(_mutex);
+            for (int x = 0; x < _width; x++) {
+                _pixelBuffer[y][x] = localBuffer[y - startY][x];
+            }
+            notifyPixelUpdate();
         }
 
         if (_completedPixels == _width * 10) {
@@ -190,12 +208,15 @@ void Renderer::renderSegment(int startY, int endY)
         }
     }
 
-    std::lock_guard<std::mutex> lock(_mutex);
-    for (int y = startY; y < endY; y++) {
-        for (int x = 0; x < _width; x++) {
-            _pixelBuffer[y][x] = localBuffer[y - startY][x];
+    if (_renderingMode != PROGRESSIVE) {
+        std::lock_guard<std::mutex> lock(_mutex);
+        for (int y = startY; y < endY; y++) {
+            for (int x = 0; x < _width; x++) {
+                _pixelBuffer[y][x] = localBuffer[y - startY][x];
+            }
         }
     }
+    notifyPixelUpdate();
 }
 
 void Renderer::renderPreview()
@@ -217,29 +238,33 @@ void Renderer::renderPreview()
               << AnsiColor::RESET << "(" << AnsiColor::YELLOW << _width << "x" << _height
               << AnsiColor::RESET << ")..." << std::endl;
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
-    std::vector<std::thread> threads;
-    const int linesPerThread = _height / numThreads;
+    if (_useMultithreading) {
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), _maxThreads);
+        std::vector<std::thread> threads;
+        const int linesPerThread = _height / numThreads;
 
-    try {
-        for (unsigned int i = 0; i < numThreads; i++) {
-            int startY = i * linesPerThread;
-            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
-            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
-        }
+        try {
+            for (unsigned int i = 0; i < numThreads; i++) {
+                int startY = i * linesPerThread;
+                int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+                threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
+            }
 
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
-        }
-    } catch (const std::exception& e) {
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+        } catch (const std::exception& e) {
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
+            throw;
         }
-        throw;
+    } else {
+        renderSegment(0, _height);
     }
 
     std::cout << "\r" << AnsiColor::BOLD << "Preview rendering:"
@@ -301,35 +326,45 @@ void Renderer::render()
               << AnsiColor::RESET << " = " << AnsiColor::YELLOW << _height * _width
               << AnsiColor::RESET << " pixels)";
 
-    unsigned int numThreads = std::min(std::thread::hardware_concurrency(), 8u);
-    std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
-              << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
-              << AnsiColor::RESET << std::endl;
+    if (_useMultithreading) {
+        unsigned int numThreads = std::min(std::thread::hardware_concurrency(), _maxThreads);
+        std::cout << AnsiColor::CYAN << " (Using " << AnsiColor::BOLD << numThreads
+                  << AnsiColor::RESET << AnsiColor::CYAN << " threads for rendering)"
+                  << AnsiColor::RESET << std::endl;
 
-    std::vector<std::thread> threads;
-    const int linesPerThread = _height / numThreads;
+        std::vector<std::thread> threads;
+        const int linesPerThread = _height / numThreads;
 
-    try {
-        for (unsigned int i = 0; i < numThreads; i++) {
-            int startY = i * linesPerThread;
-            int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
-            threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
-        }
-
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+        try {
+            for (unsigned int i = 0; i < numThreads; i++) {
+                int startY = i * linesPerThread;
+                int endY = (i == numThreads - 1) ? _height : (i + 1) * linesPerThread;
+                threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
             }
-        }
-    } catch (const std::exception& e) {
-        for (auto& thread : threads) {
-            if (thread.joinable()) {
-                thread.join();
+
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
             }
+        } catch (const std::exception& e) {
+            for (auto& thread : threads) {
+                if (thread.joinable()) {
+                    thread.join();
+                }
+            }
+            throw;
         }
-        throw;
+    } else {
+        std::cout << AnsiColor::CYAN << " (Single-threaded rendering)"
+                  << AnsiColor::RESET << std::endl;
+        renderSegment(0, _height);
     }
 
+    if (_stopThreads.load()) {
+        std::cout << std::endl << std::endl;
+        return;
+    }
     std::cout << "\r" << AnsiColor::BOLD << "Rendering:"
         << AnsiColor::RESET << " [" << AnsiColor::GREEN;
     for (int i = 0; i < 50; ++i) {
@@ -353,6 +388,8 @@ void Renderer::render()
     std::cout << AnsiColor::GREEN << "✅ Rendering complete! Saving to "
               << AnsiColor::UNDERLINE << _outputFile << AnsiColor::RESET << std::endl;
 
+    if (_renderingMode == PROGRESSIVE)
+        notifyPixelUpdate(true);
     saveToFile();
 }
 
@@ -397,6 +434,11 @@ void Renderer::setAdaptiveThreshold(double threshold)
     if (threshold > 0.0 && threshold <= 1.0) {
         _adaptiveThreshold = threshold;
     }
+}
+
+void Renderer::setMultithreading(bool useMultithreading)
+{
+    _useMultithreading = useMultithreading;
 }
 
 Graphic::color_t Renderer::traceRay(const Math::Ray& ray) const
@@ -533,4 +575,42 @@ Graphic::color_t Renderer::adaptiveSupersample(double u, double v, double thresh
     }
 
     return averageColors(colors);
+}
+
+void Renderer::setRenderingMode(RenderingMode mode)
+{
+    _renderingMode = mode;
+    _lastUpdateTime = std::chrono::steady_clock::now();
+}
+
+void Renderer::setMaxThreads(unsigned int maxThreads)
+{
+    _maxThreads = maxThreads;
+}
+
+void Renderer::registerUpdateCallback(std::function<void(
+    const std::vector<std::vector<Graphic::color_t>>&)> callback)
+{
+    _updateCallback = callback;
+}
+
+const std::vector<std::vector<Graphic::color_t>>& Renderer::getPixelBuffer() const
+{
+    return _pixelBuffer;
+}
+
+void Renderer::notifyPixelUpdate(bool force)
+{
+    if (_renderingMode != PROGRESSIVE || !_updateCallback) {
+        return;
+    }
+
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                now - _lastUpdateTime).count();
+
+    if (elapsed >= 100 || force) {
+        _updateCallback(_pixelBuffer);
+        _lastUpdateTime = now;
+    }
 }

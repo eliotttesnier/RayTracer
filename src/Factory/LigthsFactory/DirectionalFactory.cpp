@@ -33,11 +33,11 @@ std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(
     auto obj = plugins["DirectionalLight"]
         ->initEntryPointPtr<light::DirectionalLight>("create");
     auto [r, g, b] = this->_color;
-    auto [px, py, pz] = this->_position;
-    auto [dx, dy, dz] = this->_direction;
+    Math::Point3D pos = this->_position;
+    Math::Vector3D direction = this->_direction;
     obj->setColor(r, g, b);
     obj->setIntensity(this->_intensity);
-    obj->setDirection({dx, dy, dz});
-    obj->setPosition(px, py, pz);
+    obj->setDirection(direction);
+    obj->setPosition(pos);
     return std::shared_ptr<ILight>(obj, [](ILight* ptr) { delete ptr; });
 }

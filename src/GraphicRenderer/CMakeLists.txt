@@ -17,4 +17,6 @@ target_link_libraries(graphic_renderer
     sfml-graphics
     sfml-window
     sfml-system
+    Core
+    Factory
 )
