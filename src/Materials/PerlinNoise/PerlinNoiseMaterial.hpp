@@ -92,6 +92,13 @@ class PerlinNoiseMaterial : public AMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::Mobius &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
 
         PerlinNoiseMaterial() = delete;
         PerlinNoiseMaterial(std::shared_ptr<IMaterial> wrappee);
