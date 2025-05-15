@@ -22,10 +22,10 @@ typedef std::tuple<double, double, double, double, double> quintuple_t;
 typedef std::tuple<int, int, int> color_t;
 
 typedef quaduple_t phong_t;
-typedef std::tuple<int, double> ambiantOcclusion_t;
+typedef std::tuple<int, double> ambientOcclusion_t;
 
 typedef std::map<std::string, std::any> material_t; // Material properties
-typedef std::tuple<phong_t, ambiantOcclusion_t> shading_t; // Shading properties
+typedef std::tuple<phong_t, ambientOcclusion_t> shading_t; // Shading properties
 
 typedef std::tuple<shading_t, material_t, double, truple_t, truple_t, truple_t, truple_t, color_t> sphere_t; // Material, radius, Position, rotation, scale, shear, Color
 typedef std::tuple<shading_t, material_t, duotuple_t, truple_t, truple_t, truple_t, truple_t, color_t> cylinder_t; // Material, radius + height, Position , rotation, scale, shear, Color

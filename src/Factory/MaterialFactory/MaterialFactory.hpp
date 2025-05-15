@@ -29,8 +29,8 @@
 namespace RayTracer::Factory {
 
 typedef std::tuple<double, double, double, double> phong_t;
-typedef std::tuple<int, double> ambiantOcclusion_t;
-typedef std::tuple<phong_t, ambiantOcclusion_t> shading_t; // Shading properties
+typedef std::tuple<int, double> ambientOcclusion_t;
+typedef std::tuple<phong_t, ambientOcclusion_t> shading_t; // Shading properties
 
 class MaterialFactory {
     public:

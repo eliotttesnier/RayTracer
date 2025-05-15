@@ -15,8 +15,8 @@
 namespace RayTracer::Materials {
 
 typedef std::tuple<double, double, double, double> phong_t;
-typedef std::tuple<int, double> ambiantOcclusion_t;
-typedef std::tuple<phong_t, ambiantOcclusion_t> shading_t; // Shading properties
+typedef std::tuple<int, double> ambientOcclusion_t;
+typedef std::tuple<phong_t, ambientOcclusion_t> shading_t; // Shading properties
 
 class DefaultMaterial : public AMaterial {
     public:
@@ -116,7 +116,7 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         );
-        double _ambiantOcclusion(
+        double _ambientOcclusion(
             Math::hitdata_t hitData,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         );

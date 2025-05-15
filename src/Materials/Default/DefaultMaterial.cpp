@@ -41,7 +41,7 @@ Graphic::color_t DefaultMaterial::_getColor(
 )
 {
     Graphic::color_t phongColor = _phongModel(hitData, ray, lights, primitives);
-    double occlusion = _ambiantOcclusion(hitData, primitives);
+    double occlusion = _ambientOcclusion(hitData, primitives);
     occlusion = 0.5 + 0.5 * occlusion;
     phongColor.r *= occlusion;
     phongColor.g *= occlusion;
@@ -179,7 +179,7 @@ Math::Vector3D DefaultMaterial::_randomHemisphereSample(Math::Vector3D normal)
     return sampleWorld.normalized();
 }
 
-double DefaultMaterial::_ambiantOcclusion(
+double DefaultMaterial::_ambientOcclusion(
     Math::hitdata_t hitData,
     std::vector<std::shared_ptr<IPrimitive>> primitives
 )

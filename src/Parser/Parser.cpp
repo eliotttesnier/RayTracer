@@ -212,7 +212,7 @@ void Parser::_getShadingData(const libconfig::Setting &root)
     try {
         if (!root.exists("shading")) {
             _shadingData = std::make_tuple(
-                (phong_t) {ka, kd, ks, s}, (ambiantOcclusion_t) {rc, md}
+                (phong_t) {ka, kd, ks, s}, (ambientOcclusion_t) {rc, md}
             );
             return;
         }
@@ -220,8 +220,8 @@ void Parser::_getShadingData(const libconfig::Setting &root)
         if (shading.exists("phong")) {
             const auto &phong = shading["phong"];
 
-            if (phong.exists("ambiantIntensityFactor"))
-                ka = static_cast<double>(phong["ambiantIntensityFactor"]);
+            if (phong.exists("ambientIntensityFactor"))
+                ka = static_cast<double>(phong["ambientIntensityFactor"]);
             if (phong.exists("diffuseIntensityFactor"))
                 kd = static_cast<double>(phong["diffuseIntensityFactor"]);
             if (phong.exists("specularIntensityFactor"))
@@ -230,17 +230,17 @@ void Parser::_getShadingData(const libconfig::Setting &root)
                 s = static_cast<double>(phong["shininess"]);
         }
 
-        if (shading.exists("ambiantOcclusion")) {
-            const auto &ambiantOcclusion = shading["ambiantOcclusion"];
+        if (shading.exists("ambientOcclusion")) {
+            const auto &ambientOcclusion = shading["ambientOcclusion"];
 
-            if (ambiantOcclusion.exists("rayCount"))
-                rc = static_cast<int>(ambiantOcclusion["rayCount"]);
-            if (ambiantOcclusion.exists("maxDistance"))
-                md = static_cast<double>(ambiantOcclusion["maxDistance"]);
+            if (ambientOcclusion.exists("rayCount"))
+                rc = static_cast<int>(ambientOcclusion["rayCount"]);
+            if (ambientOcclusion.exists("maxDistance"))
+                md = static_cast<double>(ambientOcclusion["maxDistance"]);
         }
         #ifdef _DEBUG
             std::cout << "Shading config: "
-                "ambiantIntensityFactor= " << ka <<
+                "ambientIntensityFactor= " << ka <<
                 "diffuseIntensityFactor= " << kd <<
                 "specularIntensityFactor= " << ks <<
                 "shininess= " << s <<
@@ -251,7 +251,7 @@ void Parser::_getShadingData(const libconfig::Setting &root)
         std::cerr << "[WARNING] Rendering setting type error: " << e.what() << std::endl;
     }
     _shadingData = std::make_tuple(
-        (phong_t) {ka, kd, ks, s}, (ambiantOcclusion_t) {rc, md}
+        (phong_t) {ka, kd, ks, s}, (ambientOcclusion_t) {rc, md}
     );
 }
 
