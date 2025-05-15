@@ -98,7 +98,7 @@ jobs:
                   exit_code=1
               fi
               if [[ ! -x "$element" ]]; then
-                  echo ::error title=$element is not executable::The file $element cant be executed.
+                  echo ::error title=$element is not executable::The file $element cannot be executed.
                   exit_code=1
               fi
           done
