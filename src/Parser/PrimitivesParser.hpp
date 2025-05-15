@@ -26,6 +26,7 @@ public:
     static std::vector<infinitecylinder_t> getInfiniteCylindersData(const libconfig::Setting &root);
     static std::vector<infinitecone_t> getInfiniteConesData(const libconfig::Setting &root);
     static std::vector<fractalecube_t> getFractaleCubesData(const libconfig::Setting &root);
+    static std::vector<mobius_t> getMobiusStripsData(const libconfig::Setting &root);
     PrimitivesParser() = delete;
     ~PrimitivesParser() = default;
 };
