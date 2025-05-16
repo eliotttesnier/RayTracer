@@ -32,6 +32,7 @@ int Inotify::addWatch(const std::string &filename)
     _watchDescriptor = inotify_add_watch(_inotifyId, filename.c_str(), IN_MODIFY);
     if (_watchDescriptor == -1) {
         close(_inotifyId);
+        _inotifyId = -1;
         throw std::runtime_error("inotify_add_watch failed");
     }
     return _watchDescriptor;
