@@ -25,7 +25,9 @@ std::shared_ptr<RayTracer::Materials::IMaterial> MaterialFactory::createMaterial
     bool differentColor = false;
 
     materialStack.emplace_back(std::shared_ptr<RayTracer::Materials::IMaterial>(
-        plugins.at("DefaultMaterial")->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
+        plugins.at(
+            "DefaultMaterial"
+        )->initEntryPointPtr<RayTracer::Materials::DefaultMaterial>(
             "create",
             shading
         )
