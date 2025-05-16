@@ -5,15 +5,11 @@
 ** GraphicRenderer implementation
 */
 
-#include <sys/inotify.h>
-#include <unistd.h>
-#include <limits.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
 #include <cmath>
 #include <vector>
-#include <cstring>
 
 #include "GraphicRenderer.hpp"
 #include "../Core/Core.hpp"
@@ -36,16 +32,10 @@ GraphicRenderer::GraphicRenderer(
     _finalFilename(finalFilename.empty() ? "output.ppm" : finalFilename),
     _isPreviewMode(isPreviewMode),
     _isProgressiveMode(isProgressiveMode),
-    _configFilename(configFilename)
+    _configFilename(configFilename),
+    _inotify()
 {
-    _inotifyId = inotify_init1(IN_NONBLOCK);
-    if (_inotifyId == -1) {
-        throw std::runtime_error("inotify_init failed");
-    }
-    if (inotify_add_watch(_inotifyId, _configFilename.c_str(), IN_MODIFY) == -1) {
-        close(_inotifyId);
-        throw std::runtime_error("inotify_add_watch failed");
-    }
+    _inotify.addWatch(_configFilename);
     _width = 1920;
     _height = 1080;
     if (!_isPreviewMode) {
@@ -198,8 +188,6 @@ runResult_e GraphicRenderer::run(const std::atomic<bool> &renderingComplete)
     bool finalImageLoaded = false;
     bool pngExported = false;
     sf::Clock checkClock;
-    static const size_t kEventBufferLength = 4096;
-    char buffer[kEventBufferLength];
 
     if (_isPreviewMode) {
         if (!loadFromFile(_inputFilename)) {
@@ -228,20 +216,8 @@ runResult_e GraphicRenderer::run(const std::atomic<bool> &renderingComplete)
         exportToPNG("preview.png");
 
     while (_window.isOpen()) {
-        ssize_t length = read(_inotifyId, buffer, kEventBufferLength);
-        if (length < 0) {
-            if (errno == EAGAIN) {
-                usleep(100 * 1000);
-            } else {
-                std::cerr << "read inotifyId failed" << std::endl;
-            }
-        }
-        for (char *ptr = buffer; ptr < buffer + length;) {
-            struct inotify_event *event = (struct inotify_event *)ptr;
-            if (event->mask & IN_MODIFY) {
-                return RELOAD_CONFIG;
-            }
-            ptr += sizeof(struct inotify_event) + event->len;
+        if (_inotify.fileModified()) {
+            return RELOAD_CONFIG;
         }
 
         sf::Event event;
@@ -315,7 +291,6 @@ runResult_e GraphicRenderer::run(const std::atomic<bool> &renderingComplete)
         _window.display();
         sf::sleep(sf::milliseconds(33));
     }
-    close(_inotifyId);
     return FINISHED;
 }
 
