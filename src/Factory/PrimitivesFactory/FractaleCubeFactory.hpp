@@ -32,7 +32,7 @@ namespace RayTracer::Factory {
             const std::map<std::string, std::any> &materials
         );
 
-        std::shared_ptr<IPrimitive> create(std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins) const override;
+        std::shared_ptr<IPrimitive> create(const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins) const override;
     private:
         double _size;
         int _recursion;
