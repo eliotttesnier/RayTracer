@@ -452,7 +452,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addRectangles(
     const RayTracer::Parser::PrimitivesConfig& config,
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>>& plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
