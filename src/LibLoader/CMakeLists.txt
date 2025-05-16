@@ -78,3 +78,7 @@ target_include_directories(RefractionMaterial PRIVATE
 target_include_directories(PerlinNoiseMaterial PRIVATE
         ./
 )
+
+target_include_directories(Rectangle PRIVATE
+        ./
+)
