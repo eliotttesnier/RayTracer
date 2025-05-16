@@ -15,7 +15,7 @@ namespace RayTracer::Factory {
 
     class ILightFactory {
     public:
-        virtual std::shared_ptr<ILight> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const = 0;
+        virtual std::shared_ptr<ILight> create(std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins) const = 0;
         virtual ~ILightFactory() = default;
     };
 

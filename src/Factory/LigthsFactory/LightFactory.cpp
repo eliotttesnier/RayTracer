@@ -17,7 +17,7 @@
 
 std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
     const RayTracer::Parser::LightsConfig &config,
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
+    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins)
 {
     std::vector<std::shared_ptr<ILight>> lights;
 
