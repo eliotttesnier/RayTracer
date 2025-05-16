@@ -58,6 +58,10 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 
     auto infiniteCylinders = _addInfiniteCylinders(config, plugins);
     primitives.insert(primitives.end(), infiniteCylinders.begin(), infiniteCylinders.end());
+
+    auto rectangles = _addRectangles(config, plugins);
+    primitives.insert(primitives.end(), rectangles.begin(), rectangles.end());
+
     // FractaleCubes
     for (const auto &fractalecube : config.getFractaleCubes()) {
         auto [shading, materials, size, recursion, position, rotation, sc, sh, color] =
@@ -436,6 +440,44 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders
         );
         #ifdef _DEBUG
             std::cout << "Creating an infinite cylinder" << std::endl;
+        #endif
+        auto primitive = factory.create(plugins);
+        auto [r, g, b] = color;
+        primitive->setColor(Graphic::color_t{static_cast<double>(r), static_cast<double>(g),
+            static_cast<double>(b), 1.0});
+        primitives.emplace_back(primitive);
+    }
+    return primitives;
+}
+
+std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addRectangles(
+    const RayTracer::Parser::PrimitivesConfig& config,
+    std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+)
+{
+    std::vector<std::shared_ptr<IPrimitive>> primitives;
+    for (const auto &rectangle : config.getRectangles()) {
+        auto [shading, materials, dimensions, position, rotation, sc, sh, color] = rectangle;
+        auto [length, width, height] = dimensions;
+        auto [x, y, z] = position;
+        Math::Point3D pos(x, y, z);
+        Math::Vector3D rota = rotation;
+        Math::Vector3D scale = sc;
+        Math::Vector3D shear = sh;
+
+        RayTracer::Factory::RectangleFactory factory(
+            shading,
+            pos,
+            rota,
+            scale,
+            shear,
+            length,
+            width,
+            height,
+            materials
+        );
+        #ifdef _DEBUG
+            std::cout << "Creating a rectangle" << std::endl;
         #endif
         auto primitive = factory.create(plugins);
         auto [r, g, b] = color;
