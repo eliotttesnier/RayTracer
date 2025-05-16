@@ -27,6 +27,7 @@ target_link_libraries(raytracer PRIVATE
 
 target_link_libraries(Core PRIVATE
     Factory
+    LibLoader
 )
 
 target_include_directories(raytracer PUBLIC
