@@ -369,4 +369,31 @@ Graphic::color_t ChessPatternMaterial::calculateColor(
     return color;
 }
 
+Graphic::color_t ChessPatternMaterial::calculateColor(
+    const RayTracer::primitive::Rectangle &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    (void) obj;
+    Graphic::color_t color = _applyChessPattern(
+        hitData.point,
+        hitData.color
+    );
+    hitData.color = color;
+
+    if (_wrappee != nullptr) {
+        return _wrappee->calculateColor(
+            obj,
+            hitData,
+            ray,
+            lights,
+            primitives
+        );
+    }
+    return color;
+}
+
 }
