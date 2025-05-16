@@ -139,7 +139,7 @@ bool OBJ::parseOBJFile()
                 try {
                     size_t vertexIdx = std::stoul(vPart) - 1;
                     faceIndices.push_back(vertexIdx);
-                } catch (const std::exception& e) {
+                } catch (const std::exception &e) {
                     std::cerr << "OBJ: Invalid vertex index: " << vPart << std::endl;
                 }
             }
@@ -150,7 +150,7 @@ bool OBJ::parseOBJFile()
     return !_vertices.empty() && !_faces.empty();
 }
 
-void OBJ::triangulatePolygon(const std::vector<size_t>& polygonIndices)
+void OBJ::triangulatePolygon(const std::vector<size_t> &polygonIndices)
 {
     if (polygonIndices.size() < 3)
         return;
