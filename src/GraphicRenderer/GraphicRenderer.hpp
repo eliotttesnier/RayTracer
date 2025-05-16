@@ -19,6 +19,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include "../Graphic/Color.hpp"
+#include "Inotify.hpp"
 
 enum runResult_e {
     FINISHED,
@@ -71,7 +72,7 @@ class GraphicRenderer {
         sf::Text _loadingText;
         std::mutex _pixelMutex;
         std::string _configFilename;
-        int _inotifyId;
+        RayTracer::Inotify _inotify;
 };
 
 #endif /* !GRAPHICRENDERER_HPP_ */
