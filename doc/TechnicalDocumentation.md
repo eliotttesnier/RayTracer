@@ -537,7 +537,7 @@ class ALight : public ILight {
         float getIntensity() const override;
         std::string getLightName() const override;
         Math::Vector3D getDirection() const override;
-        
+
         std::string getType() override { return "Light"; }
 
         // Default implementation for shadow checking
