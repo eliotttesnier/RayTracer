@@ -22,6 +22,7 @@
 #include "TanglecubeFactory.hpp"
 #include "TrianglesFactory.hpp"
 #include "OBJFactory.hpp"
+#include "RectangleFactory.hpp"
 #include "../MaterialFactory/MaterialFactory.hpp"
 #include "InfiniteConeFactory.hpp"
 #include "InfiniteCylinderFactory.hpp"
@@ -76,6 +77,10 @@ class PrimitiveFactory {
             std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
         );
         static std::vector<std::shared_ptr<IPrimitive>> _addInfiniteCylinders(
+            const RayTracer::Parser::PrimitivesConfig& config,
+            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+        );
+        static std::vector<std::shared_ptr<IPrimitive>> _addRectangles(
             const RayTracer::Parser::PrimitivesConfig& config,
             std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
         );
