@@ -24,7 +24,7 @@ namespace RayTracer::Factory {
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -93,7 +93,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::createPrimitives(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -128,7 +128,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addSpheres(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -161,7 +161,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addPlanes(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -198,7 +198,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCylinders(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -235,7 +235,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addCones(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -272,7 +272,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addToruses(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -307,7 +307,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTanglecubes(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -345,7 +345,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addTriangles(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -380,7 +380,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addOBJs(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCones(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
@@ -414,7 +414,7 @@ std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCones(
 
 std::vector<std::shared_ptr<IPrimitive>> PrimitiveFactory::_addInfiniteCylinders(
     const RayTracer::Parser::PrimitivesConfig &config,
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 )
 {
     std::vector<std::shared_ptr<IPrimitive>> primitives;
