@@ -33,7 +33,7 @@ RayTracer::Factory::ConeFactory::ConeFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
 ) const
 {
     if (plugins.find("Cone") == plugins.end())
