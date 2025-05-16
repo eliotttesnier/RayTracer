@@ -97,6 +97,13 @@ class DefaultMaterial : public AMaterial {
             std::vector<std::shared_ptr<ILight>> lights,
             std::vector<std::shared_ptr<IPrimitive>> primitives
         ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::Rectangle &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
 
         DefaultMaterial() = delete;
         DefaultMaterial(shading_t shading);
