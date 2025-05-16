@@ -321,12 +321,33 @@ Graphic::color_t FileTextureMaterial::calculateColor(
             return _wrappee->calculateColor(obj, hitData, ray, lights, primitives);
         return hitData.color;
     }
-    Math::Point3D localPoint = obj.transformPointToLocal(hitData.point);
-    double theta = atan2(localPoint._z, localPoint._x);
-    float u = (theta + M_PI) / (2 * M_PI);
-    float v = std::fmod(localPoint._y + 10000.0, 1.0);
 
-    Graphic::color_t textureColor = getTextureColorAtUV(u, v);
+    Math::Point3D localPoint = obj.transformPointToLocal(hitData.point);
+    float u = 0.0f, v = 0.0f;
+
+    if (std::abs(std::abs(localPoint._x) - 0.5f) < 0.001f) {
+        u = (localPoint._z + 0.5f);
+        v = (localPoint._y + 0.5f);
+    } else if (std::abs(std::abs(localPoint._y) - 0.5f) < 0.001f) {
+        u = (localPoint._x + 0.5f);
+        v = (localPoint._z + 0.5f);
+    } else if (std::abs(std::abs(localPoint._z) - 0.5f) < 0.001f) {
+        u = (localPoint._x + 0.5f);
+        v = (localPoint._y + 0.5f);
+    }
+
+    int x = static_cast<int>(u * _textureSize.x);
+    int y = static_cast<int>(v * _textureSize.y);
+    x = std::min(std::max(x, 0), static_cast<int>(_textureSize.x - 1));
+    y = std::min(std::max(y, 0), static_cast<int>(_textureSize.y - 1));
+
+    sf::Color pixel = _textureImage.getPixel(x, y);
+    Graphic::color_t textureColor = {
+        static_cast<double>(pixel.r),
+        static_cast<double>(pixel.g),
+        static_cast<double>(pixel.b),
+        static_cast<double>(pixel.a) / 255.0
+    };
     hitData.color = textureColor;
 
     if (_wrappee)
