@@ -66,6 +66,42 @@ Each entry includes a screenshot, a short description, and a checklist of the va
 - [🖼️ MountainOfBogosses.png](renders/MountainOfBogosses.md)
 
 
+## 🛠️ Installation & Build
+This project uses **CMake** for compilation.
+
+#### 🔧 Manual Compilation:
+```bash
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+```
+The executable will be generated at the root of the project as `raytracer`.
+
+#### ⚙️ Quick Compilation via Script:
+A shell script is provided to simplify compilation:
+
+```bash
+./shell/cmpRelease.sh
+```
+> 💡 This script automatically builds the optimized Release version of the raytracer.
+
+
+## 🚀 Usage
+Once compiled, run the raytracer with your chosen scene configuration file:
+```bash
+./raytracer <SCENE_FILE>
+```
+
+#### Example:
+```bash
+./raytracer scenes/config.cfg
+```
+
+#### Scene Files:
+Scenes must be configured via a `.cfg` file using the **libconfig++** syntax.  
+[Example scene file](configs/config.cfg) is provided in the `configs` folder.
+
+
 ## 📖 Documentation
 [Notion](https://grave-algebra-657.notion.site/Technical-Documentation-Raytracer-Project-1f476f48289c8093afdffd1f9650986b?pvs=74) <br>
 The documentation is available in the `doc` folder. It contains the following files:
