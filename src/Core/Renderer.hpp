@@ -40,7 +40,7 @@ class Renderer {
 
         void setCamera(const std::shared_ptr<RayTracer::Camera> camera);
         void setLight(const std::vector<std::shared_ptr<ILight>> &lights);
-        void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives);
+        void setPrimitives(const std::vector<std::shared_ptr<IPrimitive>> &primitives);
         void setResolution(int width, int height);
         void setOutputFile(const std::string& outputFile);
         void setAntialiasingMode(AntialiasingMode mode);
@@ -51,9 +51,9 @@ class Renderer {
         void setRenderingMode(RenderingMode mode);
         void stopThreads();
 
-        const std::vector<std::vector<Graphic::color_t>>& getPixelBuffer() const;
+        const std::vector<std::vector<Graphic::color_t>> &getPixelBuffer() const;
         
-        void registerUpdateCallback(std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> callback);
+        void registerUpdateCallback(std::function<void(const std::vector<std::vector<Graphic::color_t>> &)> callback);
         void render();
         void renderPreview();
 
@@ -66,14 +66,18 @@ class Renderer {
         void notifyPixelUpdate(bool force = false);
         std::string formatTime(double seconds);
 
-        Graphic::color_t traceRay(const Math::Ray& ray) const;
+        Graphic::color_t traceRay(const Math::Ray &ray) const;
         Graphic::color_t supersample(double u, double v, int samples) const;
         Graphic::color_t adaptiveSupersample(double u, double v, double threshold) const;
-        bool needsFurtherSampling(const Graphic::color_t& tl, const Graphic::color_t& tr,
-                                  const Graphic::color_t& bl, const Graphic::color_t& br,
-                                  double threshold) const;
-        double colorDifference(const Graphic::color_t& c1, const Graphic::color_t& c2) const;
-        Graphic::color_t averageColors(const std::vector<Graphic::color_t>& colors) const;
+        bool needsFurtherSampling(
+            const Graphic::color_t &tl,
+            const Graphic::color_t &tr,
+            const Graphic::color_t &bl,
+            const Graphic::color_t &br,
+            double threshold
+        ) const;
+        double colorDifference(const Graphic::color_t& c1, const Graphic::color_t &c2) const;
+        Graphic::color_t averageColors(const std::vector<Graphic::color_t> &colors) const;
 
         std::shared_ptr<RayTracer::Camera> _camera;
         std::vector<std::shared_ptr<IPrimitive>> _primitives;
@@ -93,7 +97,7 @@ class Renderer {
         std::chrono::time_point<std::chrono::steady_clock> _startTime;
         double _pixelsPerSecond{0.0};
         std::chrono::steady_clock::time_point _lastUpdateTime;
-        std::function<void(const std::vector<std::vector<Graphic::color_t>>&)> _updateCallback;
+        std::function<void(const std::vector<std::vector<Graphic::color_t>> &)> _updateCallback;
         RenderingMode _renderingMode = PREVIEW;
         int _updateFrequency = 100;
 
