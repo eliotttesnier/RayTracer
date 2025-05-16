@@ -20,7 +20,7 @@ namespace RayTracer {
 class Core {
     private:
         std::unique_ptr<RayTracer::Parser::Parser> _parser;
-        std::map<std::string, std::unique_ptr<Loader::LibLoader>> _plugins;
+        std::map<std::string, std::shared_ptr<Loader::LibLoader>> _plugins;
         std::tuple<
             std::vector<std::shared_ptr<IPrimitive>>,
             std::vector<std::shared_ptr<ILight>>,
@@ -41,8 +41,8 @@ class Core {
         std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
         std::vector<std::shared_ptr<ILight>> getLights() const;
         std::shared_ptr<RayTracer::Camera> getCamera() const;
-        void applyAntialiasing(Renderer& renderer) const;
-        void applyRenderingConfig(Renderer& renderer) const;
+        void applyAntialiasing(const std::unique_ptr<Renderer> &renderer) const;
+        void applyRenderingConfig(const std::unique_ptr<Renderer> &renderer) const;
 
 }; // Core
 
