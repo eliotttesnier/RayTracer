@@ -28,4 +28,5 @@ target_link_libraries(RefractionMaterial PRIVATE
         FractaleCube
         InfiniteCone
         InfiniteCylinder
+        Rectangle
 )

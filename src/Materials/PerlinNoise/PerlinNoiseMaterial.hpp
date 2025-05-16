@@ -9,6 +9,7 @@
 #define PERLINNOISEMATERIAL_HPP_
 
 #include "../AMaterial.hpp"
+#include "../../Primitives/Rectangle/Rectangle.hpp"
 
 namespace RayTracer::Materials
 {
@@ -87,6 +88,13 @@ class PerlinNoiseMaterial : public AMaterial {
         ) override;
         Graphic::color_t calculateColor(
             const RayTracer::primitive::InfiniteCylinder &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) override;
+        Graphic::color_t calculateColor(
+            const RayTracer::primitive::Rectangle &obj,
             Math::hitdata_t hitData,
             Math::Ray ray,
             std::vector<std::shared_ptr<ILight>> lights,

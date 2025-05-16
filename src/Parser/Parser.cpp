@@ -99,6 +99,9 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root, shading_t shadin
     std::vector<fractalecube_t> fractaleCubeVector =
         PrimitivesParser::getFractaleCubesData(root, shading);
 
+    std::vector<rectangle_t> rectangleVector =
+        PrimitivesParser::getRectanglesData(root, shading);
+
     this->_primitiveConfig = std::make_unique<PrimitivesConfig>(
         spheresVector,
         planesVector,
@@ -110,7 +113,8 @@ void Parser::_getPrimitivesData(const libconfig::Setting &root, shading_t shadin
         objVector,
         infiniteCylinders,
         infiniteCones,
-        fractaleCubeVector
+        fractaleCubeVector,
+        rectangleVector
     );
 }
 
@@ -326,7 +330,8 @@ libconfig::Setting &targetRoot)
 
         const char *primitiveTypes[] = {
             "spheres", "planes", "cylinders", "cones",
-            "toruses", "tanglecubes", "triangles", "objs"
+            "toruses", "tanglecubes", "triangles", "objs",
+            "rectangles"
         };
 
         for (const char *type : primitiveTypes) {

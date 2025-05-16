@@ -11,6 +11,7 @@ set(PRIMITIVE_FACTORY_SRC
         InfiniteConeFactory.cpp
         InfiniteCylinderFactory.cpp
         FractaleCubeFactory.cpp
+        RectangleFactory.cpp
 )
 
 set(PRIMITIVE_FACTORY_INC
@@ -27,6 +28,7 @@ set(PRIMITIVE_FACTORY_INC
         InfiniteConeFactory.hpp
         InfiniteCylinderFactory.hpp
         FractaleCubeFactory.hpp
+        RectangleFactory.hpp
 )
 
 add_library(PrimitivesFactory STATIC ${PRIMITIVE_FACTORY_SRC} ${PRIMITIVE_FACTORY_INC})

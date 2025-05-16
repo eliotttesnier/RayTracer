@@ -386,4 +386,39 @@ Graphic::color_t NormalMappingMaterial::calculateColor(
     return result;
 }
 
+Graphic::color_t NormalMappingMaterial::calculateColor(
+    const RayTracer::primitive::Rectangle &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    if (!_normalMapLoaded) {
+        if (_wrappee)
+            return _wrappee->calculateColor(obj, hitData, ray, lights, primitives);
+        return hitData.color;
+    }
+
+    Math::Point3D localPoint = obj.transformPointToLocal(hitData.point);
+    double theta = atan2(localPoint._z, localPoint._x);
+    float u = (theta + M_PI) / (2 * M_PI);
+    float v = std::fmod(localPoint._y + 10000.0, 1.0);
+
+    Math::Vector3D mapNormal = getNormalFromMap(u, v);
+    Math::Vector3D perturbedNormal = transformNormal(mapNormal, hitData.normal,
+        hitData.point, u, v);
+    Math::Vector3D originalNormal = hitData.normal;
+    hitData.normal = perturbedNormal;
+
+    Graphic::color_t result;
+    if (_wrappee)
+        result = _wrappee->calculateColor(obj, hitData, ray, lights, primitives);
+    else
+        result = hitData.color;
+
+    hitData.normal = originalNormal;
+    return result;
+}
+
 }
