@@ -33,12 +33,12 @@ RayTracer::Factory::OBJFactory::OBJFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::OBJFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("OBJ") == plugins.end())
         throw std::runtime_error("OBJ plugin not found");
-    auto obj = plugins["OBJ"]->initEntryPointPtr<primitive::OBJ>(
+    auto obj = plugins.at("OBJ")->initEntryPointPtr<primitive::OBJ>(
         "create",
         this->_position,
         this->_filepath
