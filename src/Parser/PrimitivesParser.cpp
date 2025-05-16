@@ -513,4 +513,54 @@ std::vector<RayTracer::Parser::infinitecone_t> PrimitivesParser::getInfiniteCone
     return infiniteConeVector;
 }
 
+std::vector<RayTracer::Parser::rectangle_t> PrimitivesParser::getRectanglesData(
+    const libconfig::Setting &root,
+    shading_t shading
+)
+{
+    std::vector<rectangle_t> rectangleVector;
+    try {
+        const auto &rectangles = root["primitives"]["rectangles"];
+
+        for (int i = 0; i < rectangles.getLength(); ++i) {
+            const auto &r = rectangles[i];
+            material_t material = RayTracer::Parser::Parser::getMaterialData(r);
+            auto position = RayTracer::Parser::Parser::getData3D<double>(r["position"]);
+            auto rotation = RayTracer::Parser::Parser::getData3D<double>(r["rotation"]);
+            auto scale = RayTracer::Parser::Parser::getData3D<double>(r["scale"]);
+            auto shear = RayTracer::Parser::Parser::getData3D<double>(r["shear"]);
+            auto color = RayTracer::Parser::Parser::getData3D<int>(r["color"], "r", "g", "b");
+            auto dimensions = RayTracer::Parser::Parser::getData3D<double>(r, "length", "width", "height");
+
+            rectangleVector.emplace_back(
+                shading,
+                material,
+                dimensions,
+                position,
+                rotation,
+                scale,
+                shear,
+                color
+            );
+            #ifdef _DEBUG
+                std::cout << "Rectangle: "
+                    "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", "
+                    << std::get<2>(position) << "), dimensions(" 
+                    << std::get<0>(dimensions) << ", " << std::get<1>(dimensions) << ", "
+                    << std::get<2>(dimensions) << "), "
+                    "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
+                    << std::get<2>(color) << ")" << std::endl;
+            #endif
+        }
+    } catch (const libconfig::SettingNotFoundException &e) {
+        #ifdef _DEBUG
+            std::cout << "No rectangles found in config" << std::endl;
+        #endif
+    } catch (const libconfig::SettingTypeException &e) {
+        std::cerr << "[WARNING] Rectangle setting type error: " << e.what() << std::endl;
+    }
+
+    return rectangleVector;
+}
+
 }
