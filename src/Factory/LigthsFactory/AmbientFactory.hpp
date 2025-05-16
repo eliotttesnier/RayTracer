@@ -17,7 +17,7 @@ namespace RayTracer::Factory {
     public:
         AmbientFactory(double intensity, std::tuple<int, int, int> color);
 
-        std::shared_ptr<ILight> create(std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins) const override;
+        std::shared_ptr<ILight> create(std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins) const override;
     private:
         double _intensity;
         std::tuple<int, int, int> _color;
