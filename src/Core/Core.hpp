@@ -4,6 +4,8 @@
 
 #ifndef CORE_HPP
 #define CORE_HPP
+
+#include <memory>
 #include <map>
 #include <string>
 
@@ -16,31 +18,34 @@
 namespace RayTracer {
 
 class Core {
-private:
-    RayTracer::Parser::Parser _parser;
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> _plugins;
-    std::tuple<
-        std::vector<std::shared_ptr<IPrimitive>>,
-        std::vector<std::shared_ptr<ILight>>,
-        std::shared_ptr<RayTracer::Camera>
-    > _sceneElements;
+    private:
+        std::unique_ptr<RayTracer::Parser::Parser> _parser;
+        std::map<std::string, std::unique_ptr<Loader::LibLoader>> _plugins;
+        std::tuple<
+            std::vector<std::shared_ptr<IPrimitive>>,
+            std::vector<std::shared_ptr<ILight>>,
+            std::shared_ptr<RayTracer::Camera>
+        > _sceneElements;
+        std::unique_ptr<GraphicRenderer> _graphicRenderer;
+        bool _graphicRendererInitialized = false;
 
-    Math::Point3D _cameraOffset;
-    void _loadPlugins();
-    void _handleCameraMovement(char **av, runResult_e result);
-public:
+        Math::Point3D _cameraOffset;
+        void _loadPlugins();
+        void _handleCameraMovement(const std::string &configFileName, runResult_e result);
+        void _runProg(const std::string &configFileName, const Math::Point3D &additionalOffset);
 
-    explicit Core(char **av);
-    Core(char **av, const Math::Point3D &additionalOffset);
-    ~Core() = default;
+    public:
+        explicit Core(char **av);
+        ~Core() = default;
 
-    std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
-    std::vector<std::shared_ptr<ILight>> getLights() const;
-    std::shared_ptr<RayTracer::Camera> getCamera() const;
-    void applyAntialiasing(Renderer& renderer) const;
-    void applyRenderingConfig(Renderer& renderer) const;
+        std::vector<std::shared_ptr<IPrimitive>> getPrimitives() const;
+        std::vector<std::shared_ptr<ILight>> getLights() const;
+        std::shared_ptr<RayTracer::Camera> getCamera() const;
+        void applyAntialiasing(Renderer& renderer) const;
+        void applyRenderingConfig(Renderer& renderer) const;
 
 }; // Core
+
 } // RayTracer
 
 #endif //CORE_HPP
