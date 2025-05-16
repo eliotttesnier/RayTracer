@@ -32,12 +32,12 @@ RayTracer::Factory::PlaneFactory::PlaneFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::PlaneFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("Plane") == plugins.end())
         throw std::runtime_error("Plane plugin not found");
-    auto obj = plugins["Plane"]->initEntryPointPtr<primitive::Plane>(
+    auto obj = plugins.at("Plane")->initEntryPointPtr<primitive::Plane>(
         "create",
         this->_position,
         this->_rotation
