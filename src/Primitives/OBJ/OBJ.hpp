@@ -43,7 +43,7 @@ class OBJ : public APrimitive {
         std::vector<AABB> _triangleBounds;
 
         bool parseOBJFile();
-        void triangulatePolygon(const std::vector<size_t>& polygonIndices);
+        void triangulatePolygon(const std::vector<size_t> &polygonIndices);
         Math::Point3D transformVertex(const Math::Point3D& vertex);
 };
 

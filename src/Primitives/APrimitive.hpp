@@ -61,14 +61,42 @@ class APrimitive : public IPrimitive {
         Math::Point3D transformPointToWorld(const Math::Point3D &localPoint) const;
         Math::Vector3D transformNormalToWorld(const Math::Vector3D &localNormal) const;
 
-        void rotatePointToLocal(Math::Point3D &point, double cosX, double sinX,
-                               double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotateVectorToLocal(Math::Vector3D &vector, double cosX, double sinX,
-                                double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotatePointToWorld(Math::Point3D &point, double cosX, double sinX,
-                               double cosY, double sinY, double cosZ, double sinZ) const;
-        void rotateVectorToWorld(Math::Vector3D &vector, double cosX, double sinX,
-                                double cosY, double sinY, double cosZ, double sinZ) const;
+        void rotatePointToLocal(
+            Math::Point3D &point,
+            double cosX,
+            double sinX,
+            double cosY,
+            double sinY,
+            double cosZ,
+            double sinZ
+        ) const;
+        void rotateVectorToLocal(
+            Math::Vector3D &vector,
+            double cosX,
+            double sinX,
+            double cosY,
+            double sinY,
+            double cosZ,
+            double sinZ
+        ) const;
+        void rotatePointToWorld(
+            Math::Point3D &point,
+            double cosX,
+            double sinX,
+            double cosY,
+            double sinY,
+            double cosZ,
+            double sinZ
+        ) const;
+        void rotateVectorToWorld(
+            Math::Vector3D &vector,
+            double cosX,
+            double sinX,
+            double cosY,
+            double sinY,
+            double cosZ,
+            double sinZ
+        ) const;
 };
 
 } // namespace RayTracer::primitive

@@ -26,7 +26,6 @@ class Rectangle3D {
         ~Rectangle3D() = default;
 
         Math::Point3D pointAt(double u, double v) const;
-        bool hits(const Math::Ray &ray, double &t, double &u, double &v) const;
 
         Math::Vector3D getNormal() const;
 

@@ -59,7 +59,7 @@ Graphic::color_t TransparencyMaterial::_getBehindColor(
     Math::hitdata_t closestHitData;
     std::shared_ptr<IPrimitive> closestPrimitive;
 
-    for (const auto& primitive : primitives) {
+    for (const auto &primitive : primitives) {
         Math::hitdata_t hitData = primitive->intersect(ray);
 
         if (hitData.hit && hitData.distance < closestDist) {
@@ -100,7 +100,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Cone *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -135,7 +135,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Cylinder *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -170,7 +170,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Plane *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -205,7 +205,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Sphere *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -240,7 +240,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Torus *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -275,7 +275,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Tanglecube *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -310,7 +310,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::Triangles *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -345,7 +345,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::OBJ *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -380,7 +380,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::FractaleCube *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -415,7 +415,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::InfiniteCone *>(primitive.get()) == &obj;
         }),
         primitivesCopy.end()
@@ -450,7 +450,7 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
     primitivesCopy.erase(
         std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
-        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+        [&obj](const std::shared_ptr<IPrimitive> &primitive) {
             return dynamic_cast<RayTracer::primitive::InfiniteCylinder *>(
                 primitive.get()
             ) == &obj;

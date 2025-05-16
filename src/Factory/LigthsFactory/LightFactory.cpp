@@ -17,27 +17,29 @@
 
 std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLights(
     const RayTracer::Parser::LightsConfig &config,
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins)
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins)
 {
     std::vector<std::shared_ptr<ILight>> lights;
 
     const auto &ambient = config.getAmbient();
     auto [intensity, color] = ambient;
     AmbientFactory factory  = AmbientFactory(intensity, color);
-#ifdef _DEBUG
-    std::cout << "Creating a ambient light" << std::endl;
-#endif
+    #ifdef _DEBUG
+        std::cout << "Creating a ambient light" << std::endl;
+    #endif
     lights.emplace_back(factory.create(plugins));
 
     for (const auto &directional : config.getDirectional()) {
         auto [intensity, position, direction, color] = directional;
-        DirectionalFactory factory  = DirectionalFactory(intensity,
-                                                         position,
-                                                         direction,
-                                                         color);
-#ifdef _DEBUG
-        std::cout << "Creating a directional light" << std::endl;
-#endif
+        DirectionalFactory factory  = DirectionalFactory(
+            intensity,
+            position,
+            direction,
+            color
+        );
+        #ifdef _DEBUG
+                std::cout << "Creating a directional light" << std::endl;
+        #endif
         lights.emplace_back(factory.create(plugins));
     }
 
@@ -45,9 +47,9 @@ std::vector<std::shared_ptr<ILight>> RayTracer::Factory::LightFactory::createLig
         auto [intensity, position, color] = point;
         PointFactory factory  = PointFactory(intensity, position, color);
         lights.emplace_back(factory.create(plugins));
-#ifdef _DEBUG
-        std::cout << "Creating a point light" << std::endl;
-#endif
+        #ifdef _DEBUG
+                std::cout << "Creating a point light" << std::endl;
+        #endif
     }
 
     return lights;

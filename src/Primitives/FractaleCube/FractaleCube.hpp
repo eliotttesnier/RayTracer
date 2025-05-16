@@ -37,8 +37,12 @@ class FractaleCube : public APrimitive {
         void updateBoundingBox();
         std::vector<Math::Point3D> generateFractalPoints() const;
         Math::Vector3D normalAt(const Math::Point3D& point) const;
-        bool intersectCube(const Math::Ray &ray, const Math::Point3D &center,
-                         double size, Math::hitdata_t &hitData) const;
+        bool intersectCube(
+            const Math::Ray &ray,
+            const Math::Point3D &center,
+            double size,
+            Math::hitdata_t &hitData
+        ) const;
 };
 
 }  // namespace RayTracer::primitive

@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 #include <tuple>
+#include <stdexcept>
 
 #include "Lights/DirectionalLight/DirectionalLight.hpp"
 
@@ -25,12 +26,12 @@ RayTracer::Factory::DirectionalFactory::DirectionalFactory(
 }
 
 std::shared_ptr<ILight> RayTracer::Factory::DirectionalFactory::create(
-            std::map<std::string,
-            std::unique_ptr<Loader::LibLoader>> &plugins) const
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
+) const
 {
-    if (!plugins.contains("DirectionalLight"))
+    if (plugins.find("DirectionalLight") == plugins.end())
         throw std::runtime_error("DirectionalLight plugin not found");
-    auto obj = plugins["DirectionalLight"]
+    auto obj = plugins.at("DirectionalLight")
         ->initEntryPointPtr<light::DirectionalLight>("create");
     auto [r, g, b] = this->_color;
     Math::Point3D pos = this->_position;

@@ -193,7 +193,7 @@ runResult_e GraphicRenderer::handleCamMovement(sf::Event event)
     return result;
 }
 
-runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
+runResult_e GraphicRenderer::run(const std::atomic<bool> &renderingComplete)
 {
     bool finalImageLoaded = false;
     bool pngExported = false;
@@ -320,7 +320,7 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 }
 
 void GraphicRenderer::updateProgressiveRendering(
-    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer)
+    const std::vector<std::vector<Graphic::color_t>> &pixelBuffer)
 {
     if (!_isProgressiveMode) {
         return;
@@ -332,7 +332,7 @@ void GraphicRenderer::updateProgressiveRendering(
 }
 
 void GraphicRenderer::updatePixelsFromBuffer(
-    const std::vector<std::vector<Graphic::color_t>>& pixelBuffer)
+    const std::vector<std::vector<Graphic::color_t>> &pixelBuffer)
 {
     int height = pixelBuffer.size();
     if (height == 0) return;
@@ -348,7 +348,7 @@ void GraphicRenderer::updatePixelsFromBuffer(
 
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-            const auto& color = pixelBuffer[y][x];
+            const auto &color = pixelBuffer[y][x];
             int r = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.r))));
             int g = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.g))));
             int b = static_cast<int>(std::round(std::max(0.0, std::min(255.0, color.b))));

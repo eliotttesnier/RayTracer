@@ -38,12 +38,12 @@ RayTracer::Factory::FractaleCubeFactory::FractaleCubeFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::FractaleCubeFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("FractaleCube") == plugins.end())
         throw std::runtime_error("FractaleCube plugin not found");
-    auto obj = plugins["FractaleCube"]->initEntryPointPtr<primitive::FractaleCube>(
+    auto obj = plugins.at("FractaleCube")->initEntryPointPtr<primitive::FractaleCube>(
         "create",
         this->_position,
         this->_size,
