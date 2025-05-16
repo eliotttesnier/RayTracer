@@ -46,14 +46,9 @@ GraphicRenderer::GraphicRenderer(
         close(_inotifyId);
         throw std::runtime_error("inotify_add_watch failed");
     }
-    if (_isPreviewMode) {
-        if (!loadFromFile(previewFilename)) {
-            std::cerr << "Failed to load preview PPM file: " << previewFilename << std::endl;
-            throw std::runtime_error("Failed to load preview PPM file");
-        }
-    } else {
-        _width = 1920;
-        _height = 1080;
+    _width = 1920;
+    _height = 1080;
+    if (!_isPreviewMode) {
         _pixels.resize(_width * _height * 4, 0);
         for (size_t i = 3; i < _pixels.size(); i += 4) {
             _pixels[i] = 255;
@@ -61,22 +56,6 @@ GraphicRenderer::GraphicRenderer(
     }
 
     _window.create(sf::VideoMode(1920, 1080), "Ray Tracer Visualizer - Preview Mode");
-
-    if (!_texture.create(_width, _height)) {
-        std::cerr << "Failed to create texture." << std::endl;
-        throw std::runtime_error("Failed to create texture");
-    }
-
-    _texture.update(_pixels.data());
-    _sprite.setTexture(_texture);
-    float scaleX = 1920.0f / static_cast<float>(_width);
-    float scaleY = 1080.0f / static_cast<float>(_height);
-    float scale = std::min(scaleX, scaleY);
-    _sprite.setScale(scale, scale);
-
-    float scaledWidth = _width * scale;
-    float scaledHeight = _height * scale;
-    _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
 
     if (!_font.loadFromFile("assets/Arial.ttf"))
         std::cerr << "Warning: Could not load font for loading message" << std::endl;
@@ -175,7 +154,6 @@ void GraphicRenderer::switchToFinalImage()
     float scaledHeight = _height * scale;
     _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
     _isPreviewMode = false;
-    _inputFilename = _finalFilename;
 }
 
 void GraphicRenderer::exportToPNG(const std::string& outputFilename) const
@@ -212,18 +190,39 @@ runResult_e GraphicRenderer::handleCamMovement(sf::Event event)
         case sf::Keyboard::E: result = MOVE_DOWN; break;
         default: return NOTHING;
     }
-    _window.close();
     return result;
 }
 
 runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 {
-    runResult_e result = FINISHED;
     bool finalImageLoaded = false;
     bool pngExported = false;
     sf::Clock checkClock;
     static const size_t kEventBufferLength = 4096;
     char buffer[kEventBufferLength];
+
+    if (_isPreviewMode) {
+        if (!loadFromFile(_inputFilename)) {
+            std::cerr << "Failed to load preview PPM file: " << _inputFilename << std::endl;
+            throw std::runtime_error("Failed to load preview PPM file");
+        }
+    }
+
+    if (!_texture.create(_width, _height)) {
+        std::cerr << "Failed to create texture." << std::endl;
+        throw std::runtime_error("Failed to create texture");
+    }
+
+    _texture.update(_pixels.data());
+    _sprite.setTexture(_texture);
+    float scaleX = 1920.0f / static_cast<float>(_width);
+    float scaleY = 1080.0f / static_cast<float>(_height);
+    float scale = std::min(scaleX, scaleY);
+    _sprite.setScale(scale, scale);
+
+    float scaledWidth = _width * scale;
+    float scaledHeight = _height * scale;
+    _sprite.setPosition((1920.0f - scaledWidth) / 2.0f, (1080.0f - scaledHeight) / 2.0f);
 
     if (_isPreviewMode)
         exportToPNG("preview.png");
@@ -240,8 +239,7 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         for (char *ptr = buffer; ptr < buffer + length;) {
             struct inotify_event *event = (struct inotify_event *)ptr;
             if (event->mask & IN_MODIFY) {
-                _window.close();
-                result = RELOAD_CONFIG;
+                return RELOAD_CONFIG;
             }
             ptr += sizeof(struct inotify_event) + event->len;
         }
@@ -256,14 +254,16 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
 
             runResult_e camMovementResult = handleCamMovement(event);
             if (camMovementResult != NOTHING) {
-                result = camMovementResult;
-                _window.close();
-                return result;
+                return camMovementResult;
             }
         }
 
-        if (_isPreviewMode && !_isProgressiveMode && !finalImageLoaded
-                && renderingComplete.load()) {
+        if (
+            _isPreviewMode &&
+            !_isProgressiveMode &&
+            !finalImageLoaded &&
+            renderingComplete.load()
+        ) {
             switchToFinalImage();
             finalImageLoaded = true;
             exportToPNG("output.png");
@@ -316,7 +316,7 @@ runResult_e GraphicRenderer::run(std::atomic<bool>& renderingComplete)
         sf::sleep(sf::milliseconds(33));
     }
     close(_inotifyId);
-    return result;
+    return FINISHED;
 }
 
 void GraphicRenderer::updateProgressiveRendering(
@@ -390,5 +390,13 @@ void GraphicRenderer::setProgressiveMode(bool isProgressiveMode)
     _isProgressiveMode = isProgressiveMode;
     if (_isProgressiveMode) {
         _window.setTitle("Ray Tracer Visualizer - Progressive Mode");
+    }
+}
+
+void GraphicRenderer::setPreviewMode(bool isPreviewMode)
+{
+    _isPreviewMode = isPreviewMode;
+    if (_isPreviewMode) {
+        _window.setTitle("Ray Tracer Visualizer - Preview Mode");
     }
 }
