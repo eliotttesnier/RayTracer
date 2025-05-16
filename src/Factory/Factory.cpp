@@ -19,7 +19,7 @@ RayTracer::Factory::scene_t RayTracer::Factory::Factory::createElement(
     const Parser::CameraConfig &camera,
     const Parser::PrimitivesConfig &primitives,
     const Parser::LightsConfig &light,
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
 )
 {
     #ifdef _DEBUG
