@@ -68,7 +68,7 @@ class Parser {
         RenderingConfig getRenderingConfig() const;
 
         Parser() = delete;
-        Parser(char *path);
+        Parser(const char *path);
         ~Parser() = default;
 };
 

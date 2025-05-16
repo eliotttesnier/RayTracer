@@ -459,7 +459,7 @@ RenderingConfig Parser::getRenderingConfig() const
     return *this->_renderingConfig;
 }
 
-Parser::Parser(char *path)
+Parser::Parser(const char *path)
 {
     libconfig::Config cfg;
 
