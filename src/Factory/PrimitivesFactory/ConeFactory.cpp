@@ -33,12 +33,12 @@ RayTracer::Factory::ConeFactory::ConeFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::ConeFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("Cone") == plugins.end())
         throw std::runtime_error("Cone plugin not found");
-    auto obj = plugins["Cone"]->initEntryPointPtr<primitive::Cone>(
+    auto obj = plugins.at("Cone")->initEntryPointPtr<primitive::Cone>(
         "create",
         this->_position,
         this->_radius,
