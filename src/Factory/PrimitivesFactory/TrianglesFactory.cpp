@@ -38,7 +38,7 @@ RayTracer::Factory::TrianglesFactory::TrianglesFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::TrianglesFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
 ) const
 {
     if (plugins.find("Triangles") == plugins.end())
