@@ -37,12 +37,12 @@ RayTracer::Factory::CylinderFactory::CylinderFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("Cylinder") == plugins.end())
         throw std::runtime_error("Cylinder plugin not found");
-    auto obj = plugins["Cylinder"]->initEntryPointPtr<primitive::Cylinder>(
+    auto obj = plugins.at("Cylinder")->initEntryPointPtr<primitive::Cylinder>(
         "create",
         this->_position,
         this->_radius,

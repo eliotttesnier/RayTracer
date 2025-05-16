@@ -11,6 +11,7 @@
 #include <cmath>
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <SFML/Graphics.hpp>
 
 #include "NormalMappingMaterial.hpp"
@@ -64,16 +65,15 @@ Math::Vector3D NormalMappingMaterial::getNormalFromMap(float u, float v) const
     return Math::Vector3D(nx, ny, nz).normalized();
 }
 
-void NormalMappingMaterial::createTangentSpace(
-    const Math::Vector3D &normal,
-    Math::Vector3D &tangent,
-    Math::Vector3D &bitangent
+std::tuple<Math::Vector3D, Math::Vector3D> NormalMappingMaterial::createTangentSpace(
+    const Math::Vector3D &normal
 ) const {
     Math::Vector3D up = std::abs(normal._y) < 0.999 ?
         Math::Vector3D(0, 1, 0) : Math::Vector3D(1, 0, 0);
 
-    tangent = normal.cross(up).normalized();
-    bitangent = normal.cross(tangent).normalized();
+    Math::Vector3D tangent = normal.cross(up).normalized();;
+    Math::Vector3D bitangent = normal.cross(tangent).normalized();
+    return std::make_tuple(tangent, bitangent);
 }
 
 Math::Vector3D NormalMappingMaterial::transformNormal(
@@ -82,9 +82,7 @@ Math::Vector3D NormalMappingMaterial::transformNormal(
     const Math::Point3D &hitPoint,
     float u, float v
 ) const {
-    Math::Vector3D tangent, bitangent;
-
-    createTangentSpace(surfaceNormal, tangent, bitangent);
+    auto [tangent, bitangent] = createTangentSpace(surfaceNormal);
 
     return (tangent * mapNormal._x +
             bitangent * mapNormal._y +

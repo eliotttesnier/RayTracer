@@ -37,12 +37,12 @@ void RayTracer::Core::_loadPlugins()
             std::string name = entry->d_name;
             if (name.length() > 3 && name.substr(name.length() - 3) == ".so") {
                 name = name.substr(3, name.length() - 6);
-                this->_plugins[name] = std::make_unique<Loader::LibLoader>();
+                this->_plugins[name] = std::make_shared<Loader::LibLoader>();
                 this->_plugins[name]->openLib(path);
             }
         }
         closedir(dir);
-    } catch (const std::exception& e) {
+    } catch (const std::exception &e) {
         std::cerr << "Error loading plugins: " << e.what() << std::endl;
     }
 }
@@ -104,11 +104,15 @@ void RayTracer::Core::_runProg(
     );
 
     auto renderingConfig = _parser->getRenderingConfig();
-    Renderer renderer(this->getCamera(), this->getPrimitives(), this->getLights());
-    renderer.setMultithreading(renderingConfig.getMultithreading());
-    renderer.setMaxThreads(renderingConfig.getMaxThreads());
+    std::unique_ptr<Renderer> renderer = std::make_unique<Renderer>(
+        this->getCamera(),
+        this->getPrimitives(),
+        this->getLights()
+    );
+    renderer->setMultithreading(renderingConfig.getMultithreading());
+    renderer->setMaxThreads(renderingConfig.getMaxThreads());
     if (renderingConfig.getType() == "preview")
-        renderer.renderPreview();
+        renderer->renderPreview();
 
     if (!_graphicRendererInitialized) {
         _graphicRenderer = std::make_unique<GraphicRenderer>(
@@ -130,8 +134,8 @@ void RayTracer::Core::_runProg(
     bool isProgressiveMode = (renderingConfig.getType() == "progressive");
 
     if (isProgressiveMode) {
-        renderer.registerUpdateCallback(
-            [this](const std::vector<std::vector<Graphic::color_t>>& pixelBuffer) {
+        renderer->registerUpdateCallback(
+            [this](const std::vector<std::vector<Graphic::color_t>> &pixelBuffer) {
                 this->_graphicRenderer->updateProgressiveRendering(pixelBuffer);
             }
         );
@@ -143,14 +147,14 @@ void RayTracer::Core::_runProg(
     std::atomic<bool> renderingComplete(false);
 
     std::thread renderThread([&]() {
-        renderer.render();
+        renderer->render();
         renderingComplete = true;
     });
 
     runResult_e result = _graphicRenderer->run(renderingComplete);
 
     if (result == RELOAD_CONFIG) {
-        renderer.stopThreads();
+        renderer->stopThreads();
         if (renderThread.joinable())
             renderThread.join();
         _runProg(configFileName, _cameraOffset);
@@ -158,7 +162,7 @@ void RayTracer::Core::_runProg(
     }
 
     if (result != NOTHING && result != FINISHED && result != RELOAD_CONFIG) {
-        renderer.stopThreads();
+        renderer->stopThreads();
         if (renderThread.joinable())
             renderThread.join();
         _handleCameraMovement(configFileName, result);
@@ -195,28 +199,28 @@ std::shared_ptr<RayTracer::Camera> RayTracer::Core::getCamera() const
     return std::get<2>(this->_sceneElements);
 }
 
-void RayTracer::Core::applyAntialiasing(Renderer& renderer) const
+void RayTracer::Core::applyAntialiasing(const std::unique_ptr<Renderer> &renderer) const
 {
     auto antialiasingConfig = _parser->getAntialiasingConfig();
 
     if (antialiasingConfig.getType() == "supersampling") {
-        renderer.setAntialiasingMode(Renderer::SUPERSAMPLING);
-        renderer.setSupersamplingLevel(antialiasingConfig.getSamples());
+        renderer->setAntialiasingMode(Renderer::SUPERSAMPLING);
+        renderer->setSupersamplingLevel(antialiasingConfig.getSamples());
     } else if (antialiasingConfig.getType() == "adaptive") {
-        renderer.setAntialiasingMode(Renderer::ADAPTIVE_SUPERSAMPLING);
-        renderer.setAdaptiveThreshold(antialiasingConfig.getThreshold());
+        renderer->setAntialiasingMode(Renderer::ADAPTIVE_SUPERSAMPLING);
+        renderer->setAdaptiveThreshold(antialiasingConfig.getThreshold());
     } else {
-        renderer.setAntialiasingMode(Renderer::NONE);
+        renderer->setAntialiasingMode(Renderer::NONE);
     }
 }
 
-void RayTracer::Core::applyRenderingConfig(Renderer& renderer) const
+void RayTracer::Core::applyRenderingConfig(const std::unique_ptr<Renderer> &renderer) const
 {
     auto renderingConfig = _parser->getRenderingConfig();
 
     if (renderingConfig.getType() == "progressive") {
-        renderer.setRenderingMode(Renderer::PROGRESSIVE);
+        renderer->setRenderingMode(Renderer::PROGRESSIVE);
     } else {
-        renderer.setRenderingMode(Renderer::PREVIEW);
+        renderer->setRenderingMode(Renderer::PREVIEW);
     }
 }

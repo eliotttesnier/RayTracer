@@ -102,9 +102,9 @@ std::vector<Math::Point3D> FractaleCube::generateFractalPoints() const
         std::vector<Math::Point3D> newPoints;
         newPoints.reserve(currentSize * 20);
 
-        for (const auto& center : points) {
-            for (const auto& [sum, offset] : offsets) {
-                const auto& [x, y, z] = offset;
+        for (const auto &center : points) {
+            for (const auto &[sum, offset] : offsets) {
+                const auto &[x, y, z] = offset;
                 newPoints.emplace_back(
                     center._x + x * newSize,
                     center._y + y * newSize,
@@ -179,7 +179,7 @@ Math::hitdata_t FractaleCube::intersect(const Math::Ray &ray)
     double subCubeSize = _size / pow(3, _recursion);
     double minDistance = std::numeric_limits<double>::max();
 
-    for (const auto& center : points) {
+    for (const auto &center : points) {
         Math::hitdata_t currentHit;
         if (intersectCube(ray, center, subCubeSize, currentHit)) {
             if (currentHit.distance < minDistance) {

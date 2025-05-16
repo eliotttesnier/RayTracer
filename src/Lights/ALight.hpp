@@ -34,7 +34,7 @@ class ALight : public ILight {
         bool isInShadow(
             const Math::Point3D& hitPoint,
             const Math::Vector3D& lightDir,
-            const std::vector<std::shared_ptr<IPrimitive>>& primitives
+            const std::vector<std::shared_ptr<IPrimitive>> &primitives
         ) const override;
 
         // Each light type must implement these

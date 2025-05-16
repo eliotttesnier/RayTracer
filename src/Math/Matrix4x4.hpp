@@ -22,7 +22,7 @@ public:
 
     Matrix4x4() : data({{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, 1}}}) {}
 
-    Matrix4x4(const std::array<std::array<double, 4>, 4>& matrix) : data(matrix) {}
+    Matrix4x4(const std::array<std::array<double, 4>, 4> &matrix) : data(matrix) {}
 
     Point3D multiplyPoint(const Point3D& point) const {
         double w = data[3][0] * point._x + data[3][1] * point._y + data[3][2] * point._z + data[3][3];
