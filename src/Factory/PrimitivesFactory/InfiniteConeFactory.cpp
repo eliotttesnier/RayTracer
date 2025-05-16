@@ -35,12 +35,12 @@ RayTracer::Factory::InfiniteConeFactory::InfiniteConeFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::InfiniteConeFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("InfiniteCone") == plugins.end())
         throw std::runtime_error("InfiniteCone plugin not found");
-    auto obj = plugins["InfiniteCone"]->initEntryPointPtr<primitive::InfiniteCone>(
+    auto obj = plugins.at("InfiniteCone")->initEntryPointPtr<primitive::InfiniteCone>(
         "create",
         this->_position,
         this->_angle
