@@ -33,12 +33,12 @@ RayTracer::Factory::TanglecubeFactory::TanglecubeFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::TanglecubeFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("Tanglecube") == plugins.end())
         throw std::runtime_error("Tanglecube plugin not found");
-    auto obj = plugins["Tanglecube"]->initEntryPointPtr<primitive::Tanglecube>(
+    auto obj = plugins.at("Tanglecube")->initEntryPointPtr<primitive::Tanglecube>(
         "create",
         this->_position,
         this->_size
