@@ -40,12 +40,12 @@ RayTracer::Factory::RectangleFactory::RectangleFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::RectangleFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("Rectangle") == plugins.end())
         throw std::runtime_error("Rectangle plugin not found");
-    auto obj = plugins["Rectangle"]->initEntryPointPtr<primitive::Rectangle>(
+    auto obj = plugins.at("Rectangle")->initEntryPointPtr<primitive::Rectangle>(
         "create",
         this->_position,
         this->_length,
