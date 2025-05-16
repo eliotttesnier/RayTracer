@@ -3,6 +3,7 @@ set(SRCROOT ${PROJECT_SOURCE_DIR}/src/GraphicRenderer)
 
 set(SRC
     ${SRCROOT}/GraphicRenderer.cpp
+    ${SRCROOT}/Inotify.cpp
 )
 
 set(HEADER_DIRECTORIES ${INCROOT})

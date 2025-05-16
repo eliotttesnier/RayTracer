@@ -52,7 +52,7 @@ void ALight::setDirection(const Math::Vector3D &direction) {
 bool ALight::isInShadow(
     const Math::Point3D& hitPoint,
     const Math::Vector3D& lightDir,
-    const std::vector<std::shared_ptr<IPrimitive>>& primitives
+    const std::vector<std::shared_ptr<IPrimitive>> &primitives
 ) const {
     const float SHADOW_BIAS = 0.001f;
     Math::Point3D shadowOrigin(
@@ -63,7 +63,7 @@ bool ALight::isInShadow(
 
     Math::Ray shadowRay(shadowOrigin, lightDir);
 
-    for (const auto& primitive : primitives) {
+    for (const auto &primitive : primitives) {
         Math::hitdata_t shadowHit = primitive->intersect(shadowRay);
         if (shadowHit.hit && shadowHit.distance > 0) {
             return true;

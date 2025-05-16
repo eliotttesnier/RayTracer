@@ -19,6 +19,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include "../Graphic/Color.hpp"
+#include "Inotify.hpp"
 
 enum runResult_e {
     FINISHED,
@@ -43,19 +44,19 @@ class GraphicRenderer {
         );
         ~GraphicRenderer() = default;
 
-        runResult_e run(std::atomic<bool>& renderingComplete);
+        runResult_e run(const std::atomic<bool> &renderingComplete);
         bool loadFromFile(const std::string& filename);
         void exportToPNG(const std::string& outputFilename) const;
         void switchToFinalImage();
         void displayLoadingMessage(const std::string& message);
-        void updateProgressiveRendering(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);
+        void updateProgressiveRendering(const std::vector<std::vector<Graphic::color_t>> &pixelBuffer);
         runResult_e handleCamMovement(sf::Event event);
 
         void setProgressiveMode(bool isProgressiveMode);
         void setPreviewMode(bool isPreviewMode);
 
     private:
-        void updatePixelsFromBuffer(const std::vector<std::vector<Graphic::color_t>>& pixelBuffer);
+        void updatePixelsFromBuffer(const std::vector<std::vector<Graphic::color_t>> &pixelBuffer);
         void updateTexture();
 
         int _width, _height;
@@ -71,7 +72,7 @@ class GraphicRenderer {
         sf::Text _loadingText;
         std::mutex _pixelMutex;
         std::string _configFilename;
-        int _inotifyId;
+        RayTracer::Inotify _inotify;
 };
 
 #endif /* !GRAPHICRENDERER_HPP_ */

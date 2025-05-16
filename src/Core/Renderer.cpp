@@ -69,11 +69,11 @@ void Renderer::setCamera(const std::shared_ptr<RayTracer::Camera> camera)
     _pixelBuffer.resize(_height, std::vector<Graphic::color_t>(_width));
 }
 
-void Renderer::setLight(const std::vector<std::shared_ptr<ILight>>& lights) {
+void Renderer::setLight(const std::vector<std::shared_ptr<ILight>> &lights) {
     _lights = lights;
 }
 
-void Renderer::setPrimitives(const std::vector<std::shared_ptr<IPrimitive>>& primitives)
+void Renderer::setPrimitives(const std::vector<std::shared_ptr<IPrimitive>> &primitives)
 {
     _primitives = primitives;
 }
@@ -250,13 +250,13 @@ void Renderer::renderPreview()
                 threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
             }
 
-            for (auto& thread : threads) {
+            for (auto &thread : threads) {
                 if (thread.joinable()) {
                     thread.join();
                 }
             }
-        } catch (const std::exception& e) {
-            for (auto& thread : threads) {
+        } catch (const std::exception &e) {
+            for (auto &thread : threads) {
                 if (thread.joinable()) {
                     thread.join();
                 }
@@ -342,13 +342,13 @@ void Renderer::render()
                 threads.emplace_back(&Renderer::renderSegment, this, startY, endY);
             }
 
-            for (auto& thread : threads) {
+            for (auto &thread : threads) {
                 if (thread.joinable()) {
                     thread.join();
                 }
             }
-        } catch (const std::exception& e) {
-            for (auto& thread : threads) {
+        } catch (const std::exception &e) {
+            for (auto &thread : threads) {
                 if (thread.joinable()) {
                     thread.join();
                 }
@@ -449,7 +449,7 @@ Graphic::color_t Renderer::traceRay(const Math::Ray& ray) const
     Math::hitdata_t closestHitData;
     std::shared_ptr<IPrimitive> closestPrimitive;
 
-    for (const auto& primitive : _primitives) {
+    for (const auto &primitive : _primitives) {
         Math::hitdata_t hitData = primitive->intersect(ray);
 
         if (hitData.hit && hitData.distance < closestDist) {
@@ -481,14 +481,14 @@ double Renderer::colorDifference(const Graphic::color_t& c1, const Graphic::colo
     return std::sqrt(dr*dr + dg*dg + db*db) / (std::sqrt(3.0) * 255.0);
 }
 
-Graphic::color_t Renderer::averageColors(const std::vector<Graphic::color_t>& colors) const
+Graphic::color_t Renderer::averageColors(const std::vector<Graphic::color_t> &colors) const
 {
     if (colors.empty())
         return {0.0, 0.0, 0.0, 1.0};
 
     double r = 0.0, g = 0.0, b = 0.0, a = 0.0;
 
-    for (const auto& color : colors) {
+    for (const auto &color : colors) {
         r += color.r;
         g += color.g;
         b += color.b;
@@ -594,7 +594,7 @@ void Renderer::registerUpdateCallback(std::function<void(
     _updateCallback = callback;
 }
 
-const std::vector<std::vector<Graphic::color_t>>& Renderer::getPixelBuffer() const
+const std::vector<std::vector<Graphic::color_t>> &Renderer::getPixelBuffer() const
 {
     return _pixelBuffer;
 }

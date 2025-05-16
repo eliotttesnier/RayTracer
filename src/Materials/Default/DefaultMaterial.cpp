@@ -79,7 +79,7 @@ Graphic::color_t DefaultMaterial::_phongModel(
         0.0
     };
 
-    for (const auto& light : lights) {
+    for (const auto &light : lights) {
         if (light->getType() == "AmbientLight") {
             const float ia = light->getIntensity();
             auto [ar, ag, ab] = light->getColor();

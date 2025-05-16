@@ -10,6 +10,8 @@
 
 #include <memory>
 #include <SFML/Graphics.hpp>
+#include <tuple>
+#include <string>
 
 #include "../../Primitives/Cone/Cone.hpp"
 #include "../../Primitives/Cylinder/Cylinder.hpp"
@@ -138,10 +140,8 @@ class NormalMappingMaterial : public AMaterial {
             float u, float v
         ) const;
 
-        void createTangentSpace(
-            const Math::Vector3D &normal,
-            Math::Vector3D &tangent,
-            Math::Vector3D &bitangent
+        std::tuple<Math::Vector3D, Math::Vector3D> createTangentSpace(
+            const Math::Vector3D &normal
         ) const;
 };
 
