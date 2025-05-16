@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <limits>
 #include <vector>
+#include <utility>
 #include "Rectangle.hpp"
 
 namespace RayTracer::primitive {
