@@ -26,6 +26,7 @@ public:
     static std::vector<infinitecylinder_t> getInfiniteCylindersData(const libconfig::Setting &root, shading_t shading);
     static std::vector<infinitecone_t> getInfiniteConesData(const libconfig::Setting &root, shading_t shading);
     static std::vector<fractalecube_t> getFractaleCubesData(const libconfig::Setting &root, shading_t shading);
+    static std::vector<rectangle_t> getRectanglesData(const libconfig::Setting &root, shading_t shading);
     PrimitivesParser() = delete;
     ~PrimitivesParser() = default;
 };
