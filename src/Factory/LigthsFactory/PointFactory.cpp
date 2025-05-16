@@ -24,12 +24,12 @@ RayTracer::Factory::PointFactory::PointFactory(
 }
 
 std::shared_ptr<ILight> RayTracer::Factory::PointFactory::create(
-    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+    const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
 ) const
 {
     if (plugins.find("PointLight") == plugins.end())
         throw std::runtime_error("PointLight plugin not found");
-    auto obj = plugins["PointLight"]
+    auto obj = plugins.at("PointLight")
         ->initEntryPointPtr<light::PointLight>("create");
     auto [r, g, b] = this->_color;
     Math::Point3D pos = this->_position;
