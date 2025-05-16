@@ -25,7 +25,7 @@ class Factory {
             const Parser::CameraConfig &camera,
             const Parser::PrimitivesConfig &scene,
             const Parser::LightsConfig &light,
-            std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
+            const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
         );
         Factory() = default;
         ~Factory() = default;
