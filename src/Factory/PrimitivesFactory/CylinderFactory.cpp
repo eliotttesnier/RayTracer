@@ -37,7 +37,7 @@ RayTracer::Factory::CylinderFactory::CylinderFactory(
 }
 
 std::shared_ptr<IPrimitive> RayTracer::Factory::CylinderFactory::create(
-    std::map<std::string, std::unique_ptr<Loader::LibLoader>> &plugins
+    std::map<std::string, std::shared_ptr<Loader::LibLoader>> plugins
 ) const
 {
     if (plugins.find("Cylinder") == plugins.end())
