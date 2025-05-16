@@ -468,4 +468,39 @@ Graphic::color_t TransparencyMaterial::calculateColor(
     return _calculateRatioColor(originColor, behindColor);
 }
 
+Graphic::color_t TransparencyMaterial::calculateColor(
+    const RayTracer::primitive::Rectangle &obj,
+    Math::hitdata_t hitData,
+    Math::Ray ray,
+    std::vector<std::shared_ptr<ILight>> lights,
+    std::vector<std::shared_ptr<IPrimitive>> primitives
+)
+{
+    Graphic::color_t originColor = _wrappee->calculateColor(
+        obj,
+        hitData,
+        ray,
+        lights,
+        primitives
+    );
+
+    std::vector<std::shared_ptr<IPrimitive>> primitivesCopy = primitives;
+    primitivesCopy.erase(
+        std::remove_if(primitivesCopy.begin(), primitivesCopy.end(),
+        [&obj](const std::shared_ptr<IPrimitive>& primitive) {
+            return dynamic_cast<RayTracer::primitive::Rectangle *>(primitive.get()) == &obj;
+        }),
+        primitivesCopy.end()
+    );
+
+    Graphic::color_t behindColor = _getBehindColor(
+        ray,
+        hitData.point,
+        primitivesCopy,
+        lights
+    );
+
+    return _calculateRatioColor(originColor, behindColor);
+}
+
 }
