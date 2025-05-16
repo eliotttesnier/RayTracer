@@ -8,7 +8,7 @@ At the center is a **large yellow-orange sphere** representing a **sun**, enhanc
 Surrounding it are several objects showcasing different rendering techniques:
 - A **camouflaged sphere** using a texture file (top-left)
 - A **flat blue sphere** (top-right)
-- A **flat red limited cylinder** (bottom-left)
+- A **perlin noise textured limited cylinder** (bottom-left)
 - A **flat green limited cone** (bottom-right)
 
 Lighting includes a **white ambient light** for soft global illumination and a **bright point light** focused on the central sun. The scene uses **adaptive antialiasing**, **Phong shading**, and **ambient occlusion**, rendered in **4K** with a **70° FOV**.
@@ -17,9 +17,10 @@ Lighting includes a **white ambient light** for soft global illumination and a *
 - Sphere with:
   - Normal map (sun-like texture)
 - Textured sphere (camo file texture)
+- Perlin noise texture (cylinder)
 - Flat-colored sphere (blue)
 - Limited primitives:
-  - Cylinder (red)
+  - Cylinder (perlin noise)
   - Cone (green)
 - Point light (high intensity)
 - Ambient light (white)
