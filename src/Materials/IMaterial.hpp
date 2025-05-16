@@ -31,8 +31,7 @@ namespace RayTracer::primitive {
     class Triangles;
     class OBJ;
     class FractaleCube;
-    class InfiniteCone;
-    class InfiniteCylinder;
+    class Rectangle;
 }
 
 namespace RayTracer::Materials {
@@ -111,6 +110,13 @@ class IMaterial {
         ) = 0;
         virtual Graphic::color_t calculateColor(
             const RayTracer::primitive::FractaleCube &obj,
+            Math::hitdata_t hitData,
+            Math::Ray ray,
+            std::vector<std::shared_ptr<ILight>> lights,
+            std::vector<std::shared_ptr<IPrimitive>> primitives
+        ) = 0;
+        virtual Graphic::color_t calculateColor(
+            const RayTracer::primitive::Rectangle &obj,
             Math::hitdata_t hitData,
             Math::Ray ray,
             std::vector<std::shared_ptr<ILight>> lights,
