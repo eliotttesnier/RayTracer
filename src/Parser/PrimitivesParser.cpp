@@ -530,7 +530,12 @@ std::vector<RayTracer::Parser::rectangle_t> PrimitivesParser::getRectanglesData(
             auto scale = RayTracer::Parser::Parser::getData3D<double>(r["scale"]);
             auto shear = RayTracer::Parser::Parser::getData3D<double>(r["shear"]);
             auto color = RayTracer::Parser::Parser::getData3D<int>(r["color"], "r", "g", "b");
-            auto dimensions = RayTracer::Parser::Parser::getData3D<double>(r, "length", "width", "height");
+            auto dimensions = RayTracer::Parser::Parser::getData3D<double>(
+                r,
+                "length",
+                "width",
+                "height"
+            );
 
             rectangleVector.emplace_back(
                 shading,
@@ -545,7 +550,7 @@ std::vector<RayTracer::Parser::rectangle_t> PrimitivesParser::getRectanglesData(
             #ifdef _DEBUG
                 std::cout << "Rectangle: "
                     "pos(" << std::get<0>(position) << ", " <<  std::get<1>(position) << ", "
-                    << std::get<2>(position) << "), dimensions(" 
+                    << std::get<2>(position) << "), dimensions("
                     << std::get<0>(dimensions) << ", " << std::get<1>(dimensions) << ", "
                     << std::get<2>(dimensions) << "), "
                     "color(" << std::get<0>(color) << ", " <<  std::get<1>(color) << ", "
