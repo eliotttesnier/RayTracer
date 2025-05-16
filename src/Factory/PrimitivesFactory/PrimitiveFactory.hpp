@@ -81,8 +81,8 @@ class PrimitiveFactory {
             const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
         );
         static std::vector<std::shared_ptr<IPrimitive>> _addRectangles(
-            const RayTracer::Parser::PrimitivesConfig& config,
-            std::map<std::string, std::unique_ptr<Loader::LibLoader>>& plugins
+            const RayTracer::Parser::PrimitivesConfig &config,
+            const std::map<std::string, std::shared_ptr<Loader::LibLoader>> &plugins
         );
 };
 } // raytracer
